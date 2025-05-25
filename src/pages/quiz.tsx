@@ -274,57 +274,58 @@ export default function QuizPage() {
 
   @media (max-width: 600px) {
     .quiz-container {
-      padding: 0.5rem 0.5rem;
+      padding: 0.5rem;
       max-width: 100vw;
       overflow-x: hidden;
     }
 
     .question-box {
-      padding: 0.5rem;
+      padding: 0.75rem;
       background: rgba(255, 255, 255, 0.035);
       border-radius: 12px;
       margin-inline: auto;
       width: 100%;
-      max-width: 95vw;
+      max-width: 90vw;
     }
 
     .question-box h2 {
-      font-size: 0.9rem;
+      font-size: 1rem;
       font-weight: 700;
-      margin-bottom: 0.4rem;
+      margin-bottom: 0.5rem;
     }
 
     .question-box p {
-      font-size: 0.7rem;
+      font-size: 0.75rem;
       line-height: 1.3;
-      margin-bottom: 0.70rem;
+      margin-bottom: 0.7rem;
       word-break: break-word;
-      padding: 0 0.15rem;
-      max-width: 90vw;
+      padding: 0 0.25rem;
+      max-width: 85vw;
       margin-inline: auto;
     }
 
     .button-group {
-      gap: 0.5rem;
+      gap: 0.4rem;
+      align-items: center;
     }
 
     .button-group button {
       font-size: 0.75rem !important;
-      padding: 0.4rem 0.5rem !important;
+      padding: 0.4rem 0.6rem !important;
       width: 100% !important;
-      max-width: 90vw !important;
+      max-width: 85vw !important;
       border-radius: 8px !important;
     }
 
     .progress-container {
       padding: 0 0.25rem;
-      max-width: 95vw;
-      margin-top: 1.25rem;
+      max-width: 85vw;
+      margin-top: 1rem;
       margin-bottom: 0.75rem;
     }
 
     .progress-bar {
-      height: 6px;
+      height: 5px;
     }
   }
 `}</style>
