@@ -135,13 +135,13 @@ export default function FullReportPage() {
   const top3 = topTraits[2];
 
   // Memoize lowest scoring trait for strengths section
-  const lowestTrait = useMemo(() => {
-    return Object.entries(summary.traitScores).reduce(
-      (minTrait, [trait, score]) =>
-        score < summary.traitScores[minTrait as Trait] ? trait : minTrait,
-      "social"
-    ) as Trait;
-  }, [summary.traitScores]);
+const lowestTrait = useMemo(() => {
+  return Object.entries(summary.traitScores).reduce(
+    (minTrait, [trait, score]) =>
+      score < summary.traitScores[minTrait as Trait] ? (trait as Trait) : minTrait,
+    "social" as Trait
+  );
+}, [summary.traitScores]);
 
   return (
     <>
