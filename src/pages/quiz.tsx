@@ -274,54 +274,54 @@ export default function QuizPage() {
 
   @media (max-width: 600px) {
     .quiz-container {
-      padding: 0.5rem;
+      padding: 1rem;
       max-width: 100vw;
       overflow-x: hidden;
     }
 
     .question-box {
-      padding: 0.75rem;
+      padding: 1rem;
       background: rgba(255, 255, 255, 0.035);
       border-radius: 12px;
-      margin-inline: auto;
+      margin: 0 auto;
       width: 100%;
-      max-width: 90vw;
+      max-width: 95vw;
     }
 
     .question-box h2 {
-      font-size: 1rem;
+      font-size: 1.1rem;
       font-weight: 700;
       margin-bottom: 0.5rem;
     }
 
     .question-box p {
-      font-size: 0.75rem;
-      line-height: 1.3;
-      margin-bottom: 0.7rem;
+      font-size: 0.9rem;
+      line-height: 1.4;
+      margin-bottom: 0.75rem;
       word-break: break-word;
-      padding: 0 0.25rem;
-      max-width: 85vw;
+      padding: 0 0.5rem;
+      max-width: 90vw;
       margin-inline: auto;
     }
 
     .button-group {
-      gap: 0.4rem;
+      gap: 0.5rem;
       align-items: center;
     }
 
     .button-group button {
-      font-size: 0.75rem !important;
-      padding: 0.4rem 0.6rem !important;
+      font-size: 0.85rem !important;
+      padding: 0.5rem 1rem !important;
       width: 100% !important;
-      max-width: 85vw !important;
+      max-width: 90vw !important;
       border-radius: 8px !important;
     }
 
     .progress-container {
-      padding: 0 0.25rem;
-      max-width: 85vw;
+      padding: 0 0.5rem;
+      max-width: 90vw;
       margin-top: 1rem;
-      margin-bottom: 0.75rem;
+      margin-bottom: 1rem;
     }
 
     .progress-bar {
