@@ -268,7 +268,7 @@ const lowestTrait = useMemo(() => {
             >
               <h3 style={{ fontSize: "1.3rem", marginBottom: "0.5rem" }}>Your Strengths</h3>
               <ul style={{ paddingLeft: "1rem", color: "#ccc", lineHeight: 1.6 }}>
-                {dynamicStrengths[lowestTrait]?.map((line, idx) => (
+                {dynamicStrengths[lowestTrait]?.map((line: string, idx: number) => (
                   <li key={idx}>{line}</li>
                 ))}
               </ul>
@@ -455,7 +455,7 @@ const lowestTrait = useMemo(() => {
               </p>
               <h3 style={{ fontSize: "1.3rem", marginBottom: "1rem" }}>🔗 Helpful Resources</h3>
               <ul style={{ listStyle: "none", paddingLeft: 0, color: "#ccc", lineHeight: 1.8 }}>
-                {[top1, top2].flatMap((trait) => (traitResourceLinks[trait] || []).map((link) => ({ link, trait }))).map(({ link, trait }, idx) => (
+                {[top1, top2].flatMap((trait: Trait) => (traitResourceLinks[trait] || []).map((link: any) => ({ link, trait }))).map(({ link, trait }, idx) => (
                   <li key={idx} style={{ marginBottom: "1rem" }}>
                     <a
                       href={link.url}

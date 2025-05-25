@@ -242,7 +242,8 @@ export default function ResultsPage() {
         </p>
       </div>
     )}
-  </div><div
+  </div>
+    <div
     role="region"
     aria-labelledby="personalized-insights"
     style={{
@@ -294,7 +295,7 @@ export default function ResultsPage() {
           paddingLeft: "2rem",
           fontSize: "1.1rem"
         }}>
-          {dynamicStrengths[strengthTraits[0]]?.map((line: string, idx: number) => (
+          {dynamicStrengths[strengthTraits[0] as Trait]?.map((line: string, idx: number) => (
             <li key={idx} style={{ marginBottom: "0.75rem" }}>{line}</li>
           ))}
         </ul>
@@ -347,7 +348,8 @@ export default function ResultsPage() {
           </button>
         </>
       )}
-    </div><div style={{
+    </div>
+    <div style={{
       marginTop: "2rem",
       padding: "1.25rem",
       background: "#14142b",
@@ -361,20 +363,10 @@ export default function ResultsPage() {
         <li>Print or save your PDF to discuss with a clinician.</li>
         <li>Take time to reflect — this quiz is just a starting point.</li>
       </ul>
-    </div></>
-      </div>
-      <style jsx>{`
-        .container {
-          max-width: 800px;
-          margin: 0 auto;
-        }
-        @media (max-width: 768px) {
-          .container {
-            padding: 0 1rem;
-          }
-        }
-      `}</style>
-    </main>
+    </div>
+    </div>
+  </main>
+  </>
   ) : null;
 }
 

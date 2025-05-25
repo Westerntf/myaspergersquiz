@@ -246,7 +246,7 @@ export default function QuizPage() {
   );
 }
 
-const buttonStyle = {
+const buttonStyle: React.CSSProperties = {
   padding: "1rem 2rem",
   fontSize: "1rem",
   width: "100%",
@@ -257,5 +257,5 @@ const buttonStyle = {
   borderRadius: "8px",
   cursor: "pointer",
   transition: "background 0.2s ease-in-out",
-  textAlign: "center"
+  textAlign: "center" as const
 };
