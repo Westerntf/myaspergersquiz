@@ -2,7 +2,6 @@ import { useEffect, useState, useRef, useMemo } from "react";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import Link from "next/link";
-import { loadStripe } from "@stripe/stripe-js";
 import { categoryLevelInsights } from "../utils/categoryLevelInsights";
 import { calculateScore, Trait } from "../utils/calculateScore";
 import { dynamicStrengths } from "../utils/dynamicStrengths";
@@ -14,6 +13,7 @@ import { getTopTraits } from "../utils/getTopTraits";
 import { getTraitLevel } from "../utils/getTraitLevel";
 import { loadFromStorage } from "../utils/storage";
 import { questions } from "../questions";
+import { loadStripe } from "@stripe/stripe-js";
 
 const traitComponents: Record<Trait, (level: number) => any> = {
   social: (level) => dynamic(() => import(`../content/results/social/level-${level}.mdx`)),
@@ -23,9 +23,6 @@ const traitComponents: Record<Trait, (level: number) => any> = {
   focus: (level) => dynamic(() => import(`../content/results/focus/level-${level}.mdx`)),
 };
 
-const stripePromise = typeof window !== "undefined"
-  ? loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
-  : Promise.resolve(null);
 
 export default function ResultsPage() {
   const [summary, setSummary] = useState<{
@@ -93,32 +90,41 @@ export default function ResultsPage() {
 
 
 const handleCheckout = async () => {
-  const stripe = await stripePromise;
+  console.log("Stripe key:", process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
+
+  if (!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY) {
+    alert("Stripe public key not found.");
+    return;
+  }
+
+  const stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
 
   if (!stripe) {
     alert("Stripe not available.");
     return;
   }
 
-  const quizId = crypto.randomUUID();
-  localStorage.setItem("mq_quiz_id", quizId);
-
   const res = await fetch("/api/checkout-session", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ quizId }),
+    body: JSON.stringify({
+      priceId: "price_1RSYJRFSjDoe9Z2nWpm9GqkG" // LIVE price ID
+    }),
   });
 
   const data = await res.json();
 
-  if (!data.id) {
+  console.log("Stripe checkout response:", data);
+
+  if (!data || !data.sessionId) {
+    console.error("Stripe session creation failed:", data);
     alert("Unable to create Stripe session.");
     return;
   }
 
-  await stripe.redirectToCheckout({ sessionId: data.id });
+  await stripe.redirectToCheckout({ sessionId: data.sessionId });
 };
 
   const reportRef = useRef<HTMLDivElement>(null);

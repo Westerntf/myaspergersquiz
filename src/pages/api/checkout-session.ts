@@ -3,7 +3,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import Stripe from "stripe";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
-  apiVersion: "2025-04-30.basil",
+  apiVersion: "2024-04-10",
 });
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -12,28 +12,35 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
+    if (!process.env.STRIPE_SECRET_KEY) {
+      console.error("Missing STRIPE_SECRET_KEY in environment variables");
+    } else {
+      console.log("Using STRIPE_SECRET_KEY (last 4):", process.env.STRIPE_SECRET_KEY.slice(-4));
+    }
+    console.log("Request origin:", req.headers.origin);
+    const origin = req.headers.origin || "https://myaspergersquiz.com";
+
+    if (!req.body.priceId) {
+      return res.status(400).json({ error: "Missing priceId in request body" });
+    }
+
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       payment_method_types: ["card"],
       line_items: [
         {
-          price_data: {
-            currency: "usd",
-            product_data: {
-              name: "Full Report Access",
-            },
-            unit_amount: 999,
-          },
+          price: req.body.priceId,
           quantity: 1,
         },
       ],
-      success_url: `${req.headers.origin}/results?success=true`,
-      cancel_url: `${req.headers.origin}/results?canceled=true`,
+      success_url: `${origin}/results?success=true`,
+      cancel_url: `${origin}/results?canceled=true`,
     });
 
-    return res.status(200).json({ sessionId: session.id });
+    console.log("Stripe session creation response:", session);
+    return res.status(200).json({ sessionId: session.id, session });
   } catch (err) {
-    console.error("Stripe session creation error:", err);
+    console.error("Stripe session creation error:", err instanceof Error ? err.message : String(err));
     return res.status(500).json({ error: "Unable to create Stripe session." });
   }
 }
