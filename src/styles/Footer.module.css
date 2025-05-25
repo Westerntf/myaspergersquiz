@@ -1,0 +1,59 @@
+/* /src/styles/Footer.module.css */
+
+
+.footer {
+  background-color: #0d0d2b;
+  padding: 3rem 1rem 1rem;
+  text-align: center;
+  color: #ccc;
+  margin-top: 4rem;
+}
+
+.newsletter {
+  max-width: 500px;
+  margin: 0 auto 2rem;
+  padding: 1rem;
+  background: #111132;
+  border-radius: 10px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.2);
+}
+
+.newsletter input {
+  width: 100%;
+  padding: 0.75rem;
+  margin-top: 1rem;
+  border: 1px solid #333;
+  border-radius: 6px;
+  background: #1a1a3d;
+  color: white;
+}
+
+.newsletter button {
+  margin-top: 1rem;
+  padding: 0.75rem 2rem;
+  background-color: #4a32d4;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.newsletter button:hover {
+  background-color: #6744e8;
+}
+
+.links {
+  margin-top: 2rem;
+  font-size: 0.875rem;
+}
+
+.links a {
+  color: #aaa;
+  margin: 0 0.75rem;
+  text-decoration: none;
+}
+
+.links a:hover {
+  text-decoration: underline;
+}
