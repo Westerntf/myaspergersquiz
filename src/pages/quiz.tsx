@@ -105,18 +105,7 @@ export default function QuizPage() {
   />
   <link rel="canonical" href="https://myaspergersquiz.com/quiz" />
 </Head>
-      <main style={{
-        padding: "4rem 1rem",
-        width: "100%",
-        maxWidth: "100%",
-        boxSizing: "border-box",
-        textAlign: "center",
-        background: "linear-gradient(to bottom, #060618, #101025)",
-        color: "#fff",
-        minHeight: "100vh",
-        fontFamily: "'Inter', sans-serif",
-        margin: 0,
-      }}>
+      <main className="quiz-container">
         <section style={{ marginBottom: "1.5rem", textAlign: "center", maxWidth: "600px", marginInline: "auto" }}>
           <h2 style={{ fontSize: "1.5rem", fontWeight: "600", marginBottom: "0.5rem" }}>
             Self-Insight Starts Here
@@ -130,17 +119,9 @@ export default function QuizPage() {
         </section>
         <div
           key={currentIndex}
+          className="question-box"
           style={{
-            background: "rgba(255, 255, 255, 0.05)",
-            padding: "2rem 1.25rem",
-            borderRadius: "12px",
-            border: "1px solid rgba(255, 255, 255, 0.1)",
-            width: "100%",
-            maxWidth: "700px",
-            margin: "0 auto",
             opacity: selected !== null ? 0.5 : 1,
-            transition: "opacity 0.3s ease",
-            textAlign: "center"
           }}
         >
           <h2 aria-live="polite" style={{ fontSize: "1.8rem", marginBottom: "1.25rem" }}>
@@ -189,7 +170,7 @@ export default function QuizPage() {
               )}
             </div>
           )}
-          <div style={{ display: "flex", flexDirection: "column", gap: "1rem", alignItems: "center" }}>
+          <div className="button-group">
             <button
               aria-label="Answer Yes"
               onClick={() => handleAnswer(true)}
@@ -222,7 +203,7 @@ export default function QuizPage() {
           </div>
         </div>
 
-        <div style={{ marginBottom: "2rem", width: "100%", maxWidth: "700px", marginInline: "auto", padding: "0 1rem" }}>
+        <div className="progress-container">
           <p style={{ marginBottom: "0.75rem", fontSize: "1.1rem", opacity: 0.8 }}>
             Progress: {percentComplete}%
           </p>
@@ -233,14 +214,87 @@ export default function QuizPage() {
             borderRadius: "6px",
             overflow: "hidden"
           }}>
-            <div style={{
-              height: "100%",
-              width: `${percentComplete}%`,
-              background: "#4e7fff",
-              transition: "width 0.5s ease, background 0.3s ease"
-            }} />
+            <div className="progress-bar" style={{ width: `${percentComplete}%` }} />
           </div>
         </div>
+        <style jsx>{`
+  .quiz-container {
+    padding: 4rem 1rem;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+    background: linear-gradient(to bottom, #060618, #101025);
+    color: #fff;
+    min-height: 100vh;
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+  }
+
+  .question-box {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 2rem 1.25rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    width: 100%;
+    max-width: 700px;
+    margin: 0 auto;
+    transition: opacity 0.3s ease;
+    text-align: center;
+  }
+
+  .button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .progress-container {
+    margin-bottom: 2rem;
+    width: 100%;
+    max-width: 700px;
+    margin-inline: auto;
+    padding: 0 1rem;
+  }
+
+  .progress-bar {
+    height: 12px;
+    background: #4e7fff;
+    transition: width 0.5s ease, background 0.3s ease;
+  }
+
+  @media (max-width: 600px) {
+    .quiz-container {
+      padding: 2rem 1rem;
+    }
+
+    .question-box {
+      padding: 1.25rem 1rem;
+    }
+
+    h2 {
+      font-size: 1.25rem !important;
+      font-weight: 600;
+    }
+
+    .button-group button {
+      font-size: 0.95rem !important;
+      padding: 0.6rem 1rem !important;
+      max-width: 100% !important;
+      border-radius: 6px !important;
+    }
+
+    p {
+      font-size: 0.9rem !important;
+      line-height: 1.4 !important;
+    }
+
+    .progress-container {
+      margin-top: 2rem;
+    }
+  }
+`}</style>
       </main>
     </>
   );
