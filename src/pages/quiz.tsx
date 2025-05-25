@@ -317,10 +317,12 @@ export default function QuizPage() {
     }
 
   .progress-container {
-    padding: 0 1rem;
-    max-width: 90vw;
-    margin-top: 0.5rem;
-    margin-bottom: 0.5rem;
+    width: calc(100% - 2rem);
+    max-width: 500px;
+    margin: 0 auto;
+    text-align: center;
+    margin-top: 0.75rem;
+    margin-bottom: 0.25rem;
   }
 
   .progress-bar {
