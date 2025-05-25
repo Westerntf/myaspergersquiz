@@ -284,8 +284,8 @@ export default function QuizPage() {
       background: rgba(255, 255, 255, 0.035);
       border-radius: 12px;
       margin: 0 auto;
-      width: 100%;
-      max-width: 85vw;
+      width: calc(100% - 2rem);
+      max-width: 500px;
     }
 
     .question-box h2 {
@@ -316,18 +316,33 @@ export default function QuizPage() {
       border-radius: 8px !important;
     }
 
+  .progress-container {
+    padding: 0 1rem;
+    max-width: 90vw;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .progress-bar {
+    height: 6px;
+    background: #4e7fff;
+    transition: width 0.5s ease, background 0.3s ease;
+    border-radius: 6px;
+  }
+
+  @media (max-width: 600px) {
     .progress-container {
-      margin-top: 0.5rem;
-      margin-bottom: 0.25rem;
       padding: 0 1rem;
       max-width: 90vw;
-      text-align: center;
+      margin-top: 0.75rem;
+      margin-bottom: 0.25rem;
     }
 
     .progress-bar {
-      height: 4px;
+      height: 5px;
     }
   }
+}
 `}</style>
       </main>
     </>
