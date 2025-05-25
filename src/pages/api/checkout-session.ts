@@ -19,7 +19,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     console.log("Request origin:", req.headers.origin);
     const origin = req.headers.origin || "https://myaspergersquiz.com";
 
-    if (!req.body.priceId) {
+    const { priceId, quizId } = req.body;
+
+    if (!priceId) {
       return res.status(400).json({ error: "Missing priceId in request body" });
     }
 
@@ -28,12 +30,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       payment_method_types: ["card"],
       line_items: [
         {
-          price: req.body.priceId,
+          price: priceId,
           quantity: 1,
         },
       ],
-      success_url: `${origin}/results?success=true`,
+      success_url: `${origin}/results?success=true&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/results?canceled=true`,
+      metadata: {
+        quiz_id: quizId || "unknown",
+        session_uid: quizId || "unknown",
+      },
     });
 
     console.log("Stripe session creation response:", session);

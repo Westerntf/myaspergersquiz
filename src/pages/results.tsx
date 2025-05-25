@@ -104,13 +104,23 @@ const handleCheckout = async () => {
     return;
   }
 
+  // Generate quizId and sessionUid and store in localStorage
+  const quizId = crypto.randomUUID();
+  const sessionUid = crypto.randomUUID();
+  localStorage.setItem("mq_quiz_id", quizId);
+  localStorage.setItem("mq_session_uid", sessionUid);
+
   const res = await fetch("/api/checkout-session", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      priceId: "price_1RSYJRFSjDoe9Z2nWpm9GqkG" // LIVE price ID
+      priceId: "price_1RSYJRFSjDoe9Z2nWpm9GqkG", // LIVE price ID
+      metadata: {
+        quiz_id: quizId,
+        session_uid: sessionUid
+      }
     }),
   });
 
