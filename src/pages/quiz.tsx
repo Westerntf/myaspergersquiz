@@ -274,13 +274,13 @@ export default function QuizPage() {
 
   @media (max-width: 600px) {
     .quiz-container {
-      padding: 0.75rem 1rem 0rem;
+      padding: 1rem 0.75rem 0rem;
       max-width: 100vw;
       overflow-x: hidden;
     }
 
     .question-box {
-      padding: 1rem;
+      padding: 0.75rem 1rem;
       background: rgba(255, 255, 255, 0.035);
       border-radius: 12px;
       margin: 0 auto;
@@ -289,17 +289,16 @@ export default function QuizPage() {
     }
 
     .question-box h2 {
-      font-size: 1.1rem;
-      font-weight: 700;
+      font-size: 1rem;
       margin-bottom: 0.5rem;
     }
 
     .question-box p {
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       line-height: 1.4;
-      margin-bottom: 0.75rem;
+      margin-bottom: 0.5rem;
       word-break: break-word;
-      padding: 0 0.5rem;
+      padding: 0 0.25rem;
       max-width: 85vw;
       margin-inline: auto;
     }
@@ -310,22 +309,23 @@ export default function QuizPage() {
     }
 
     .button-group button {
-      font-size: 0.85rem !important;
-      padding: 0.45rem 1rem !important;
+      font-size: 0.8rem !important;
+      padding: 0.4rem 0.75rem !important;
       width: 100% !important;
       max-width: 88vw !important;
       border-radius: 8px !important;
     }
 
     .progress-container {
+      margin-top: 0.5rem;
+      margin-bottom: 0.25rem;
       padding: 0 1rem;
       max-width: 90vw;
-      margin-top: 0.75rem;
-      margin-bottom: 0.25rem;
+      text-align: center;
     }
 
     .progress-bar {
-      height: 5px;
+      height: 4px;
     }
   }
 `}</style>
