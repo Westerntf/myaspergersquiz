@@ -219,7 +219,7 @@ export default function QuizPage() {
         </div>
         <style jsx>{`
   .quiz-container {
-    padding: 3rem 1rem 1rem;
+    padding: 3rem 1rem 0rem;
     width: 100%;
     max-width: 100vw;
     box-sizing: border-box;
@@ -274,7 +274,7 @@ export default function QuizPage() {
 
   @media (max-width: 600px) {
     .quiz-container {
-      padding: 0.75rem 0.75rem 0.5rem;
+      padding: 0.75rem 1rem 0rem;
       max-width: 100vw;
       overflow-x: hidden;
     }
@@ -285,7 +285,7 @@ export default function QuizPage() {
       border-radius: 12px;
       margin: 0 auto;
       width: 100%;
-      max-width: 90vw;
+      max-width: 85vw;
     }
 
     .question-box h2 {
@@ -299,8 +299,8 @@ export default function QuizPage() {
       line-height: 1.4;
       margin-bottom: 0.75rem;
       word-break: break-word;
-      padding: 0 0.75rem;
-      max-width: 90vw;
+      padding: 0 0.5rem;
+      max-width: 85vw;
       margin-inline: auto;
     }
 
@@ -318,7 +318,7 @@ export default function QuizPage() {
     }
 
     .progress-container {
-      padding: 0 0.5rem;
+      padding: 0 1rem;
       max-width: 90vw;
       margin-top: 0.75rem;
       margin-bottom: 0.25rem;
