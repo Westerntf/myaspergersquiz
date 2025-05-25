@@ -219,7 +219,7 @@ export default function QuizPage() {
         </div>
         <style jsx>{`
   .quiz-container {
-    padding: 3rem 1rem;
+    padding: 3rem 1rem 2rem;
     width: 100%;
     max-width: 100vw;
     box-sizing: border-box;
@@ -274,7 +274,7 @@ export default function QuizPage() {
 
   @media (max-width: 600px) {
     .quiz-container {
-      padding: 1rem;
+      padding: 1rem 1rem 1.5rem;
       max-width: 100vw;
       overflow-x: hidden;
     }
