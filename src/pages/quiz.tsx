@@ -203,7 +203,7 @@ export default function QuizPage() {
           </div>
         </div>
 
-        <div className="progress-container" style={{ maxWidth: "400px" }}>
+        <div className="progress-container" style={{ width: "100%", maxWidth: "600px", margin: "0 auto", marginTop: "1.5rem", marginBottom: "1rem", textAlign: "center" }}>
           <p style={{ marginBottom: "0.75rem", fontSize: "1.1rem", opacity: 0.8 }}>
             Progress: {percentComplete}%
           </p>
@@ -259,7 +259,6 @@ export default function QuizPage() {
     margin-top: 2rem;
     margin-bottom: 0.5rem;
     width: 100%;
-    max-width: 400px;
     margin-left: auto;
     margin-right: auto;
     text-align: center;
@@ -318,11 +317,12 @@ export default function QuizPage() {
 
   .progress-container {
     width: calc(100% - 2rem);
-    max-width: 500px;
-    margin: 0 auto;
+    max-width: 85vw;
+    margin: 1rem auto;
     text-align: center;
-    margin-top: 0.75rem;
-    margin-bottom: 0.25rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    padding: 0;
   }
 
   .progress-bar {
