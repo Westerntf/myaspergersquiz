@@ -91,23 +91,35 @@ export default function ResultsPage() {
     setSummary({ total, traitScores, flags, level });
   }, []);
 
-  const handleCheckout = async () => {
-    const stripe = await stripePromise;
-    const quizId = crypto.randomUUID();
-    localStorage.setItem("mq_quiz_id", quizId);
 
-    const res = await fetch("/api/checkout-session", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ quizId }),
-    });
-    const data = await res.json();
-    if (!stripe || !data.id) return alert("Stripe not available.");
-    console.log("Redirecting to Stripe checkout");
-    await stripe.redirectToCheckout({ sessionId: data.id });
-  };
+const handleCheckout = async () => {
+  const stripe = await stripePromise;
+
+  if (!stripe) {
+    alert("Stripe not available.");
+    return;
+  }
+
+  const quizId = crypto.randomUUID();
+  localStorage.setItem("mq_quiz_id", quizId);
+
+  const res = await fetch("/api/checkout-session", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ quizId }),
+  });
+
+  const data = await res.json();
+
+  if (!data.id) {
+    alert("Unable to create Stripe session.");
+    return;
+  }
+
+  await stripe.redirectToCheckout({ sessionId: data.id });
+};
 
   const reportRef = useRef<HTMLDivElement>(null);
 
