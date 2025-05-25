@@ -203,7 +203,7 @@ export default function QuizPage() {
           </div>
         </div>
 
-        <div className="progress-container">
+        <div className="progress-container" style={{ maxWidth: "400px" }}>
           <p style={{ marginBottom: "0.75rem", fontSize: "1.1rem", opacity: 0.8 }}>
             Progress: {percentComplete}%
           </p>
@@ -219,9 +219,9 @@ export default function QuizPage() {
         </div>
         <style jsx>{`
   .quiz-container {
-    padding: 4rem 1rem;
+    padding: 3rem 1rem;
     width: 100%;
-    max-width: 100%;
+    max-width: 100vw;
     box-sizing: border-box;
     text-align: center;
     background: linear-gradient(to bottom, #060618, #101025);
@@ -229,18 +229,23 @@ export default function QuizPage() {
     min-height: 100vh;
     font-family: 'Inter', sans-serif;
     margin: 0;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   .question-box {
     background: rgba(255, 255, 255, 0.05);
-    padding: 2rem 1.25rem;
+    padding: 2rem 1.5rem;
     border-radius: 12px;
     border: 1px solid rgba(255, 255, 255, 0.1);
     width: 100%;
-    max-width: 700px;
+    max-width: 600px;
     margin: 0 auto;
     transition: opacity 0.3s ease;
     text-align: center;
+    box-shadow: none;
   }
 
   .button-group {
@@ -251,47 +256,63 @@ export default function QuizPage() {
   }
 
   .progress-container {
-    margin-bottom: 2rem;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
     width: 100%;
-    max-width: 700px;
-    margin-inline: auto;
-    padding: 0 1rem;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
   }
 
   .progress-bar {
-    height: 12px;
+    height: 8px;
     background: #4e7fff;
     transition: width 0.5s ease, background 0.3s ease;
+    border-radius: 6px;
   }
 
   @media (max-width: 600px) {
     .quiz-container {
-      padding: 2rem 1rem;
+      padding: 1.5rem 1rem;
+      max-width: 100vw;
+      overflow-x: hidden;
     }
 
     .question-box {
-      padding: 1.25rem 1rem;
+      padding: 1.5rem 1rem;
+      background: rgba(255, 255, 255, 0.035);
+      border-radius: 12px;
+      margin-inline: auto;
     }
 
-    h2 {
-      font-size: 1.25rem !important;
-      font-weight: 600;
+    .question-box h2 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+
+    .question-box p {
+      font-size: 1rem;
+      line-height: 1.5;
+      margin-bottom: 1rem;
+      word-break: break-word;
+    }
+
+    .button-group {
+      gap: 0.5rem;
     }
 
     .button-group button {
-      font-size: 0.95rem !important;
-      padding: 0.6rem 1rem !important;
-      max-width: 100% !important;
-      border-radius: 6px !important;
-    }
-
-    p {
-      font-size: 0.9rem !important;
-      line-height: 1.4 !important;
+      font-size: 1rem !important;
+      padding: 0.85rem 1.25rem !important;
+      width: 100% !important;
+      max-width: none !important;
+      border-radius: 8px !important;
     }
 
     .progress-container {
-      margin-top: 2rem;
+      padding: 0 0.5rem;
     }
   }
 `}</style>
