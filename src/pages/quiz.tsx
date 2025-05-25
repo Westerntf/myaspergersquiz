@@ -196,6 +196,7 @@ export default function QuizPage() {
               style={{
                 ...buttonStyle,
                 background: selected === true ? "#3b4dff" : "#4e7fff",
+                textAlign: "center" as const
               }}
             >
               Yes
