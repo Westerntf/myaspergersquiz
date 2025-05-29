@@ -221,7 +221,7 @@ export default function QuizPage() {
   .quiz-container {
     padding: 3rem 1rem 0rem;
     width: 100%;
-    max-width: 100vw;
+    max-width: 100%;
     box-sizing: border-box;
     text-align: center;
     background: linear-gradient(to bottom, #060618, #101025);
@@ -274,7 +274,7 @@ export default function QuizPage() {
   @media (max-width: 600px) {
     .quiz-container {
       padding: 1rem 0.75rem 0rem;
-      max-width: 100vw;
+      max-width: 100%;
       overflow-x: hidden;
     }
 
