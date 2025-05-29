@@ -256,7 +256,7 @@ export default function Home() {
         What You Get in the Full Report
       </h2>
       <p style={{ fontSize: "0.9rem", color: "#222", marginBottom: "1rem", textAlign: "center", lineHeight: "1.5" }}>
-        Your free results offer an instant overview—but with the optional full report, you'll receive:
+        Your free results offer an instant overview but with the optional paid full report, you'll receive:
       </p>
       <ul style={{ listStyle: "none", padding: 0, marginTop: "1rem", marginBottom: "2rem", display: "flex", flexDirection: "column", gap: "0.75rem" }}>
         <li style={{ display: "flex", alignItems: "center", gap: "0.6rem", justifyContent: "center" }}>
@@ -282,40 +282,6 @@ export default function Home() {
       </ul>
     </div>
   </div>
-  {/* Testimonials section remains outside the unified container */}
-  <section style={{
-    backgroundColor: "#f9fbfc",
-    border: "1px solid #e4ebf0",
-    borderRadius: "10px",
-    padding: "2rem 1.5rem",
-    marginTop: "2rem",
-    marginBottom: "2rem",
-    marginLeft: "auto",
-    marginRight: "auto",
-    display: "block",
-    maxWidth: "640px",
-    width: "90vw",
-    boxSizing: "border-box",
-    textAlign: "center",
-    // The following flexbox properties are not needed since display is now block.
-    // display: "flex",
-    // flexDirection: "column",
-    // alignItems: "center",
-    // justifyContent: "center"
-  }}>
-    <h2 style={{ fontSize: "1.3rem", fontWeight: "bold", marginBottom: "1.5rem", color: "#4A90A4" }}>What Others Are Saying</h2>
-    <blockquote id="testimonial" style={{
-      fontStyle: "italic",
-      color: "#333",
-      fontSize: "0.95rem",
-      textAlign: "center",
-      transition: "opacity 0.3s ease-in-out",
-      margin: "0 auto 0.5rem",
-      maxWidth: "500px"
-    }}>
-      “I finally felt seen after taking this. The insights were gentle but accurate.”
-    </blockquote>
-  </section>
       </main>
     </>
   );
