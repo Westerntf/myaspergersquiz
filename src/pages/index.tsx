@@ -288,12 +288,20 @@ export default function Home() {
     maxWidth: "640px",
     width: "90vw",
     boxSizing: "border-box",
-    textAlign: "center"
+    textAlign: "center",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center"
   }}>
     <h2 style={{ fontSize: "1.3rem", fontWeight: "bold", marginBottom: "1.5rem", color: "#4A90A4" }}>What Others Are Saying</h2>
     <blockquote id="testimonial" style={{
-      fontStyle: "italic", color: "#333", fontSize: "0.95rem",
-      textAlign: "center", transition: "opacity 0.3s ease-in-out", margin: "0 auto 0.5rem", maxWidth: "90%"
+      fontStyle: "italic",
+      color: "#333",
+      fontSize: "0.95rem",
+      textAlign: "center",
+      transition: "opacity 0.3s ease-in-out",
+      margin: "0 auto 0.5rem",
+      maxWidth: "500px"
     }}>
       “I finally felt seen after taking this. The insights were gentle but accurate.”
     </blockquote>
