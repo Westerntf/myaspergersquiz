@@ -50,7 +50,14 @@ export default function Home() {
         <meta name="twitter:image" content="https://myaspergersquiz.com/og-home.jpg" />
         <link rel="canonical" href="https://myaspergersquiz.com/" />
       </Head>
-      <main style={{ background: "#fdfdfd", color: "#1a1a1a", padding: "2rem 1rem", fontFamily: "'Inter', sans-serif" }}>
+      <main style={{
+        background: "#fdfdfd",
+        color: "#1a1a1a",
+        padding: "2rem 1rem",
+        fontFamily: "'Inter', sans-serif",
+        width: "100vw",
+        boxSizing: "border-box"
+      }}>
   {/* Unified Intro, What to Expect, and Full Report sections in a single container */}
   <div style={{
     backgroundColor: "#f9fbfc",
@@ -59,7 +66,8 @@ export default function Home() {
     padding: "1.5rem",
     margin: "2rem auto",
     maxWidth: "640px",
-    width: "100%"
+    width: "90vw",
+    boxSizing: "border-box"
   }}>
     {/* Headline, tagline, logo title */}
     <div style={{ textAlign: "center" }}>
