@@ -291,7 +291,9 @@ export default function Home() {
     textAlign: "center",
     display: "flex",
     flexDirection: "column",
-    alignItems: "center"
+    alignItems: "center",
+    marginLeft: "auto",
+    marginRight: "auto"
   }}>
     <h2 style={{ fontSize: "1.3rem", fontWeight: "bold", marginBottom: "1.5rem", color: "#4A90A4" }}>What Others Are Saying</h2>
     <blockquote id="testimonial" style={{
