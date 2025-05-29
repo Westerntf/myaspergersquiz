@@ -2,14 +2,14 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #0a0a23;
+  background: #4a7c90;
   padding: 1rem 2rem;
   color: white;
 }
 
-..logo {
+.logo {
   text-decoration: none; /* removes underline */
-  color: #4e7fff;
+  color: white;
   font-weight: 700;
   font-size: 1.25rem;
 }

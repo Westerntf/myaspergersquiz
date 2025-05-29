@@ -7,12 +7,13 @@ export default function Navbar() {
   return (
     <nav
       style={{
-        background: "#060618",
-        borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
+        background: "#4a7c90",
+        borderBottom: "none",
         position: "sticky",
         top: 0,
         zIndex: 1000,
-        padding: "1rem 1.5rem",
+        boxShadow: "none",
+        padding: "0.75rem 1.5rem",
       }}
     >
       <div style={{
@@ -22,13 +23,33 @@ export default function Navbar() {
         maxWidth: "1000px",
         margin: "0 auto",
       }}>
-        <Link href="/" style={{
-          color: "#4e7fff",
-          fontWeight: 700,
-          fontSize: "1.25rem",
-          textDecoration: "none",
-        }}>
-          MyAspergersQuiz
+        <Link
+          href="/"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            textDecoration: "none",
+            gap: "0.5rem",
+            transition: "opacity 0.2s ease-in-out"
+          }}
+          onMouseOver={(e) => (e.currentTarget.style.opacity = "0.8")}
+          onMouseOut={(e) => (e.currentTarget.style.opacity = "1")}
+        >
+          <img
+            src="/myaspergersquiz-logo.png"
+            alt="Logo"
+            width={28}
+            height={28}
+            style={{
+              borderRadius: "6px",
+              boxShadow: "0 1px 3px rgba(0,0,0,0.2)",
+              maxHeight: "32px",
+              width: "auto"
+            }}
+          />
+          <span style={{ fontWeight: 700, fontSize: "1.1rem", color: "#ffffff" }}>
+            MyAspergers<span style={{ color: "#ffffff" }}>Quiz</span>
+          </span>
         </Link>
         <button
           onClick={() => setMenuOpen(!menuOpen)}
@@ -36,7 +57,7 @@ export default function Navbar() {
           style={{
             background: "none",
             border: "none",
-            color: "#ccc",
+            color: "#ffffff",
             fontSize: "1.5rem",
             cursor: "pointer",
             display: "block",
@@ -52,36 +73,40 @@ export default function Navbar() {
           flexDirection: "column",
           gap: "1rem",
           marginTop: "1rem",
-          paddingLeft: "0.5rem",
+          padding: "1rem 0.5rem",
+          boxShadow: "none",
         }}
       >
-        <Link href="/quiz" style={navLink}>Take Quiz</Link>
-        <Link href="/results" style={navLink}>Your Results</Link>
-        <Link href="/resources" style={navLink}>Resources</Link>
-      </div>
-
-      <div
-        style={{
-          display: "none",
-          justifyContent: "center",
-          alignItems: "center",
-          gap: "2rem",
-        }}
-        className="desktop-nav"
-      >
-        <Link href="/quiz" style={navLink}>Take Quiz</Link>
-        <Link href="/results" style={navLink}>Your Results</Link>
-        <Link href="/resources" style={navLink}>Resources</Link>
+        <Link
+          href="/quiz"
+          style={navLink}
+          onMouseOver={(e) => (e.currentTarget.style.textDecoration = "underline")}
+          onMouseOut={(e) => (e.currentTarget.style.textDecoration = "none")}
+        >
+          Take Quiz
+        </Link>
+        <Link
+          href="/results"
+          style={navLink}
+          onMouseOver={(e) => (e.currentTarget.style.textDecoration = "underline")}
+          onMouseOut={(e) => (e.currentTarget.style.textDecoration = "none")}
+        >
+          Your Results
+        </Link>
+        <Link
+          href="/resources"
+          style={navLink}
+          onMouseOver={(e) => (e.currentTarget.style.textDecoration = "underline")}
+          onMouseOut={(e) => (e.currentTarget.style.textDecoration = "none")}
+        >
+          Resources
+        </Link>
       </div>
 
       <style jsx>{`
         @media(min-width: 768px) {
           button {
             display: none;
-          }
-          .desktop-nav {
-            display: flex !important;
-            margin-top: 1rem;
           }
           div[style*="display: flex"][style*="flexDirection: column"] {
             display: none !important;
@@ -93,8 +118,9 @@ export default function Navbar() {
 }
 
 const navLink = {
-  color: "#ccc",
+  color: "#ffffff",
   textDecoration: "none",
   fontSize: "1rem",
-  transition: "color 0.2s ease-in-out",
+  transition: "all 0.2s ease-in-out",
+  textUnderlineOffset: "3px"
 };

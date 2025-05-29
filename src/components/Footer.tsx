@@ -2,13 +2,23 @@
 export default function Footer() {
   return (
     <footer style={{
-      background: "#060618",
-      padding: "3rem 1rem 2rem",
+      background: "#ffffff",
+      padding: "4rem 1rem 2rem",
       textAlign: "center",
-      color: "#999",
-      borderTop: "1px solid rgba(255, 255, 255, 0.1)",
+      color: "#000000",
+      borderTop: "1px solid #ddd",
       marginTop: "0"
     }}>
+      <div style={{ marginBottom: "2rem", display: "flex", justifyContent: "center", alignItems: "center", gap: "0.5rem" }}>
+        <img
+          src="/myaspergersquiz-logo.png"
+          alt="MyAspergersQuiz logo"
+          width="32"
+          height="32"
+          style={{ borderRadius: "6px" }}
+        />
+        <span style={{ fontWeight: 600, fontSize: "1.1rem" }}>MyAspergersQuiz</span>
+      </div>
       <p style={{ marginBottom: "1rem" }}>Join our newsletter for updates & tips:</p>
       <div style={{ display: "flex", justifyContent: "center", gap: "0.5rem", flexWrap: "wrap" }}>
         <input
@@ -17,10 +27,11 @@ export default function Footer() {
           style={{
             padding: "0.75rem",
             borderRadius: "6px",
-            border: "1px solid #333",
-            background: "#101025",
-            color: "white",
-            minWidth: "240px"
+            border: "1px solid #ccc",
+            background: "#f9f9f9",
+            color: "#000",
+            minWidth: "240px",
+            boxShadow: "inset 0 1px 3px rgba(0,0,0,0.06)"
           }}
         />
         <button style={buttonStyle}>Subscribe</button>
@@ -28,9 +39,30 @@ export default function Footer() {
       <div style={{ marginTop: "2rem", fontSize: "0.85rem" }}>
         <p>© 2025 MyAspergersQuiz.com</p>
         <div style={{ marginTop: "0.5rem", display: "flex", justifyContent: "center", gap: "1rem" }}>
-          <a href="/privacy" style={footerLink}>Privacy</a>
-          <a href="/terms" style={footerLink}>Terms</a>
-          <a href="/contact" style={footerLink}>Contact</a>
+          <a 
+            href="/privacy" 
+            style={footerLink}
+            onMouseOver={(e) => (e.currentTarget.style.color = "#3a6779")}
+            onMouseOut={(e) => (e.currentTarget.style.color = "#4a7c90")}
+          >
+            Privacy
+          </a>
+          <a 
+            href="/terms" 
+            style={footerLink}
+            onMouseOver={(e) => (e.currentTarget.style.color = "#3a6779")}
+            onMouseOut={(e) => (e.currentTarget.style.color = "#4a7c90")}
+          >
+            Terms
+          </a>
+          <a 
+            href="/contact" 
+            style={footerLink}
+            onMouseOver={(e) => (e.currentTarget.style.color = "#3a6779")}
+            onMouseOut={(e) => (e.currentTarget.style.color = "#4a7c90")}
+          >
+            Contact
+          </a>
         </div>
       </div>
     </footer>
@@ -38,7 +70,7 @@ export default function Footer() {
 }
 
 const buttonStyle = {
-  background: "#4e7fff",
+  background: "#4a7c90",
   color: "white",
   border: "none",
   borderRadius: "6px",
@@ -48,6 +80,7 @@ const buttonStyle = {
 };
 
 const footerLink = {
-  color: "#aaa",
-  textDecoration: "none"
+  color: "#4a7c90",
+  textDecoration: "none",
+  transition: "color 0.2s ease"
 };

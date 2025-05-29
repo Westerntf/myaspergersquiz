@@ -1,19 +1,20 @@
 import Head from "next/head";
 import { useEffect } from "react";
+import { Lock, ShieldCheck, Clock, FlaskConical, FileText, BarChart3, Compass } from "lucide-react";
 
 export default function Home() {
   useEffect(() => {
-    let testimonials = [
+    const testimonials = [
       "“I finally felt seen after taking this. The insights were gentle but accurate.”",
       "“The breakdown of traits was incredibly helpful and spot on.”",
       "“Loved how respectful and professional the tone of the quiz was.”",
       "“This gave me clarity I’ve been searching for in a simple way.”",
       "“It helped me understand patterns I hadn’t recognized in myself before.”",
-      "“The privacy and tone made it feel truly safe to reflect.”"
+      "“The privacy and tone made it feel truly safe to reflect.”",
     ];
     let current = 0;
     const interval = setInterval(() => {
-      const el = document.getElementById('testimonial');
+      const el = document.getElementById("testimonial");
       if (!el) return;
       el.style.opacity = "0";
       setTimeout(() => {
@@ -28,233 +29,259 @@ export default function Home() {
   return (
     <>
       <Head>
-  <title>Free Online Autism Traits Quiz | MyAspergersQuiz.com</title>
-  <meta name="description" content="Take a free, research-informed quiz to explore traits commonly associated with autism. Instant results. Private and easy to understand." />
-  <meta property="og:title" content="Discover Your Traits – Free Autism Spectrum Quiz" />
-  <meta property="og:description" content="Curious about how your mind works? Take a free quiz and explore social, sensory, and cognitive patterns linked with autism traits." />
-  <meta property="og:image" content="https://myaspergersquiz.com/og-home.jpg" />
-  <meta property="og:url" content="https://myaspergersquiz.com/" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Free Autism Spectrum Traits Quiz" />
-  <meta name="twitter:description" content="Take a 3–5 minute quiz and explore how your traits align with patterns found in autism." />
-  <meta name="twitter:image" content="https://myaspergersquiz.com/og-home.jpg" />
-  <link rel="canonical" href="https://myaspergersquiz.com/" />
-  <script
-    type="application/ld+json"
-    dangerouslySetInnerHTML={{
-      __html: JSON.stringify({
-        "@context": "https://schema.org",
-        "@type": "WebSite",
-        "url": "https://myaspergersquiz.com/",
-        "name": "MyAspergersQuiz.com",
-        "potentialAction": {
-          "@type": "SearchAction",
-          "target": "https://myaspergersquiz.com/quiz",
-          "query-input": "required name=search_term_string"
-        }
-      })
-    }}
-  />
-</Head>
-      <main
-        className="main"
-        style={{
-          padding: "4rem 1rem 0 1rem",
+        <title>Free Online Autism Traits Quiz | MyAspergersQuiz.com</title>
+        <meta
+          name="description"
+          content="Take a free, research-informed quiz to explore traits commonly associated with autism. Instant results. Private and easy to understand."
+        />
+        <meta property="og:title" content="Discover Your Traits – Free Autism Spectrum Quiz" />
+        <meta
+          property="og:description"
+          content="Curious about how your mind works? Take a free quiz and explore social, sensory, and cognitive patterns linked with autism traits."
+        />
+        <meta property="og:image" content="https://myaspergersquiz.com/og-home.jpg" />
+        <meta property="og:url" content="https://myaspergersquiz.com/" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Free Autism Spectrum Traits Quiz" />
+        <meta
+          name="twitter:description"
+          content="Take a 3–5 minute quiz and explore how your traits align with patterns found in autism."
+        />
+        <meta name="twitter:image" content="https://myaspergersquiz.com/og-home.jpg" />
+        <link rel="canonical" href="https://myaspergersquiz.com/" />
+      </Head>
+      <main style={{ background: "#fdfdfd", color: "#1a1a1a", padding: "2rem 1rem", fontFamily: "'Inter', sans-serif" }}>
+  {/* Unified Intro, What to Expect, and Full Report sections in a single container */}
+  <div style={{
+    backgroundColor: "#f9fbfc",
+    border: "1px solid #e4ebf0",
+    borderRadius: "10px",
+    padding: "1.5rem",
+    margin: "2rem auto",
+    maxWidth: "640px",
+    width: "100%"
+  }}>
+    {/* Headline, tagline, logo title */}
+    <div style={{ textAlign: "center" }}>
+      <div style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", marginBottom: "1rem" }}>
+        <img
+          src="/myaspergersquiz-logo.png"
+          alt="MyAspergersQuiz logo"
+          width={32}
+          height={32}
+          style={{
+            verticalAlign: "middle",
+            marginRight: "0.5rem",
+            borderRadius: "6px",
+            display: "inline-block"
+          }}
+        />
+        <span style={{
+          fontSize: "1.25rem",
+          fontWeight: 700,
+          color: "#1a1a1a",
+          fontFamily: "'Inter', sans-serif",
+          display: "inline-block",
+          verticalAlign: "middle"
+        }}>
+          MyAspergersQuiz
+        </span>
+      </div>
+      <p style={{ fontSize: "0.9rem", color: "#4A90A4", margin: "0 0 0.75rem 0", lineHeight: "1.5" }}>Explore with Ease. Reflect with Confidence.</p>
+    </div>
+    <div style={{ textAlign: "center", marginTop: "1.25rem" }}>
+      <h1 style={{
+        fontSize: "1.6rem",
+        margin: "0.25rem 0 1rem",
+        lineHeight: "1.3",
+        fontWeight: 700,
+        color: "#4A90A4"
+      }}>
+        Discover and Understand <br /> Your Unique Strengths
+      </h1>
+      <p style={{ marginBottom: "0.75rem", fontSize: "0.9rem", lineHeight: "1.5" }}>
+        Built independently using research inspired by organizations such as the Aspergers Research Institute.
+        Informed by academic research in social, sensory, and behavioral traits.
+      </p>
+    </div>
+    {/* What to Expect Section */}
+    <div style={{ marginTop: "2rem", textAlign: "center" }}>
+      <h2 style={{ fontSize: "1.3rem", fontWeight: "bold", marginBottom: "1.5rem", color: "#4A90A4" }}>What to Expect</h2>
+      <p style={{
+        fontSize: "0.9rem",
+        color: "#1a1a1a",
+        textAlign: "center",
+        maxWidth: "500px",
+        margin: "0 auto 0.75rem auto",
+        lineHeight: "1.5"
+      }}>
+        Receive a personalized summary designed to give you clarity and confidence. <br />
+        Discover how your traits align with patterns in social, sensory, and behavioral dimensions.
+      </p>
+      <a href="/quiz" style={{ textDecoration: "none" }}>
+        <button style={{
+          background: "#4A90A4",
+          color: "#fff",
+          border: "none",
+          borderRadius: "6px",
+          padding: "1rem 2.4rem",
+          width: "100%",
+          maxWidth: "280px",
+          margin: "0 auto",
+          fontSize: "1rem",
+          cursor: "pointer",
+          boxShadow: "0 2px 6px rgba(0, 0, 0, 0.1)",
+          transition: "background 0.2s ease",
+          marginTop: "1rem",
+          marginBottom: "1.25rem",
+          display: "block"
+        }} onMouseOver={(e) => e.currentTarget.style.background = '#3b7183'}
+          onMouseOut={(e) => e.currentTarget.style.background = '#4A90A4'}>
+          Start the Quiz
+        </button>
+      </a>
+      <p style={{ fontSize: "0.9rem", color: "#4A90A4", marginTop: "0.4rem", lineHeight: "1.5" }}>
+        Takes only 5 minutes. Completely private.
+      </p>
+      <ul style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
+        gap: "1rem",
+        listStyle: "none",
+        padding: 0,
+        marginTop: "1rem",
+        marginBottom: "2rem",
+        color: "#333",
+        fontSize: "1rem"
+      }}>
+        <li style={{
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          justifyContent: "center",
-          textAlign: "center",
-          width: "100%",
-          boxSizing: "border-box",
-          background: "linear-gradient(to bottom, #060618, #101025)",
-          minHeight: "100vh",
-          color: "#fff"
-        }}
-      >
-        <div
-          className="responsive-container"
-          style={{
-            width: "100%",
-            maxWidth: "640px",
-            padding: "2.5rem",
-            borderRadius: "12px",
-            background: "#15152a",
-            border: "1px solid rgba(255, 255, 255, 0.05)",
-            boxSizing: "border-box",
-            marginBottom: "2rem"
-          }}
-        >
-          <h1 role="heading" aria-level={1}
-            style={{
-              fontSize: "clamp(1.75rem, 6vw, 2.5rem)",
-              marginBottom: "1rem"
-            }}
-          >
-            Welcome to <span style={{ color: "#4e7fff" }}>MyAspergersQuiz</span>
-          </h1>
-          <p
-            style={{
-              fontSize: "clamp(1rem, 3.5vw, 1.2rem)",
-              fontWeight: 400,
-              color: "#e0e0e0",
-              marginBottom: "2rem",
-              maxWidth: "600px",
-              marginLeft: "auto",
-              marginRight: "auto"
-            }}
-          >
-            A life-enhancing, research-backed assessment to explore neurodivergent traits — in a private, respectful space.
-          </p>
-        </div>
-        <div
-          className="responsive-container"
-          style={{
-            width: "100%",
-            maxWidth: "640px",
-            padding: "2.5rem",
-            borderRadius: "12px",
-            background: "#15152a",
-            border: "1px solid rgba(255, 255, 255, 0.05)",
-            boxSizing: "border-box",
-            marginBottom: "2rem",
-            marginTop: "0"
-          }}
-        >
-          <h2
-            style={{
-              fontSize: "clamp(1.3rem, 5vw, 1.8rem)",
-              fontWeight: "600",
-              marginTop: 0,
-              marginBottom: "1.5rem",
-              color: "#fff"
-            }}
-          >
-            Why Take This Quiz?
-          </h2>
-          <p
-            style={{
-              fontSize: "clamp(1rem, 3vw, 1.15rem)",
-              color: "#e0e0e0",
-              lineHeight: "1.6",
-              marginBottom: "1.5rem"
-            }}
-          >
-            This quiz is designed to help you understand your unique communication and behavior patterns. 
-            It is not a diagnostic tool but can provide valuable insights and a starting point for further exploration.
-          </p>
-
-          <h2
-            style={{
-              fontSize: "clamp(1.1rem, 4vw, 1.4rem)",
-              marginTop: 0,
-              marginBottom: "1.5rem",
-              fontWeight: 600,
-              color: "#fff"
-            }}
-          >
-            What You’ll Get:
-          </h2>
-          <ul
-            role="list"
-            style={{
-              fontSize: "clamp(0.95rem, 3vw, 1.05rem)",
-              lineHeight: "1.6",
-              listStylePosition: "inside",
-              paddingLeft: 0,
-              textAlign: "center",
-              marginBottom: 0,
-              color: "#e0e0e0"
-            }}
-          >
-            <li role="listitem">A professional summary you can save or share</li>
-            <li role="listitem">Insights into your unique communication and behavior patterns</li>
-            <li role="listitem">Clear breakdowns across social, sensory, and routine traits</li>
-            <li role="listitem">100% private and anonymous experience</li>
-          </ul>
-          <h3 style={{ fontSize: "1.2rem", marginTop: "2rem", marginBottom: "1rem", color: "#fff" }}>
-            What to Expect
-          </h3>
-          <ul role="list" style={{ listStyle: "none", padding: 0, textAlign: "center", color: "#e0e0e0", fontSize: "clamp(0.95rem, 3vw, 1.05rem)", lineHeight: "1.6", marginBottom: 0 }}>
-            <li role="listitem">40 thoughtful questions</li>
-            <li role="listitem">3–5 minutes to complete</li>
-            <li role="listitem">Instant results, no sign-up needed</li>
-          </ul>
-          <a href="/quiz">
-            <button
-              aria-label="Start the autism traits quiz"
-              style={{
-                background: "linear-gradient(to right, #6c8eff, #4e7fff)",
-                color: "white",
-                border: "none",
-                borderRadius: "8px",
-                padding: "1rem 2rem",
-                fontSize: "1.1rem",
-                cursor: "pointer",
-                marginTop: "1.5rem"
-              }}
-            >
-              Start the Quiz
-            </button>
-          </a>
-        </div>
-        <div
-          className="responsive-container"
-          style={{
-            width: "100%",
-            maxWidth: "640px",
-            padding: "2.5rem",
-            borderRadius: "12px",
-            background: "#15152a",
-            border: "1px solid rgba(255, 255, 255, 0.05)",
-            boxSizing: "border-box",
-            marginBottom: "2rem",
-            marginTop: "0"
-          }}
-        >
-          <h2 style={{
-            fontSize: "clamp(1.2rem, 4vw, 1.5rem)",
-            marginTop: 0,
-            marginBottom: "1.5rem",
-            color: "#fff"
+          gap: "0.4rem",
+          color: "#222"
+        }}>
+          <div style={{
+            backgroundColor: "#eaf2f4",
+            padding: "0.5rem",
+            borderRadius: "50%",
+            display: "inline-flex",
+            justifyContent: "center",
+            alignItems: "center"
           }}>
-            What Others Are Saying
-          </h2>
-          <div
-            style={{
-              background: "#15152a",
-              borderRadius: "10px",
-              boxShadow: "0 4px 20px rgba(78, 127, 255, 0.12)",
-              transition: "background 0.3s ease-in-out",
-              marginTop: "0",
-              marginBottom: "0.5rem",
-              textAlign: "center"
-            }}
-          >
-            <p
-              id="testimonial"
-              role="status"
-              aria-live="polite"
-              style={{
-                fontStyle: "italic",
-                color: "#e0e0e0",
-                transition: "opacity 0.3s ease-in-out",
-                fontSize: "clamp(1rem, 3vw, 1.15rem)",
-                margin: 0
-              }}
-            >
-              “I finally felt seen after taking this. The insights were gentle but accurate.”
-            </p>
+            <ShieldCheck size={24} color="#4A90A4" />
           </div>
-        </div>
+          <span style={{ fontSize: "0.9rem", marginTop: "0.25rem" }}>Private & Anonymous</span>
+          <span style={{ fontSize: "0.8rem", color: "#666", marginTop: "0.25rem" }}>Your answers are never stored.</span>
+        </li>
+        <li style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: "0.4rem",
+          color: "#222"
+        }}>
+          <div style={{
+            backgroundColor: "#eaf2f4",
+            padding: "0.5rem",
+            borderRadius: "50%",
+            display: "inline-flex",
+            justifyContent: "center",
+            alignItems: "center"
+          }}>
+            <Lock size={24} color="#4A90A4" />
+          </div>
+          <span style={{ fontSize: "0.9rem", marginTop: "0.25rem" }}>Secure</span>
+          <span style={{ fontSize: "0.8rem", color: "#666", marginTop: "0.25rem" }}>No signup or login required.</span>
+        </li>
+        <li style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: "0.4rem",
+          color: "#222"
+        }}>
+          <div style={{
+            backgroundColor: "#eaf2f4",
+            padding: "0.5rem",
+            borderRadius: "50%",
+            display: "inline-flex",
+            justifyContent: "center",
+            alignItems: "center"
+          }}>
+            <Clock size={24} color="#4A90A4" />
+          </div>
+          <span style={{ fontSize: "0.9rem", marginTop: "0.25rem" }}>Fast</span>
+          <span style={{ fontSize: "0.8rem", color: "#666", marginTop: "0.25rem" }}>Takes less than 5 minutes.</span>
+        </li>
+        <li style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: "0.4rem",
+          color: "#222"
+        }}>
+          <div style={{
+            backgroundColor: "#eaf2f4",
+            padding: "0.5rem",
+            borderRadius: "50%",
+            display: "inline-flex",
+            justifyContent: "center",
+            alignItems: "center"
+          }}>
+            <FlaskConical size={24} color="#4A90A4" />
+          </div>
+          <span style={{ fontSize: "0.9rem", marginTop: "0.25rem" }}>Science-Informed</span>
+          <span style={{ fontSize: "0.8rem", color: "#666", marginTop: "0.25rem" }}>Built from peer-reviewed studies.</span>
+        </li>
+      </ul>
+    </div>
+    {/* Full Report Section */}
+    <div style={{ marginTop: "2rem", textAlign: "center" }}>
+      <h2 style={{ fontSize: "1.3rem", fontWeight: "bold", marginTop: "2rem", color: "#4A90A4" }}>
+        What You Get in the Full Report
+      </h2>
+      <p style={{ fontSize: "0.9rem", color: "#222", marginBottom: "1rem", textAlign: "center", lineHeight: "1.5" }}>
+        Your free results offer an instant overview—but with the optional full report, you'll receive:
+      </p>
+      <ul style={{ listStyle: "none", padding: 0, marginTop: "1rem", marginBottom: "2rem", display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+        <li style={{ display: "flex", alignItems: "center", gap: "0.6rem", justifyContent: "center" }}>
+          <FlaskConical size={20} color="#4A90A4" />
+          <span>A deeper breakdown of your social, sensory, and behavior traits</span>
+        </li>
+        <li style={{ display: "flex", alignItems: "center", gap: "0.6rem", justifyContent: "center" }}>
+          <BarChart3 size={20} color="#4A90A4" />
+          <span>Personalized insight explanations unique to your responses</span>
+        </li>
+        <li style={{ display: "flex", alignItems: "center", gap: "0.6rem", justifyContent: "center" }}>
+          <Compass size={20} color="#4A90A4" />
+          <span>Self-awareness prompts tailored to your top traits</span>
+        </li>
+        <li style={{ display: "flex", alignItems: "center", gap: "0.6rem", justifyContent: "center" }}>
+          <FileText size={20} color="#4A90A4" />
+          <span>A downloadable PDF to reflect on or share</span>
+        </li>
+        <li style={{ display: "flex", alignItems: "center", gap: "0.6rem", justifyContent: "center" }}>
+          <Lock size={20} color="#4A90A4" />
+          <span>All content remains completely private—no account needed</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+  {/* Testimonials section remains outside the unified container */}
+  <section style={{
+    backgroundColor: "#f9fbfc", border: "1px solid #e4ebf0", borderRadius: "10px",
+    padding: "2rem 1.5rem", margin: "2rem auto", maxWidth: "640px", width: "100%", textAlign: "center"
+  }}>
+    <h2 style={{ fontSize: "1.3rem", fontWeight: "bold", marginBottom: "1.5rem", color: "#4A90A4" }}>What Others Are Saying</h2>
+    <blockquote id="testimonial" style={{
+      fontStyle: "italic", color: "#333", fontSize: "0.95rem",
+      textAlign: "center", transition: "opacity 0.3s ease-in-out", margin: "0 auto 0.5rem", maxWidth: "90%"
+    }}>
+      “I finally felt seen after taking this. The insights were gentle but accurate.”
+    </blockquote>
+  </section>
       </main>
-      <style jsx global>{`
-        @media (max-width: 600px) {
-          .responsive-container {
-            padding: 2.5rem !important;
-          }
-        }
-      `}</style>
     </>
   );
 }
