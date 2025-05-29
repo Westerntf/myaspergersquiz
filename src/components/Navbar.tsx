@@ -14,6 +14,7 @@ export default function Navbar() {
         zIndex: 1000,
         boxShadow: "none",
         padding: "0.75rem 1.5rem",
+        width: "100%"
       }}
     >
       <div style={{
@@ -22,6 +23,7 @@ export default function Navbar() {
         alignItems: "center",
         maxWidth: "1000px",
         margin: "0 auto",
+        padding: "0 1rem"
       }}>
         <Link
           href="/"

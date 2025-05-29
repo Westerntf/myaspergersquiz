@@ -153,8 +153,10 @@ export default function Home() {
       </p>
       <ul style={{
         display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
-        gap: "1rem",
+        gridTemplateColumns: "repeat(2, 1fr)",
+        rowGap: "1.5rem",
+        columnGap: "2rem",
+        justifyItems: "center",
         listStyle: "none",
         padding: 0,
         marginTop: "1rem",
@@ -278,8 +280,15 @@ export default function Home() {
   </div>
   {/* Testimonials section remains outside the unified container */}
   <section style={{
-    backgroundColor: "#f9fbfc", border: "1px solid #e4ebf0", borderRadius: "10px",
-    padding: "2rem 1.5rem", margin: "2rem auto", maxWidth: "640px", width: "100%", textAlign: "center"
+    backgroundColor: "#f9fbfc",
+    border: "1px solid #e4ebf0",
+    borderRadius: "10px",
+    padding: "2rem 1.5rem",
+    margin: "2rem auto",
+    maxWidth: "640px",
+    width: "90vw",
+    boxSizing: "border-box",
+    textAlign: "center"
   }}>
     <h2 style={{ fontSize: "1.3rem", fontWeight: "bold", marginBottom: "1.5rem", color: "#4A90A4" }}>What Others Are Saying</h2>
     <blockquote id="testimonial" style={{

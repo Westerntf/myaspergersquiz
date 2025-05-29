@@ -7,7 +7,9 @@ export default function Footer() {
       textAlign: "center",
       color: "#000000",
       borderTop: "1px solid #ddd",
-      marginTop: "0"
+      marginTop: "0",
+      width: "100vw",
+      maxWidth: "100%"
     }}>
       <div style={{ marginBottom: "2rem", display: "flex", justifyContent: "center", alignItems: "center", gap: "0.5rem" }}>
         <img
