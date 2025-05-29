@@ -64,7 +64,11 @@ export default function Home() {
     border: "1px solid #e4ebf0",
     borderRadius: "10px",
     padding: "1.5rem",
-    margin: "2rem auto",
+    marginTop: "2rem",
+    marginBottom: "2rem",
+    marginLeft: "auto",
+    marginRight: "auto",
+    display: "block",
     maxWidth: "640px",
     width: "90vw",
     boxSizing: "border-box"
@@ -284,15 +288,20 @@ export default function Home() {
     border: "1px solid #e4ebf0",
     borderRadius: "10px",
     padding: "2rem 1.5rem",
-    margin: "2rem auto",
+    marginTop: "2rem",
+    marginBottom: "2rem",
+    marginLeft: "auto",
+    marginRight: "auto",
+    display: "block",
     maxWidth: "640px",
     width: "90vw",
     boxSizing: "border-box",
     textAlign: "center",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center"
+    // The following flexbox properties are not needed since display is now block.
+    // display: "flex",
+    // flexDirection: "column",
+    // alignItems: "center",
+    // justifyContent: "center"
   }}>
     <h2 style={{ fontSize: "1.3rem", fontWeight: "bold", marginBottom: "1.5rem", color: "#4A90A4" }}>What Others Are Saying</h2>
     <blockquote id="testimonial" style={{
