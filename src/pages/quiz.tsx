@@ -68,6 +68,7 @@ export default function QuizPage() {
   <meta name="twitter:title" content="Take the Quiz – Autism Spectrum Traits Assessment" />
   <meta name="twitter:description" content="Explore how your mind works in just 3–5 minutes. No sign-up needed. Private. Instant results." />
   <meta name="twitter:image" content="https://myaspergersquiz.com/og-quiz.jpg" />
+  <link rel="icon" href="/myaspergersquiz-logo.png" />
   <script
     type="application/ld+json"
     dangerouslySetInnerHTML={{
@@ -105,12 +106,26 @@ export default function QuizPage() {
   />
   <link rel="canonical" href="https://myaspergersquiz.com/quiz" />
 </Head>
-      <main className="quiz-container">
+      <main className="quiz-container" style={{
+        background: "#f9fbfc",
+        color: "#1a1a1a",
+        padding: "2rem 1rem",
+        minHeight: "100vh",
+        fontFamily: "'Inter', sans-serif",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        boxSizing: "border-box"
+      }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "2rem" }}>
+          <img src="/myaspergersquiz-logo.png" alt="Logo" width={32} height={32} style={{ borderRadius: "6px" }} />
+          <h1 style={{ fontSize: "1.4rem", color: "#4A90A4", margin: 0 }}>MyAspergersQuiz</h1>
+        </div>
         <section style={{ marginBottom: "1.5rem", textAlign: "center", maxWidth: "600px", marginInline: "auto" }}>
           <h2 style={{ fontSize: "1.5rem", fontWeight: "600", marginBottom: "0.5rem" }}>
             Self-Insight Starts Here
           </h2>
-          <p style={{ opacity: 0.6, fontSize: "0.85rem", marginTop: "0.25rem", marginBottom: "0.75rem" }}>
+          <p style={{ color: "#4A90A4", fontSize: "1rem", fontWeight: 500, marginTop: "0.25rem", marginBottom: "0.75rem" }}>
             Estimated time to complete: 3–5 minutes
           </p>
           <p style={{ fontSize: "0.95rem", lineHeight: "1.5", opacity: 0.7 }}>
@@ -121,17 +136,24 @@ export default function QuizPage() {
           key={currentIndex}
           className="question-box"
           style={{
-            opacity: selected !== null ? 0.5 : 1,
+            background: "#fff",
+            border: "1px solid #d9e4e8",
+            borderRadius: "16px",
+            padding: "2rem 2rem 2.5rem 2rem",
+            width: "100%",
+            maxWidth: "480px",
+            textAlign: "center",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.1)"
           }}
         >
-          <h2 aria-live="polite" style={{ fontSize: "1.8rem", marginBottom: "1.25rem" }}>
+          <h2 aria-live="polite" style={{ fontWeight: 700, fontSize: "1.75rem", marginBottom: "1rem", color: "#4A90A4" }}>
             Question {currentIndex + 1} of {questions.length}
           </h2>
           <p style={{ fontSize: "1.1rem", marginBottom: "1.5rem" }}>
             {currentQuestion.text}
           </p>
           {currentQuestion.example && (
-            <div style={{ marginBottom: "1.25rem" }}>
+            <div style={{ marginBottom: "1.5rem" }}>
               <button
                 aria-describedby="example-desc"
                 onClick={() => {
@@ -141,14 +163,18 @@ export default function QuizPage() {
                 }}
                 style={{
                   background: "none",
-                  color: "#4e7fff",
-                  border: "1px solid #4e7fff",
-                  borderRadius: "6px",
-                  padding: "0.4rem 0.75rem",
-                  fontSize: "0.85rem",
+                  color: "#5a9aa8",
+                  border: "1.5px solid #5a9aa8",
+                  borderRadius: "12px",
+                  padding: "0.5rem 1rem",
+                  fontSize: "0.9rem",
                   cursor: "pointer",
                   marginBottom: "0.75rem",
-                  transition: "all 0.2s ease-in-out"
+                  transition: "all 0.2s ease-in-out",
+                  fontWeight: 600,
+                  width: "fit-content",
+                  marginLeft: "auto",
+                  marginRight: "auto"
                 }}
               >
                 {showExamples[currentIndex] ? "Hide Example" : "Show Example"}
@@ -157,15 +183,17 @@ export default function QuizPage() {
                 <div
                   id="example-desc"
                   style={{
-                    background: "#121226",
-                    padding: "1rem",
-                    borderRadius: "8px",
-                    fontSize: "0.95rem",
-                    color: "#cdd4f6",
-                    border: "1px solid rgba(255,255,255,0.05)",
+                    background: "#eaf6f8",
+                    padding: "1rem 1.25rem",
+                    borderRadius: "12px",
+                    fontSize: "1rem",
+                    color: "#1a1a1a",
+                    border: "1px solid #4A90A4",
+                    textAlign: "left",
+                    lineHeight: 1.7
                   }}
                 >
-                  <strong>Example:</strong> {currentQuestion.example}
+                  <strong style={{ color: "#31758a" }}>Example:</strong> {currentQuestion.example}
                 </div>
               )}
             </div>
@@ -176,8 +204,13 @@ export default function QuizPage() {
               onClick={() => handleAnswer(true)}
               style={{
                 ...buttonStyle,
-                background: selected === true ? "#3b4dff" : "#4e7fff",
-                textAlign: "center" as const
+                padding: "0.9rem 1.75rem",
+                background: "#5a9aa8",
+                color: "#fff",
+                fontWeight: 600,
+                borderRadius: "12px",
+                letterSpacing: "0.25px",
+                fontSize: "1rem"
               }}
             >
               Yes
@@ -187,7 +220,14 @@ export default function QuizPage() {
               onClick={() => handleAnswer(false)}
               style={{
                 ...buttonStyle,
-                background: selected === false ? "#3b4dff" : "#4e7fff",
+                padding: "0.9rem 1.75rem",
+                background: "transparent",
+                border: "2px solid #5a9aa8",
+                color: "#5a9aa8",
+                fontWeight: 600,
+                borderRadius: "12px",
+                letterSpacing: "0.25px",
+                fontSize: "1rem"
               }}
             >
               No
@@ -195,7 +235,17 @@ export default function QuizPage() {
             {currentIndex > 0 && (
               <button
                 onClick={handleBack}
-                style={buttonStyle}
+                style={{
+                  ...buttonStyle,
+                  padding: "0.9rem 1.75rem",
+                  background: "transparent",
+                  border: "2px solid #5a9aa8",
+                  color: "#5a9aa8",
+                  fontWeight: 600,
+                  borderRadius: "12px",
+                  letterSpacing: "0.25px",
+                  fontSize: "1rem"
+                }}
               >
                 ← Back
               </button>
@@ -203,105 +253,35 @@ export default function QuizPage() {
           </div>
         </div>
 
-        <div className="progress-container" style={{ width: "100%", maxWidth: "600px", margin: "0 auto", marginTop: "1.5rem", marginBottom: "1rem", textAlign: "center" }}>
-          <p style={{ marginBottom: "0.75rem", fontSize: "1.1rem", opacity: 0.8 }}>
+        <div className="progress-container" style={{ width: "100%", maxWidth: "480px", margin: "0 auto", marginTop: "2rem", marginBottom: "2rem", textAlign: "center" }}>
+          <p style={{ marginBottom: "0.75rem", fontSize: "1rem", fontWeight: 500, opacity: 0.8 }}>
             Progress: {percentComplete}%
           </p>
           <div style={{
             height: "12px",
             width: "100%",
-            background: "#2c2c4a",
-            borderRadius: "6px",
-            overflow: "hidden"
+            background: "#e4ebf0",
+            borderRadius: "6px"
           }}>
-            <div className="progress-bar" style={{ width: `${percentComplete}%` }} />
+            <div className="progress-bar" style={{
+              width: `${percentComplete}%`,
+              height: "100%",
+              background: "#4A90A4",
+              borderRadius: "6px"
+            }} />
           </div>
         </div>
         <style jsx>{`
-  .quiz-container {
-    padding: 3rem 1rem 0rem;
-    width: 100%;
-    max-width: 100%;
-    box-sizing: border-box;
-    text-align: center;
-    background: linear-gradient(to bottom, #060618, #101025);
-    color: #fff;
-    min-height: 100vh;
-    font-family: 'Inter', sans-serif;
-    margin: 0;
-    overflow-x: hidden;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .question-box {
-    background: rgba(255, 255, 255, 0.05);
-    padding: 2rem 1.5rem;
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    width: 100%;
-    max-width: 600px;
-    margin: 0 auto;
-    transition: opacity 0.3s ease;
-    text-align: center;
-    box-shadow: none;
-  }
-
   .button-group {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 1.2rem;
     align-items: center;
-  }
-
-  .progress-container {
-    margin-top: 2rem;
-    margin-bottom: 0.5rem;
     width: 100%;
-    margin-left: auto;
-    margin-right: auto;
-    text-align: center;
-  }
-
-  .progress-bar {
-    height: 8px;
-    background: #4e7fff;
-    transition: width 0.5s ease, background 0.3s ease;
-    border-radius: 6px;
+    max-width: 480px;
   }
 
   @media (max-width: 600px) {
-    .quiz-container {
-      padding: 1rem 0.75rem 0rem;
-      max-width: 100%;
-      overflow-x: hidden;
-    }
-
-    .question-box {
-      padding: 0.75rem 1rem;
-      background: rgba(255, 255, 255, 0.035);
-      border-radius: 12px;
-      margin: 0 auto;
-      width: calc(100% - 2rem);
-      max-width: 500px;
-    }
-
-    .question-box h2 {
-      font-size: 1rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .question-box p {
-      font-size: 0.85rem;
-      line-height: 1.4;
-      margin-bottom: 0.5rem;
-      word-break: break-word;
-      padding: 0 0.25rem;
-      max-width: 85vw;
-      margin-inline: auto;
-    }
-
     .button-group {
       gap: 0.5rem;
       align-items: center;
@@ -314,37 +294,7 @@ export default function QuizPage() {
       max-width: 88vw !important;
       border-radius: 8px !important;
     }
-
-  .progress-container {
-    width: calc(100% - 2rem);
-    max-width: 85vw;
-    margin: 1rem auto;
-    text-align: center;
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-    padding: 0;
   }
-
-  .progress-bar {
-    height: 6px;
-    background: #4e7fff;
-    transition: width 0.5s ease, background 0.3s ease;
-    border-radius: 6px;
-  }
-
-  @media (max-width: 600px) {
-    .progress-container {
-      padding: 0 1rem;
-      max-width: 90vw;
-      margin-top: 0.75rem;
-      margin-bottom: 0.25rem;
-    }
-
-    .progress-bar {
-      height: 5px;
-    }
-  }
-}
 `}</style>
       </main>
     </>
@@ -362,5 +312,5 @@ const buttonStyle: React.CSSProperties = {
   borderRadius: "8px",
   cursor: "pointer",
   transition: "background 0.2s ease-in-out",
-  textAlign: "center" as const
+  textAlign: "center"
 };
