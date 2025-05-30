@@ -267,14 +267,14 @@ return isClient ? (
           }}>
             <div style={{ fontSize: "0.8rem" }}>
               {(() => {
-                const label = getResultLabel(summary.level);
-                return typeof label === "object" ? label.label : label;
+                const label = getResultLabel(summary.traitScores);
+                if (typeof label === "string") return label;
+                if (typeof label === "object" && "label" in label && typeof label.label === "string") return label.label;
+                return "";
               })()}
             </div>
             <div style={{ fontSize: "1.5rem" }}>
-              {typeof summary.total === "object"
-                ? JSON.stringify(summary.total)
-                : summary.total}/40
+              {summary.total}/40
             </div>
           </div>
           <p style={{ fontSize: "0.95rem", color: "#333", lineHeight: 1.5, textAlign: "center", marginBottom: "2rem" }}>
