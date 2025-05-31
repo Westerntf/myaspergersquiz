@@ -693,13 +693,12 @@ return isClient ? (
 
 
 const buttonStyle = {
-  margin: "1rem",
-  padding: "1rem 2rem",
-  fontSize: "1.1rem",
-  background: "#4e7fff",
+  backgroundColor: "#31758a",
   color: "#fff",
+  padding: "1rem 2rem",
   border: "none",
-  borderRadius: "8px",
-  cursor: "pointer",
-  transition: "background 0.2s ease-in-out"
+  borderRadius: "12px",
+  fontSize: "1rem",
+  fontWeight: 600,
+  cursor: "pointer"
 };

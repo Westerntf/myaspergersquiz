@@ -224,6 +224,7 @@ export default function FullReportPage() {
         <meta name="twitter:title" content="Full Report – Detailed Autism Trait Analysis" />
         <meta name="twitter:description" content="Explore your complete trait profile and gain meaningful insights to help on your self-understanding journey." />
         <meta name="twitter:image" content="https://myaspergersquiz.com/og-full-report.jpg" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         {/* Structured data for SEO */}
         <script
           type="application/ld+json"
@@ -261,29 +262,71 @@ export default function FullReportPage() {
         role="main"
         aria-label="Full Diagnostic Report"
         style={{
-          padding: "4rem clamp(1rem, 5vw, 2rem)",
+          padding: "4rem 1rem",
           background: "#ffffff",
           color: "#1a1a1a",
           fontFamily: "'Inter', sans-serif",
           minHeight: "100vh",
+          width: "100%",
+          overflowX: "hidden",
+          boxSizing: "border-box",
         }}
       >
-        <h1 style={{ textAlign: "center", marginBottom: "2rem", fontSize: "2.2rem", color: "#4A90A4" }}>
-          Full Report
-        </h1>
+        <div style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          flexWrap: "wrap",
+          gap: "1rem",
+          marginBottom: "2rem"
+        }}>
+          <h1 style={{
+            fontSize: "clamp(1.7rem, 5vw, 2.2rem)",
+            color: "#4A90A4",
+            margin: 0,
+            display: "flex",
+            alignItems: "center",
+            gap: "0.5rem"
+          }}>
+            {/* Inline SVG icon to the left of the text */}
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="#4A90A4" viewBox="0 0 24 24" style={{ flexShrink: 0 }}>
+              <path d="M5 4v16h14V4H5zm13 15H6V5h12v14zm-5-9H8v-1h5v1zm0 3H8v-1h5v1zm0 3H8v-1h5v1zm6-9h-2V5h2v2zm0 3h-2V8h2v2zm0 3h-2v-2h2v2zm0 3h-2v-2h2v2z"/>
+            </svg>
+            Full Report
+          </h1>
+          <button
+            onClick={handleDownload}
+            style={{
+              background: "#31758a",
+              color: "#fff",
+              border: "none",
+              borderRadius: "12px",
+              padding: "1rem 2rem",
+              fontSize: "1rem",
+              fontWeight: 600,
+              cursor: "pointer",
+              transition: "background 0.2s"
+            }}
+            onMouseOver={e => (e.currentTarget.style.background = "#285e6e")}
+            onMouseOut={e => (e.currentTarget.style.background = "#31758a")}
+          >
+            Download PDF
+          </button>
+        </div>
 
         {/* --- Dynamic MDX Sections removed --- */}
 
         <div
           ref={reportRef}
           style={{
-            background: "#f9fbfc",
+            background: "#ffffff",
             border: "1px solid #e4ebf0",
             borderRadius: "12px",
             padding: "2rem",
             maxWidth: "800px",
             margin: "0 auto",
             width: "100%",
+            boxSizing: "border-box",
           }}
         >
           {/* Dynamic trait insight components removed during MDX transition */}
@@ -331,12 +374,25 @@ export default function FullReportPage() {
             }}
           >
             <div style={{ marginBottom: "2rem", textAlign: "center" }}>
-              <h3 style={{ fontSize: "1.4rem", marginBottom: "1rem", color: "#4A90A4" }}>Trait Visual Breakdown</h3>
+              <h3 style={{ fontSize: "clamp(1.1rem, 3vw, 1.4rem)", marginBottom: "1rem", color: "#4A90A4" }}>Trait Visual Breakdown</h3>
             </div>
 
             <TraitLevelsAtAGlance scores={summary.traitScores} />
 
           </div>
+          {/* Natural Strengths: render one matching level */}
+          {(() => {
+            const minScore = Math.min(
+              summary.traitScores.social,
+              summary.traitScores.sensory,
+              summary.traitScores.routine,
+              summary.traitScores.communication,
+              summary.traitScores.focus
+            );
+            const level = getNaturalStrengthLevel(minScore);
+            const NatComponent = naturalStrengthComponents[level] || null;
+            return NatComponent ? <NatComponent /> : null;
+          })()}
 
 {/* Flagged Traits Section (render matching level) */}
 {(() => {
@@ -358,120 +414,95 @@ export default function FullReportPage() {
       return null;
   }
 })()}
-
-          <div className="insight-section">
-            {/* Grouped Trait Insights Container */}
-            <div
-              style={{
-                background: "#ffffff",                   // pure white background
-                border: "1px solid #e4ebf0",             // light border
-                borderRadius: "12px",
-                padding: "1.5rem 2rem",
-                marginBottom: "3rem",
-                boxShadow: "0 2px 4px rgba(0,0,0,0.05)",  // subtle drop shadow
-              }}
-            >
-              <h2 style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                gap: "0.5rem",
-                fontSize: "1.75rem",
-                fontWeight: 600,
-                color: "#31758a",
-                marginBottom: "1rem",
-              }}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#31758a" viewBox="0 0 24 24">
-                  <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
-                </svg>
-                Trait Insights
-              </h2>
-
-              <div style={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "1rem"                              // reduced gap between cards
-              }}>
-                {/* Communication Insight */}
-                {(() => {
-                  const commLevel = getCommunicationLevel(summary.traitScores.communication);
-                  const CommComponent = communicationComponents[commLevel] || null;
-                  return CommComponent ? <CommComponent /> : null;
-                })()}
-
-                <hr style={{
-                  border: 0,
-                  borderTop: "1px solid #e4ebf0",         // updated HR color
-                  margin: "1rem 0"                        // reduced HR margin
-                }} />
-
-                {/* Social Insight */}
-                {(() => {
-  const socLevel = getSocialLevel(summary.traitScores.social);
-  const SocComponent = socialComponents[socLevel] || null;
-  return SocComponent ? <SocComponent /> : null;
-})()}
-
-                <hr style={{
-                  border: 0,
-                  borderTop: "1px solid #e4ebf0",         // updated HR color
-                  margin: "1rem 0"                        // reduced HR margin
-                }} />
-
-                {/* Sensory Insight */}
-         {(() => {
-  const senLevel = getSensoryLevel(summary.traitScores.sensory);
-  const SenComponent = sensoryComponents[senLevel] || null;
-  return SenComponent ? <SenComponent /> : null;
-})()}
-
-                <hr style={{
-                  border: 0,
-                  borderTop: "1px solid #e4ebf0",         // updated HR color
-                  margin: "1rem 0"                        // reduced HR margin
-                }} />
-
-                {/* Routine Insight */}
-        {(() => {
-  const rouLevel = getRoutineLevel(summary.traitScores.routine);
-  const RouComponent = routineComponents[rouLevel] || null;
-  return RouComponent ? <RouComponent /> : null;
-})()}
-
-                <hr style={{
-                  border: 0,
-                  borderTop: "1px solid #e4ebf0",         // updated HR color
-                  margin: "1rem 0"                        // reduced HR margin
-                }} />
-
-                {/* Focus Insight */}
-       {(() => {
-  const focLevel = getFocusLevel(summary.traitScores.focus);
-  const FocComponent = focusComponents[focLevel] || null;
-  return FocComponent ? <FocComponent /> : null;
-})()}
-              </div>
-            </div>
-            {/* Self-Awareness Reflection: render one matching level */}
-  {/* Self-Awareness Reflection: render one matching level */}
+{/* Self-Awareness Reflection: render one matching level */}
 {(() => {
   const level = getSelfAwarenessLevel(summary.total);
   const SelfComponent = selfAwarenessComponents[level] || null;
   return SelfComponent ? <SelfComponent /> : null;
 })()}
-{/* Natural Strengths: render one matching level */}
-{(() => {
-  const minScore = Math.min(
-    summary.traitScores.social,
-    summary.traitScores.sensory,
-    summary.traitScores.routine,
-    summary.traitScores.communication,
-    summary.traitScores.focus
-  );
-  const level = getNaturalStrengthLevel(minScore);
-  const NatComponent = naturalStrengthComponents[level] || null;
-  return NatComponent ? <NatComponent /> : null;
-})()}
+
+          <div className="insight-section">
+            {/* Trait Insights header */}
+            <h2 style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: "0.5rem",
+              fontSize: "clamp(1.3rem, 4vw, 1.75rem)",
+              fontWeight: 600,
+              color: "#31758a",
+              marginBottom: "1rem",
+            }}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#31758a" viewBox="0 0 24 24">
+                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+              </svg>
+              Trait Insights
+            </h2>
+
+            <div style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "1rem"
+            }}>
+              {/* Communication Insight */}
+              {(() => {
+                const commLevel = getCommunicationLevel(summary.traitScores.communication);
+                const CommComponent = communicationComponents[commLevel] || null;
+                return CommComponent ? <CommComponent /> : null;
+              })()}
+
+              <hr style={{
+                border: 0,
+                borderTop: "1px solid #e4ebf0",
+                margin: "1rem 0"
+              }} />
+
+              {/* Social Insight */}
+              {(() => {
+                const socLevel = getSocialLevel(summary.traitScores.social);
+                const SocComponent = socialComponents[socLevel] || null;
+                return SocComponent ? <SocComponent /> : null;
+              })()}
+
+              <hr style={{
+                border: 0,
+                borderTop: "1px solid #e4ebf0",
+                margin: "1rem 0"
+              }} />
+
+              {/* Sensory Insight */}
+              {(() => {
+                const senLevel = getSensoryLevel(summary.traitScores.sensory);
+                const SenComponent = sensoryComponents[senLevel] || null;
+                return SenComponent ? <SenComponent /> : null;
+              })()}
+
+              <hr style={{
+                border: 0,
+                borderTop: "1px solid #e4ebf0",
+                margin: "1rem 0"
+              }} />
+
+              {/* Routine Insight */}
+              {(() => {
+                const rouLevel = getRoutineLevel(summary.traitScores.routine);
+                const RouComponent = routineComponents[rouLevel] || null;
+                return RouComponent ? <RouComponent /> : null;
+              })()}
+
+              <hr style={{
+                border: 0,
+                borderTop: "1px solid #e4ebf0",
+                margin: "1rem 0"
+              }} />
+
+              {/* Focus Insight */}
+              {(() => {
+                const focLevel = getFocusLevel(summary.traitScores.focus);
+                const FocComponent = focusComponents[focLevel] || null;
+                return FocComponent ? <FocComponent /> : null;
+              })()}
+            </div>
           </div>
           {/* Dynamic trait insight components removed during MDX transition */}
         </div>
@@ -498,15 +529,18 @@ export default function FullReportPage() {
             <button
               onClick={handleDownload}
               style={{
-                padding: "1rem 2rem",
-                fontSize: "1.1rem",
-                background: "#4A90A4",
+                background: "#31758a",
                 color: "#fff",
                 border: "none",
                 borderRadius: "12px",
-                cursor: "pointer",
+                padding: "1rem 2rem",
+                fontSize: "1rem",
                 fontWeight: 600,
+                cursor: "pointer",
+                transition: "background 0.2s"
               }}
+              onMouseOver={e => (e.currentTarget.style.background = "#285e6e")}
+              onMouseOut={e => (e.currentTarget.style.background = "#31758a")}
             >
               Download as PDF
             </button>
@@ -514,235 +548,120 @@ export default function FullReportPage() {
         </div>
 
 {/* Resources & Support Section (static) */}
-<div
-  style={{
-    maxWidth: "800px",
-    margin: "3rem auto 0 auto",
-    background: "#ffffff",
-    padding: "2rem",
-    borderRadius: "12px",
-    border: "1px solid #e4ebf0",
-    boxShadow: "0 0 15px rgba(0,0,0,0.05)",
-  }}
->
-  {/* Header with icon */}
-  <div
-    style={{
-      textAlign: "center",
-      marginBottom: "1.5rem",
-      paddingBottom: "0.75rem",
-      borderBottom: "1px solid #e4ebf0",
-    }}
-  >
-    <h2
+    <div
       style={{
-        display: "inline-flex",
-        alignItems: "center",
-        gap: "0.5rem",
-        fontSize: "1.75rem",
-        color: "#31758a",
+        maxWidth: "960px",
+        margin: "3rem auto",
+        background: "#ffffff",
+        padding: "2.5rem",
+        borderRadius: "12px",
+        border: "1px solid #d9e4e8",
+        boxShadow: "0 4px 12px rgba(49, 117, 138, 0.06)"
       }}
     >
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="28"
-        height="28"
-        fill="#31758a"
-        viewBox="0 0 24 24"
-      >
-        <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
-      </svg>
-      Resources & Support
-    </h2>
-  </div>
-
-  {/* Introductory Text */}
-  <p
-    style={{
-      fontSize: "1rem",
-      color: "#4a4a4a",
-      marginBottom: "1.5rem",
-      textAlign: "center",
-    }}
-  >
-    A curated list of organizations, helplines, and online resources for support and information:
-  </p>
-
-  {/* Two-column layout for resource links */}
-  <div
-    style={{
-      display: "grid",
-      gridTemplateColumns: "1fr",
-      gap: "1rem 2rem",
-    }}
-  >
-    <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-      <a
-        href="https://www.autismspeaks.org"
-        target="_blank"
-        rel="noopener noreferrer"
+      <h2
         style={{
-          fontWeight: 600,
-          color: "#4e7fff",
-          textDecoration: "none",
-          borderBottom: "1px solid #e4ebf0",
-          paddingBottom: "0.5rem",
+          display: "flex",
+          alignItems: "center",
+          gap: "0.5rem",
+          fontSize: "clamp(1.4rem, 5vw, 2rem)",
+          color: "#31758a",
+          marginBottom: "1.5rem",
+          borderBottom: "1px solid #d9e4e8",
+          paddingBottom: "0.75rem"
         }}
       >
-        Autism Speaks
-      </a>
-      <p style={{ margin: 0, fontSize: "0.95rem", color: "#333" }}>
-        Comprehensive resources, toolkits, and local support group information.
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#31758a" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+        Resources & Support
+      </h2>
+      <p style={{ fontSize: "0.9rem", color: "#5a6e74", marginBottom: "1rem", textAlign: "center" }}>
+        Tap or click any heading below to open the full resource in a new tab.
       </p>
-
-      <a
-        href="https://nationalautismassociation.org"
-        target="_blank"
-        rel="noopener noreferrer"
+      <p style={{ fontSize: "1rem", color: "#4a4a4a", marginBottom: "2rem" }}>
+        A curated list of helpful organizations, crisis helplines, and support networks:
+      </p>
+      <div
         style={{
-          fontWeight: 600,
-          color: "#4e7fff",
-          textDecoration: "none",
-          borderBottom: "1px solid #e4ebf0",
-          paddingBottom: "0.5rem",
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+          gap: "1.5rem"
         }}
       >
-        National Autism Association
-      </a>
-      <p style={{ margin: 0, fontSize: "0.95rem", color: "#333" }}>
-        Safety resources, free toolkits, and parent support networks.
-      </p>
-
-      <a
-        href="https://autisticadvocacy.org"
-        target="_blank"
-        rel="noopener noreferrer"
-        style={{
-          fontWeight: 600,
-          color: "#4e7fff",
-          textDecoration: "none",
-          borderBottom: "1px solid #e4ebf0",
-          paddingBottom: "0.5rem",
-        }}
-      >
-        Autistic Self Advocacy Network (ASAN)
-      </a>
-      <p style={{ margin: 0, fontSize: "0.95rem", color: "#333" }}>
-        Advocacy, policy updates, and community stories from autistic individuals.
-      </p>
-
-      <a
-        href="https://childmind.org"
-        target="_blank"
-        rel="noopener noreferrer"
-        style={{
-          fontWeight: 600,
-          color: "#4e7fff",
-          textDecoration: "none",
-          borderBottom: "1px solid #e4ebf0",
-          paddingBottom: "0.5rem",
-        }}
-      >
-        Child Mind Institute
-      </a>
-      <p style={{ margin: 0, fontSize: "0.95rem", color: "#333" }}>
-        Guides on diagnosis, therapy options, and coping strategies for families.
-      </p>
+        {[
+          {
+            name: "Autism Speaks",
+            url: "https://www.autismspeaks.org",
+            desc: "Comprehensive resources, toolkits, and local support group information."
+          },
+          {
+            name: "National Autism Association",
+            url: "https://nationalautismassociation.org",
+            desc: "Safety resources, free toolkits, and parent support networks."
+          },
+          {
+            name: "Autistic Self Advocacy Network (ASAN)",
+            url: "https://autisticadvocacy.org",
+            desc: "Policy updates, self-advocacy, and community stories."
+          },
+          {
+            name: "Child Mind Institute",
+            url: "https://childmind.org",
+            desc: "Guides on diagnosis, therapy, and coping strategies for families."
+          },
+          {
+            name: "Autism Society",
+            url: "https://www.autism-society.org",
+            desc: "Nationwide chapters, events, and services."
+          },
+          {
+            name: "211 Helpline",
+            url: "tel:211",
+            desc: "Dial 211 for local health and human services (U.S.)."
+          }
+        ].map(({ name, url, desc }) => (
+          <div
+            key={name}
+            style={{
+              background: "#ffffff",
+              border: "1px solid #e4ebf0",
+              borderRadius: "10px",
+              padding: "1rem",
+              height: "160px",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
+              transition: "box-shadow 0.3s ease",
+              boxShadow: "0 0 10px rgba(74, 144, 164, 0.05)"
+            }}
+            onMouseOver={(e) => (e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.08)")}
+            onMouseOut={(e) => (e.currentTarget.style.boxShadow = "0 0 10px rgba(74, 144, 164, 0.05)")}
+          >
+            <a
+              href={url}
+              target={url.startsWith("http") ? "_blank" : "_self"}
+              rel="noopener noreferrer"
+              style={{
+                fontWeight: 600,
+                fontSize: "1.1rem",
+                color: "#31758a",
+                textDecoration: "none",
+                display: "block",
+                marginBottom: "0.5rem"
+              }}
+            >
+              {name}
+            </a>
+            <p style={{ fontSize: "0.95rem", color: "#333", margin: 0 }}>{desc}</p>
+          </div>
+        ))}
+      </div>
     </div>
-
-    <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-      <a
-        href="https://www.autism-society.org"
-        target="_blank"
-        rel="noopener noreferrer"
-        style={{
-          fontWeight: 600,
-          color: "#4e7fff",
-          textDecoration: "none",
-          borderBottom: "1px solid #e4ebf0",
-          paddingBottom: "0.5rem",
-        }}
-      >
-        Autism Society
-      </a>
-      <p style={{ margin: 0, fontSize: "0.95rem", color: "#333" }}>
-        Nationwide listings of local chapters, events, and assistance programs.
-      </p>
-
-      <a
-        href="tel:988"
-        style={{
-          fontWeight: 600,
-          color: "#4e7fff",
-          textDecoration: "none",
-          borderBottom: "1px solid #e4ebf0",
-          paddingBottom: "0.5rem",
-        }}
-      >
-        National Suicide Prevention Lifeline: 988
-      </a>
-      <p style={{ margin: 0, fontSize: "0.95rem", color: "#333" }}>
-        Call 988 (U.S. only) for 24/7 crisis support.
-      </p>
-
-      <a
-        href="sms:741741"
-        style={{
-          fontWeight: 600,
-          color: "#4e7fff",
-          textDecoration: "none",
-          borderBottom: "1px solid #e4ebf0",
-          paddingBottom: "0.5rem",
-        }}
-      >
-        Crisis Text Line: 741741
-      </a>
-      <p style={{ margin: 0, fontSize: "0.95rem", color: "#333" }}>
-        Text 741741 to connect with a trained counselor (U.S. & Canada).
-      </p>
-
-      <a
-        href="tel:1-800-799-7233"
-        style={{
-          fontWeight: 600,
-          color: "#4e7fff",
-          textDecoration: "none",
-          borderBottom: "1px solid #e4ebf0",
-          paddingBottom: "0.5rem",
-        }}
-      >
-        National Domestic Violence Hotline: 1-800-799-7233
-      </a>
-      <p style={{ margin: 0, fontSize: "0.95rem", color: "#333" }}>
-        24/7 support for individuals facing domestic violence (U.S.).
-      </p>
-
-      <a
-        href="tel:211"
-        style={{
-          fontWeight: 600,
-          color: "#4e7fff",
-          textDecoration: "none",
-          borderBottom: "1px solid #e4ebf0",
-          paddingBottom: "0.5rem",
-        }}
-      >
-        211
-      </a>
-      <p style={{ margin: 0, fontSize: "0.95rem", color: "#333" }}>
-        Dial 211 for local health and human services information in the U.S.
-      </p>
+    </main>
+    {/* Report generated info at the very bottom */}
+    <div style={{ marginTop: "3rem", fontSize: "0.95rem", opacity: 0.6, textAlign: "center" }}>
+      <p>Report generated on: {new Date().toLocaleDateString()}</p>
+      <p>Quiz version: v1.0.0</p>
     </div>
-  </div>
-</div>
-
-        {/* Report generated info at the very bottom */}
-        <div style={{ marginTop: "3rem", fontSize: "0.95rem", opacity: 0.6, textAlign: "center" }}>
-          <p>Report generated on: {new Date().toLocaleDateString()}</p>
-          <p>Quiz version: v1.0.0</p>
-        </div>
-
-      </main>
-    </>
+  </>
   );
 }
