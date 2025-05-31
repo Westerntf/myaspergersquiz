@@ -62,19 +62,6 @@ export default function ResultsPage() {
     console.log("sessionId:", sessionId);
     console.log("mq_paid from storage:", localStorage.getItem("mq_paid"));
 
-    // Bypass payment if ?bypass=true is present in query string
-    const bypass = new URLSearchParams(window.location.search).get("bypass");
-    if (bypass === "true") {
-      setIsPaid(true);
-      localStorage.setItem("mq_paid", "true");
-      // Still run score calculation and summary setup below
-      const { total, traitScores } = calculateScore(answers || []);
-      const flags = flagQuestions.filter((id) => (answers || [])[id - 1] === true);
-      const level = getOverallLevel(total);
-      setSummary({ total, traitScores, flags, level });
-      return;
-    }
-
     if (!answers) {
       window.location.href = "/";
       return;
@@ -92,7 +79,8 @@ export default function ResultsPage() {
           }
         });
     } else {
-      setIsPaid(false);
+      // Check if already paid in localStorage
+      setIsPaid(localStorage.getItem("mq_paid") === "true");
     }
 
     const { total, traitScores } = calculateScore(answers);

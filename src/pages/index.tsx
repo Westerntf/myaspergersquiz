@@ -58,6 +58,24 @@ export default function Home() {
         width: "100vw",
         boxSizing: "border-box"
       }}>
+        <div style={{
+          backgroundColor: "#eaf6f8",
+          border: "1px solid #4A90A4",
+          color: "#1a1a1a",
+          padding: "1rem 1.25rem",
+          borderRadius: "8px",
+          fontSize: "0.9rem",
+          lineHeight: "1.5",
+          marginBottom: "2rem",
+          maxWidth: "640px",
+          marginLeft: "auto",
+          marginRight: "auto",
+          boxSizing: "border-box"
+        }}>
+          <strong style={{ color: "#31758a", fontWeight: "600" }}>Important:</strong> To save your full results and access them later, you'll need to create a free account.
+          <br />
+          Just <a href="/signup" style={{ color: "#31758a", textDecoration: "underline", fontWeight: 500 }}>sign up</a> before you take the quiz or <a href="/login" style={{ color: "#31758a", textDecoration: "underline", fontWeight: 500 }}>log in</a> if you already have an account. Your results will be saved privately to your profile.
+        </div>
   {/* Unified Intro, What to Expect, and Full Report sections in a single container */}
   <div style={{
     backgroundColor: "#f9fbfc",

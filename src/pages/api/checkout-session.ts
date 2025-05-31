@@ -19,10 +19,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     console.log("Request origin:", req.headers.origin);
     const origin = req.headers.origin || "https://myaspergersquiz.com";
 
-    const { priceId, quizId } = req.body;
+    const { priceId, quizId, userEmail } = req.body;
 
-    if (!priceId) {
-      return res.status(400).json({ error: "Missing priceId in request body" });
+    if (!priceId || !userEmail) {
+      return res.status(400).json({ error: "Missing priceId or userEmail in request body" });
     }
 
     const session = await stripe.checkout.sessions.create({
@@ -34,11 +34,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           quantity: 1,
         },
       ],
+      customer_email: req.body.userEmail,
       success_url: `${origin}/results?success=true&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/results?canceled=true`,
       metadata: {
         quiz_id: quizId || "unknown",
-        session_uid: quizId || "unknown",
+        session_uid: userEmail || "unknown",
       },
     });
 

@@ -53,6 +53,16 @@ export default function Navbar() {
             MyAspergers<span style={{ color: "#ffffff" }}>Quiz</span>
           </span>
         </Link>
+        <div className="desktop-menu" style={{
+          display: "none",
+          gap: "1.5rem",
+          alignItems: "center"
+        }}>
+          <Link href="/quiz" style={navLink}>Take Quiz</Link>
+          <Link href="/results" style={navLink}>Your Results</Link>
+          <Link href="/resources" style={navLink}>Resources</Link>
+          <Link href="/profile" style={navLink}>Profile</Link>
+        </div>
         <button
           onClick={() => setMenuOpen(!menuOpen)}
           aria-label="Toggle navigation"
@@ -103,6 +113,14 @@ export default function Navbar() {
         >
           Resources
         </Link>
+        <Link
+          href="/profile"
+          style={navLink}
+          onMouseOver={(e) => (e.currentTarget.style.textDecoration = "underline")}
+          onMouseOut={(e) => (e.currentTarget.style.textDecoration = "none")}
+        >
+          Profile
+        </Link>
       </div>
 
       <style jsx>{`
@@ -112,6 +130,9 @@ export default function Navbar() {
           }
           div[style*="display: flex"][style*="flexDirection: column"] {
             display: none !important;
+          }
+          .desktop-menu {
+            display: flex !important;
           }
         }
       `}</style>

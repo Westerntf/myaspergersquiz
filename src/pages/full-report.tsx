@@ -1,4 +1,7 @@
 import { useEffect, useState, useRef } from "react";
+import { useRouter } from "next/router";
+import { auth, db } from "../lib/firebase";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { loadFromStorage } from "../utils/storage";
 import { calculateScore } from "../utils/calculateScore";
 import { flagQuestions } from "../utils/flagQuestions";
@@ -131,45 +134,73 @@ export default function FullReportPage() {
   });
 
   const reportRef = useRef<HTMLDivElement>(null);
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
+  // --- ACCESS CHECK: Firebase Auth + Firestore, plus quiz answers & paid check ---
   useEffect(() => {
-    setIsClient(true);
-  }, []);
+    const checkAccess = async () => {
+      const user = auth.currentUser;
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
+      if (!user) {
+        router.push("/login");
+        return;
+      }
+
+      const ref = doc(db, "purchases", user.uid);
+      const snap = await getDoc(ref);
+
+      if (!snap.exists() || !snap.data().paid) {
+        router.push("/not-paid");
+        return;
+      }
+
       const sessionId = new URLSearchParams(window.location.search).get("session_id");
       if (sessionId) {
         localStorage.setItem("mq_session_id", sessionId);
       }
 
+      // --- Additional logic from second useEffect ---
       const answers = loadFromStorage<(boolean | null)[]>("mq_answers");
-
-      const urlParams = new URLSearchParams(window.location.search);
-      const isBypass = urlParams.get("bypass") === "true";
-      const isPaid = localStorage.getItem("mq_paid") === "true" || isBypass;
+      const isPaid = localStorage.getItem("mq_paid") === "true";
 
       if (!answers) {
         window.location.href = "/results";
         return;
       }
 
-      const overridePaidCheck = process.env.NODE_ENV === "development";
-      if (!isPaid && !overridePaidCheck) {
+      if (!isPaid) {
         window.location.href = "/results";
         return;
       }
 
       const { total, traitScores } = calculateScore(answers);
-      // Determine which questions are flagged
       const flaggedIds = flagQuestions.filter((id) => answers[id - 1] === true);
       setSummary({ total, traitScores, flags: flaggedIds });
-    }
+
+      const refSave = doc(db, "reports", user.uid);
+      await setDoc(refSave, {
+        total,
+        traitScores,
+        flags: flaggedIds,
+        generatedAt: Date.now(),
+      });
+
+      setLoading(false);
+    };
+    checkAccess();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router]);
+
+  useEffect(() => {
+    setIsClient(true);
   }, []);
 
   // Dynamic trait insight components removed during MDX transition
 
-  if (!isClient) return null;
+  if (!isClient || loading) {
+    return <div style={{ textAlign: "center", marginTop: "5rem" }}>Checking access...</div>;
+  }
 
   const handleDownload = () => {
     if (!reportRef.current) return;
