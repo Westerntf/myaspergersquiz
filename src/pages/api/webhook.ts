@@ -1,6 +1,8 @@
 import { buffer } from "micro";
 import type { NextApiRequest, NextApiResponse } from "next";
 import Stripe from "stripe";
+import { getFirestore, Timestamp } from "firebase-admin/firestore";
+import { initializeApp, cert, getApps } from "firebase-admin/app";
 
 export const config = {
   api: {
@@ -36,7 +38,31 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const session = event.data.object as Stripe.Checkout.Session;
     console.log("✅ Payment completed:", session.id);
 
-    // Optional: set a flag in localStorage, database, etc.
+    // Initialize Firebase Admin SDK only once
+    if (!getApps().length) {
+      initializeApp({
+        credential: cert(JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY!)),
+      });
+    }
+
+    const db = getFirestore();
+
+    // Extract relevant metadata from the session
+    const uid = session.metadata?.uid;
+    const quizRunId = session.metadata?.quizRunId;
+
+    if (uid && quizRunId) {
+      await db.collection("purchases").add({
+        uid,
+        quizRunId,
+        paid: true,
+        createdAt: Timestamp.now(),
+      });
+
+      console.log("✅ Purchase saved to Firestore:", { uid, quizRunId });
+    } else {
+      console.warn("⚠️ Missing UID or quizRunId in Stripe metadata.");
+    }
   }
 
   res.status(200).json({ received: true });

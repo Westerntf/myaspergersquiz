@@ -156,8 +156,9 @@ export default function FullReportPage() {
       }
 
       const sessionId = new URLSearchParams(window.location.search).get("session_id");
-      if (sessionId) {
-        localStorage.setItem("mq_session_id", sessionId);
+      if (!sessionId || snap.data().session_id !== sessionId) {
+        router.push("/not-paid");
+        return;
       }
 
       // --- Additional logic from second useEffect ---
@@ -184,6 +185,7 @@ export default function FullReportPage() {
         traitScores,
         flags: flaggedIds,
         generatedAt: Date.now(),
+        session_id: sessionId || null,
       });
 
       setLoading(false);

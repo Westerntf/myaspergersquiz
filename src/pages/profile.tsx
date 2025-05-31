@@ -20,10 +20,17 @@ export default function ProfilePage() {
 
       setUserEmail(user.email);
 
-      const reportRef = doc(db, "reports", user.uid);
-      const reportSnap = await getDoc(reportRef);
-      if (reportSnap.exists()) {
-        setReport(reportSnap.data());
+      // Fetch latest paid session for this user
+      const purchaseRef = doc(db, "purchases", user.uid);
+      const purchaseSnap = await getDoc(purchaseRef);
+      const sessionId = purchaseSnap.exists() ? purchaseSnap.data().session_id : null;
+
+      if (sessionId) {
+        const reportRef = doc(db, "reports", user.uid);
+        const reportSnap = await getDoc(reportRef);
+        if (reportSnap.exists() && reportSnap.data().session_id === sessionId) {
+          setReport(reportSnap.data());
+        }
       }
 
       setLoading(false);

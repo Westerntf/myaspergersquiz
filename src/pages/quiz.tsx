@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import { questions } from "../questions";
+import { db, auth } from "../lib/firebase";
+import { doc, setDoc } from "firebase/firestore";
 
 export default function QuizPage() {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -29,9 +31,9 @@ export default function QuizPage() {
 
   const currentQuestion = questions[currentIndex];
 
-  const handleAnswer = (value: boolean) => {
+  const handleAnswer = async (value: boolean) => {
     setSelected(value);
-    setTimeout(() => {
+    setTimeout(async () => {
       const updated = [...answers];
       updated[currentIndex] = value;
       setAnswers(updated);
@@ -41,6 +43,17 @@ export default function QuizPage() {
       if (currentIndex < questions.length - 1) {
         setCurrentIndex(currentIndex + 1);
       } else {
+        // Firestore reporting
+        const user = auth.currentUser;
+        const sessionId = localStorage.getItem("mq_session_id");
+
+        if (user && sessionId) {
+          await setDoc(doc(db, "reports", user.uid), {
+            startedAt: Date.now(),
+            session_id: sessionId,
+            status: "in_progress"
+          }, { merge: true });
+        }
         localStorage.setItem("mq_answers", JSON.stringify(updated));
         router.push("/review");
       }
