@@ -1,43 +1,293 @@
 // src/questions.ts
+
 export const questions = [
-  { id: 1, text: "I find maintaining eye contact challenging during conversations.", trait: "social", weight: 1, example: "For example, you may look away or feel pressure when maintaining eye contact." },
-  { id: 2, text: "I experience heightened sensitivity to sounds, lights, or textures.", trait: "sensory", weight: 1, example: "For example, you might flinch at sudden sounds or find some clothing uncomfortable." },
-  { id: 3, text: "I become distressed when unexpected changes disrupt my routine.", trait: "routine", weight: 1, example: "For example, last-minute cancellations or changes might cause distress." },
-  { id: 4, text: "I feel more comfortable communicating through writing than speaking.", trait: "communication", weight: 1, example: "For example, you may prefer emailing or texting instead of phone calls." },
-  { id: 5, text: "I can become so focused on a task that I lose track of time.", trait: "focus", weight: 1, example: "For example, you forget to eat or check the time while focused on a task." },
-  { id: 6, text: "I feel uneasy or anxious in group conversations.", trait: "social", weight: 1, example: "For example, you avoid talking in group settings due to nerves." },
-  { id: 7, text: "Loud or chaotic environments are overwhelming to me.", trait: "sensory", weight: 1, example: "For example, busy shopping centres or noisy events leave you drained." },
-  { id: 8, text: "I feel comforted by repeating daily tasks in the same way.", trait: "routine", weight: 1, example: "For example, doing morning routines in the same order each day feels right." },
-  { id: 9, text: "I struggle to find the right words in verbal conversations.", trait: "communication", weight: 1, example: "For example, you often pause mid-sentence searching for words." },
-  { id: 10, text: "I often focus so intensely on interests that I forget basic needs.", trait: "focus", weight: 1, example: "For example, you might skip meals or lose track of time when focused." },
-  { id: 11, text: "Social interactions frequently cause me anxiety.", trait: "social", weight: 1, example: "For example, you feel dread or discomfort before social events." },
-  { id: 12, text: "I have strong discomfort toward certain fabrics or clothing tags.", trait: "sensory", weight: 1, example: "For example, tags in clothing might cause irritation or distraction." },
-  { id: 13, text: "I strongly prefer to follow fixed schedules and plans.", trait: "routine", weight: 1, example: "For example, you prefer a fixed schedule and avoid unexpected changes." },
-  { id: 14, text: "I usually find digital communication easier than in-person conversation.", trait: "communication", weight: 1, example: "For example, texting or emailing feels easier than face-to-face chats." },
-  { id: 15, text: "I can focus for extended periods when deeply interested in a topic.", trait: "focus", weight: 1, example: "For example, you can spend hours researching or building something." },
-  { id: 16, text: "I often find it difficult to interpret jokes, sarcasm, or implied meanings.", trait: "social", weight: 1, example: "For example, you may take jokes literally or miss sarcasm." },
-  { id: 17, text: "Flashing lights or bright lighting can be physically uncomfortable.", trait: "sensory", weight: 1, example: "For example, supermarket lights might hurt your eyes." },
-  { id: 18, text: "Interruptions to my routine can lead to significant distress.", trait: "routine", weight: 1, example: "For example, missing a routine task can affect your entire day." },
-  { id: 19, text: "I frequently rehearse what I want to say before conversations.", trait: "communication", weight: 1, example: "For example, you mentally script what you want to say before a phone call." },
-  { id: 20, text: "I lose track of time easily when I’m focused on something I enjoy.", trait: "focus", weight: 1, example: "For example, you forget appointments or tasks due to deep focus." },
-  { id: 21, text: "I find one-on-one interactions easier than group settings.", trait: "social", weight: 1, example: "For example, you prefer one-on-one chats over group discussions." },
-  { id: 22, text: "I notice and react strongly to smells others barely detect.", trait: "sensory", weight: 1, example: "For example, smells like perfumes or food bother you more than others." },
-  { id: 23, text: "I prefer keeping my personal environment highly organized and predictable.", trait: "routine", weight: 1, example: "For example, you arrange your room or workspace the same way each time." },
-  { id: 24, text: "I struggle to read body language or facial expressions.", trait: "communication", weight: 1, example: "For example, you find it difficult to know when someone is annoyed or joking." },
-  { id: 25, text: "I become deeply absorbed in topics or activities that interest me.", trait: "focus", weight: 1, example: "For example, you dive into a hobby for hours without noticing." },
-  { id: 26, text: "Making eye contact often feels uncomfortable or intrusive.", trait: "social", weight: 1, example: "For example, eye contact feels too intense or overwhelming." },
-  { id: 27, text: "Certain repetitive sounds (like humming or tapping) distract or irritate me.", trait: "sensory", weight: 1, example: "For example, someone tapping a pen can be frustrating or unbearable." },
-  { id: 28, text: "I rely on consistent routines for meals, sleep, or daily tasks.", trait: "routine", weight: 1, example: "For example, eating breakfast at the same time every day helps you feel in control." },
-  { id: 29, text: "I sometimes find it difficult to initiate or sustain conversations.", trait: "communication", weight: 1, example: "For example, starting small talk or keeping a conversation going may feel awkward." },
-  { id: 30, text: "I become so engaged in a task that I lose awareness of time passing.", trait: "focus", weight: 1, example: "For example, you forget how long you've been doing something you enjoy." },
-  { id: 31, text: "I find it challenging to interpret social cues accurately.", trait: "social", weight: 1, example: "For example, you struggle to know when someone is joking or being serious." },
-  { id: 32, text: "I am easily bothered by certain textures or sensations on my skin.", trait: "sensory", weight: 1, example: "For example, you dislike tags, seams, or rough materials." },
-  { id: 33, text: "Sudden changes to plans often cause anxiety or stress.", trait: "routine", weight: 1, example: "For example, a change in your schedule might cause panic or confusion." },
-  { id: 34, text: "I feel more confident expressing myself through writing.", trait: "communication", weight: 1, example: "For example, you feel more confident explaining yourself in messages than in person." },
-  { id: 35, text: "I focus intensely on small details others may overlook.", trait: "focus", weight: 1, example: "For example, you notice pattern details others miss." },
-  { id: 36, text: "I avoid social settings because they are mentally exhausting.", trait: "social", weight: 1, example: "For example, after social events, you feel mentally drained or exhausted." },
-  { id: 37, text: "I am highly sensitive to temperature changes.", trait: "sensory", weight: 1, example: "For example, a small draft or heat change may be highly noticeable to you." },
-  { id: 38, text: "I like following the same path or route during travel.", trait: "routine", weight: 1, example: "For example, you always drive or walk the same route and dislike detours." },
-  { id: 39, text: "I have difficulty expressing emotions verbally.", trait: "communication", weight: 1, example: "For example, you struggle to describe your emotions during arguments or discussions." },
-  { id: 40, text: "I immerse myself fully in hobbies or projects I care about.", trait: "focus", weight: 1, example: "For example, you can spend hours perfecting a drawing, game mod, or collection." },
+  // SOCIAL (ids 1–8)
+  {
+    id: 1,
+    trait: "social",
+    weight: 1,
+    text: "I frequently misread others’ facial expressions or body language, to the point that I must ask for clarification.",
+    example: "For example, I often do not realize when someone is annoyed or joking unless they explicitly tell me."
+  },
+  {
+    id: 2,
+    trait: "social",
+    weight: 1,
+    text: "I feel intense anxiety in social situations unless I know exactly what I am expected to say or do.",
+    example: "For example, if I’m not given a clear agenda for a meeting, I panic or find myself unable to speak."
+  },
+  {
+    id: 3,
+    trait: "social",
+    weight: 1,
+    text: "I consistently avoid gatherings of more than two or three people because such situations leave me exhausted for hours.",
+    example: "For example, I leave a small party after 15 minutes because the noise and number of people overwhelm me."
+  },
+  {
+    id: 4,
+    trait: "social",
+    weight: 1,
+    text: "I almost always fail to detect sarcasm or idioms, and I often interpret them as literal statements unless explicitly explained.",
+    example: "For example, when someone says “That’s a piece of cake,” I look for cake instead of understanding it as “easy.”"
+  },
+  {
+    id: 5,
+    trait: "social",
+    weight: 1,
+    text: "I rely on scripting what to say in my head before any conversation, and without a script I find it impossible to speak.",
+    example: "For example, before a phone call, I write out the entire dialogue; otherwise, I freeze up in the moment."
+  },
+  {
+    id: 6,
+    trait: "social",
+    weight: 1,
+    text: "After spending time interacting with people, I need at least several hours alone to recover mentally.",
+    example: "For example, after a one-hour check-in with friends, I go home and spend the next evening in bed to decompress."
+  },
+  {
+    id: 7,
+    trait: "social",
+    weight: 1,
+    text: "I become upset or confused when someone speaks indirectly (e.g. implying something rather than stating it plainly).",
+    example: "For example, if a coworker hints “We’ll see how this goes,” I become anxious because I don’t know if it’s positive or negative."
+  },
+  {
+    id: 8,
+    trait: "social",
+    weight: 1,
+    text: "I often do not recognize when I’ve talked too long or dominated a conversation unless someone explicitly tells me.",
+    example: "For example, I only realize I was talking too much when a friend later says, “You didn’t let anyone else speak.”"
+  },
+
+  // SENSORY (ids 9–16)
+  {
+    id: 9,
+    trait: "sensory",
+    weight: 1,
+    text: "Sudden loud noises (e.g., alarms, jackhammers) trigger a panic response, causing me to cover my ears or flee the area.",
+    example: "For example, when a fire alarm went off unexpectedly, I bolted out and had to sit alone outside until it stopped."
+  },
+  {
+    id: 10,
+    trait: "sensory",
+    weight: 1,
+    text: "Certain fabrics or tags on clothing cause such intense discomfort that I remove or modify the garment immediately.",
+    example: "For example, I cut out the tag on a new shirt in the store dressing room because it felt unbearable."
+  },
+  {
+    id: 11,
+    trait: "sensory",
+    weight: 1,
+    text: "Bright or flickering fluorescent lights cause me physical pain (e.g., headache, eye burning) within minutes.",
+    example: "For example, when I walk into a store with harsh lighting, I get a migraine within five minutes unless I wear sunglasses."
+  },
+  {
+    id: 12,
+    trait: "sensory",
+    weight: 1,
+    text: "I find certain strong smells (e.g., perfume, cleaning chemicals) so overwhelming that I must leave the room.",
+    example: "For example, if someone nearby is wearing perfume, I leave immediately because it makes me gag."
+  },
+  {
+    id: 13,
+    trait: "sensory",
+    weight: 1,
+    text: "I actively seek deep-pressure or repetitive sensory input (e.g., weighted blankets, rocking) to calm myself when anxious.",
+    example: "For example, if I feel stressed, I squeeze a stress ball for 30 minutes to feel grounded."
+  },
+  {
+    id: 14,
+    trait: "sensory",
+    weight: 1,
+    text: "Crowded, noisy environments (e.g., busy malls, concerts) leave me so overwhelmed that I must immediately withdraw.",
+    example: "For example, at a shopping mall, the combination of chatter and music made me feel panicked until I escaped to my car."
+  },
+  {
+    id: 15,
+    trait: "sensory",
+    weight: 1,
+    text: "Extreme food textures or tastes (e.g., spicy, mushy, crunchy) cause me to completely avoid certain dishes.",
+    example: "For example, I refuse to eat soup because its texture makes me nauseated."
+  },
+  {
+    id: 16,
+    trait: "sensory",
+    weight: 1,
+    text: "I notice tiny visual details (e.g., flicker, small movement) in my environment that most people never see.",
+    example: "For example, I become distracted by a flickering monitor light even when others around me don’t notice."
+  },
+
+  // ROUTINE (ids 17–24)
+  {
+    id: 17,
+    trait: "routine",
+    weight: 1,
+    text: "Even a minor change in my daily schedule (e.g., a ten-minute delay) causes me significant distress and anxiety.",
+    example: "For example, if my coffee run is five minutes late, I feel agitated and cannot focus until the routine is complete."
+  },
+  {
+    id: 18,
+    trait: "routine",
+    weight: 1,
+    text: "If I do not follow a detailed checklist for my day, I frequently forget essential tasks (e.g., meals, work deadlines).",
+    example: "For example, if I misplace my calendar, I often miss an appointment and do not realize until it’s too late."
+  },
+  {
+    id: 19,
+    trait: "routine",
+    weight: 1,
+    text: "I prefer to perform daily tasks (e.g., getting dressed, brushing teeth) in exactly the same order and become upset if that order changes.",
+    example: "For example, if I brush my teeth before washing my face, I feel so unsettled that I have to restart the entire morning routine."
+  },
+  {
+    id: 20,
+    trait: "routine",
+    weight: 1,
+    text: "Eating, sleeping, and other routines must occur at the precise same times every day for me to function normally.",
+    example: "For example, if I eat dinner even 30 minutes later than usual, I cannot calm my anxiety until I return to that schedule."
+  },
+  {
+    id: 21,
+    trait: "routine",
+    weight: 1,
+    text: "I become extremely upset if I must change plans at the last minute (e.g., doctor reschedules my appointment).",
+    example: "For example, when my doctor’s office called to change my appointment by one hour, I panicked and could not leave my house."
+  },
+  {
+    id: 22,
+    trait: "routine",
+    weight: 1,
+    text: "Anticipating any change (e.g., a surprise guest arriving) causes me days of anxiety beforehand.",
+    example: "For example, if friends tell me they may visit next week, I become anxious at least three days in advance."
+  },
+  {
+    id: 23,
+    trait: "routine",
+    weight: 1,
+    text: "I create contingency plans for every possible scenario (e.g., alternate routes, backup schedules) to avoid surprises.",
+    example: "For example, even on a short commute I plan three alternative routes in case there is traffic."
+  },
+  {
+    id: 24,
+    trait: "routine",
+    weight: 1,
+    text: "I feel distress or panic when I cannot maintain my preferred, highly structured daily habits (e.g., same exact meal sequence).",
+    example: "For example, if my usual breakfast menu changes, I feel so uneasy that I can’t start my day until I fix it."
+  },
+
+  // COMMUNICATION (ids 25–32)
+  {
+    id: 25,
+    trait: "communication",
+    weight: 1,
+    text: "I rely on written notes or scripts because I cannot organize my thoughts well enough to speak spontaneously.",
+    example: "For example, before a phone call, I write an exact script; otherwise, I freeze and cannot speak."
+  },
+  {
+    id: 26,
+    trait: "communication",
+    weight: 1,
+    text: "I often pause for long periods mid-sentence because I am uncertain how to phrase what I want to say.",
+    example: "For example, when talking to a coworker, I stop for 10–15 seconds trying to find the right words."
+  },
+  {
+    id: 27,
+    trait: "communication",
+    weight: 1,
+    text: "I consistently misinterpret jokes or sarcasm as literal statements unless someone explicitly explains them.",
+    example: "For example, when someone says “Sure, that’ll be easy,” I take it at face value and don’t realize it’s sarcastic."
+  },
+  {
+    id: 28,
+    trait: "communication",
+    weight: 1,
+    text: "I frequently misunderstand someone’s tone of voice, causing me to misread anger for neutrality or vice versa.",
+    example: "For example, a neutral comment may sound angry to me, leading to uncomfortable misunderstandings."
+  },
+  {
+    id: 29,
+    trait: "communication",
+    weight: 1,
+    text: "I find it nearly impossible to know how much personal information to share in conversation, leading to oversharing.",
+    example: "For example, I once told a new acquaintance personal health details because I was unsure what was appropriate."
+  },
+  {
+    id: 30,
+    trait: "communication",
+    weight: 1,
+    text: "I have such difficulty initiating conversations that I often remain silent unless asked direct questions.",
+    example: "For example, at a networking event, I stood quietly for 30 minutes because I could not figure out how to begin."
+  },
+  {
+    id: 31,
+    trait: "communication",
+    weight: 1,
+    text: "I need very literal, step-by-step instructions; otherwise, I misinterpret or completely miss the intended meaning.",
+    example: "For example, if someone says “Grab that over there,” I struggle to identify which object “that” refers to."
+  },
+  {
+    id: 32,
+    trait: "communication",
+    weight: 1,
+    text: "I feel intense anxiety about not being able to voice my thoughts clearly when speaking in person.",
+    example: "For example, before a presentation, I become so anxious that I tremble and stumble over words."
+  },
+
+  // FOCUS (ids 33–40)
+  {
+    id: 33,
+    trait: "focus",
+    weight: 1,
+    text: "When I am deeply interested in a task, I routinely lose track of time for six or more hours, even forgetting to eat.",
+    example: "For example, I’ve pulled all-nighters on a hobby project and only remembered to sleep when I collapsed from exhaustion."
+  },
+  {
+    id: 34,
+    trait: "focus",
+    weight: 1,
+    text: "I find it almost impossible to switch to a new task, causing me to get stuck on one activity for hours.",
+    example: "For example, if I’m writing code, I ignore other obligations until someone physically pulls me away."
+  },
+  {
+    id: 35,
+    trait: "focus",
+    weight: 1,
+    text: "I become so preoccupied with small details (e.g., a crack in the wall) that I cannot complete a larger project.",
+    example: "For example, I spent an entire afternoon fixing a tiny scratch on my desk instead of finishing my report."
+  },
+  {
+    id: 36,
+    trait: "focus",
+    weight: 1,
+    text: "Even moderate background noise (e.g., multiple conversations) prevents me from focusing on a single task.",
+    example: "For example, I cannot read or write at a coffee shop because even two people talking causes me to lose concentration."
+  },
+  {
+    id: 37,
+    trait: "focus",
+    weight: 1,
+    text: "I ignore basic needs (e.g., eating, sleeping) when I become absorbed in an activity I enjoy.",
+    example: "For example, I once worked on a project for 24 hours straight and woke up from bed with an empty water bottle in my hand."
+  },
+  {
+    id: 38,
+    trait: "focus",
+    weight: 1,
+    text: "If I do not have a very clear, specific goal before starting a task, I feel disoriented and cannot begin.",
+    example: "For example, if someone just says “Start cleaning,” I have to ask for detailed bullet points (e.g., “Begin with dishes, then vacuum”)."
+  },
+  {
+    id: 39,
+    trait: "focus",
+    weight: 1,
+    text: "I feel extreme frustration when asked to interrupt a task I’m focused on, and I cannot resume easily afterward.",
+    example: "For example, when a coworker interrupts me mid-project, I get so upset I have to stop working for the whole day."
+  },
+  {
+    id: 40,
+    trait: "focus",
+    weight: 1,
+    text: "I often hyperfocus on an interest to the point that I neglect other responsibilities for days at a time.",
+    example: "For example, I spent an entire weekend building a model, forgetting to do laundry or pay bills until Monday morning."
+  }
 ];

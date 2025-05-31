@@ -1,3 +1,12 @@
 export const flagQuestions = [
-  1, 3, 6, 7, 11, 14, 16, 18, 21, 26, 29, 31, 34, 36, 39
-]; // Diagnostic-aligned questions based on clinically observed patterns
+  // Social indicators
+  1, 2, 4,
+  // Sensory indicators
+  9, 11, 12,
+  // Routine indicators
+  17, 21,
+  // Communication indicators
+  25, 26,
+  // Focus indicators
+  33, 34, 37, 39, 40
+];

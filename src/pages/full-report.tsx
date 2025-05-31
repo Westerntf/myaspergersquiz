@@ -1,69 +1,175 @@
-import { useEffect, useState, useRef, useMemo } from "react";
+import { useEffect, useState, useRef } from "react";
 import { loadFromStorage } from "../utils/storage";
 import { calculateScore } from "../utils/calculateScore";
-import { getResultLabel } from "../utils/scoreRanges";
-import dynamic from "next/dynamic";
-import { getTraitLevel } from "../utils/getTraitLevel";
-import { Trait } from "../utils/calculateScore";
-import { selfAwarenessReflections } from "../utils/selfAwarenessReflections";
-import { getTopTraits } from "../utils/getTopTraits";
-import { overallCategoryDescriptions } from "../utils/overallCategoryDescriptions";
-import { dynamicStrengths } from "../utils/dynamicStrengths";
-import { traitRecommendationsByLevel } from "../utils/traitRecommendationsByLevel";
-import { traitResourceLinks } from "../utils/traitResourceLinks";
-import Head from "next/head";
+import { flagQuestions } from "../utils/flagQuestions";
+import { getSelfAwarenessLevel } from "../utils/getSelfAwarenessLevel";
+import { getNaturalStrengthLevel } from "../utils/getNaturalStrengthLevel";
+import { getFlaggedLevel } from "../utils/getFlaggedLevel";
 
-// Dynamic MDX loader
-const traitComponents: Record<Trait, (level: number) => any> = {
-  social: (level) => dynamic(() => import(`../content/results/social/level-${level}.mdx`)),
-  sensory: (level) => dynamic(() => import(`../content/results/sensory/level-${level}.mdx`)),
-  routine: (level) => dynamic(() => import(`../content/results/routine/level-${level}.mdx`)),
-  communication: (level) => dynamic(() => import(`../content/results/communication/level-${level}.mdx`)),
-  focus: (level) => dynamic(() => import(`../content/results/focus/level-${level}.mdx`)),
+import FlaggedLevel1 from "../components/insights/flagged-traits/level-1";
+import FlaggedLevel2 from "../components/insights/flagged-traits/level-2";
+import FlaggedLevel3 from "../components/insights/flagged-traits/level-3";
+import FlaggedLevel4 from "../components/insights/flagged-traits/level-4";
+import FlaggedLevel5 from "../components/insights/flagged-traits/level-5";
+
+import { getOverallLevel } from "../utils/getOverallLevel";
+import {
+  getSocialLevel,
+  getSensoryLevel,
+  getRoutineLevel,
+  getFocusLevel,
+  getCommunicationLevel,
+} from "../utils/getTraitLevel";
+import Head from "next/head";
+import TraitLevelsAtAGlance from "../components/TraitLevelsAtAGlance";
+import dynamic from "next/dynamic";
+
+// --- Dynamic imports for Communication levels ---
+const communicationComponents: Record<number, React.ComponentType<any>> = {
+  1: dynamic(() => import("../components/insights/traits/communication/level-1")),
+  2: dynamic(() => import("../components/insights/traits/communication/level-2")),
+  3: dynamic(() => import("../components/insights/traits/communication/level-3")),
+  4: dynamic(() => import("../components/insights/traits/communication/level-4")),
+  5: dynamic(() => import("../components/insights/traits/communication/level-5")),
+  6: dynamic(() => import("../components/insights/traits/communication/level-6")),
+  7: dynamic(() => import("../components/insights/traits/communication/level-7")),
+  8: dynamic(() => import("../components/insights/traits/communication/level-8")),
+};
+// --- Dynamic imports for Social levels ---
+const socialComponents: Record<number, React.ComponentType<any>> = {
+  1: dynamic(() => import("../components/insights/traits/social/level-1")),
+  2: dynamic(() => import("../components/insights/traits/social/level-2")),
+  3: dynamic(() => import("../components/insights/traits/social/level-3")),
+  4: dynamic(() => import("../components/insights/traits/social/level-4")),
+  5: dynamic(() => import("../components/insights/traits/social/level-5")),
+  6: dynamic(() => import("../components/insights/traits/social/level-6")),
+  7: dynamic(() => import("../components/insights/traits/social/level-7")),
+  8: dynamic(() => import("../components/insights/traits/social/level-8")),
 };
 
-import { flagQuestions } from "../utils/flagQuestions";
+// --- Dynamic imports for Sensory levels ---
+const sensoryComponents: Record<number, React.ComponentType<any>> = {
+  1: dynamic(() => import("../components/insights/traits/sensory/level-1")),
+  2: dynamic(() => import("../components/insights/traits/sensory/level-2")),
+  3: dynamic(() => import("../components/insights/traits/sensory/level-3")),
+  4: dynamic(() => import("../components/insights/traits/sensory/level-4")),
+  5: dynamic(() => import("../components/insights/traits/sensory/level-5")),
+  6: dynamic(() => import("../components/insights/traits/sensory/level-6")),
+  7: dynamic(() => import("../components/insights/traits/sensory/level-7")),
+  8: dynamic(() => import("../components/insights/traits/sensory/level-8")),
+};
+
+// --- Dynamic imports for Routine levels ---
+const routineComponents: Record<number, React.ComponentType<any>> = {
+  1: dynamic(() => import("../components/insights/traits/routine/level-1")),
+  2: dynamic(() => import("../components/insights/traits/routine/level-2")),
+  3: dynamic(() => import("../components/insights/traits/routine/level-3")),
+  4: dynamic(() => import("../components/insights/traits/routine/level-4")),
+  5: dynamic(() => import("../components/insights/traits/routine/level-5")),
+  6: dynamic(() => import("../components/insights/traits/routine/level-6")),
+  7: dynamic(() => import("../components/insights/traits/routine/level-7")),
+  8: dynamic(() => import("../components/insights/traits/routine/level-8")),
+};
+
+// --- Dynamic imports for Focus levels ---
+const focusComponents: Record<number, React.ComponentType<any>> = {
+  1: dynamic(() => import("../components/insights/traits/focus/level-1")),
+  2: dynamic(() => import("../components/insights/traits/focus/level-2")),
+  3: dynamic(() => import("../components/insights/traits/focus/level-3")),
+  4: dynamic(() => import("../components/insights/traits/focus/level-4")),
+  5: dynamic(() => import("../components/insights/traits/focus/level-5")),
+  6: dynamic(() => import("../components/insights/traits/focus/level-6")),
+  7: dynamic(() => import("../components/insights/traits/focus/level-7")),
+  8: dynamic(() => import("../components/insights/traits/focus/level-8")),
+};
+
+// --- Dynamic imports for How You Fit In levels ---
+const howYouFitInComponents: Record<number, React.ComponentType<any>> = {
+  1: dynamic(() => import("../components/insights/how-you-fit-in/level-1")),
+  2: dynamic(() => import("../components/insights/how-you-fit-in/level-2")),
+  3: dynamic(() => import("../components/insights/how-you-fit-in/level-3")),
+  4: dynamic(() => import("../components/insights/how-you-fit-in/level-4")),
+  5: dynamic(() => import("../components/insights/how-you-fit-in/level-5")),
+  6: dynamic(() => import("../components/insights/how-you-fit-in/level-6")),
+  7: dynamic(() => import("../components/insights/how-you-fit-in/level-7")),
+  8: dynamic(() => import("../components/insights/how-you-fit-in/level-8")),
+};
+
+// --- Dynamic imports for Self-Awareness levels ---
+const selfAwarenessComponents: Record<number, React.ComponentType<any>> = {
+  1: dynamic(() => import("../components/insights/self-awareness-reflections/level-1")),
+  2: dynamic(() => import("../components/insights/self-awareness-reflections/level-2")),
+  3: dynamic(() => import("../components/insights/self-awareness-reflections/level-3")),
+  4: dynamic(() => import("../components/insights/self-awareness-reflections/level-4")),
+  5: dynamic(() => import("../components/insights/self-awareness-reflections/level-5")),
+};
+
+// --- Dynamic imports for Natural Strengths levels ---
+const naturalStrengthComponents: Record<number, React.ComponentType<any>> = {
+  1: dynamic(() => import("../components/insights/natural-strengths/level-1")),
+  2: dynamic(() => import("../components/insights/natural-strengths/level-2")),
+  3: dynamic(() => import("../components/insights/natural-strengths/level-3")),
+  4: dynamic(() => import("../components/insights/natural-strengths/level-4")),
+  5: dynamic(() => import("../components/insights/natural-strengths/level-5")),
+};
 
 const tableHeaderStyle = { padding: "0.75rem", background: "#2d2d4d", borderBottom: "1px solid #444", color: "#fff" };
 const tableCellStyle = { padding: "0.75rem", textAlign: "center", borderBottom: "1px solid #333" };
 const linkStyle = { color: "#4e7fff", textDecoration: "none" };
 
+
 export default function FullReportPage() {
-  const [summary, setSummary] = useState({
+  const [isClient, setIsClient] = useState(false);
+  const [summary, setSummary] = useState<{
+    total: number;
+    traitScores: { social: number; sensory: number; routine: number; communication: number; focus: number };
+    flags: number[];
+  }>({
     total: 0,
-    traitScores: {
-      social: 0,
-      sensory: 0,
-      routine: 0,
-      communication: 0,
-      focus: 0,
-    },
-    label: "",
+    traitScores: { social: 0, sensory: 0, routine: 0, communication: 0, focus: 0 },
+    flags: [],
   });
 
   const reportRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  useEffect(() => {
     if (typeof window !== "undefined") {
-      // Extract session_id from URL query string
       const sessionId = new URLSearchParams(window.location.search).get("session_id");
       if (sessionId) {
         localStorage.setItem("mq_session_id", sessionId);
       }
 
       const answers = loadFromStorage<(boolean | null)[]>("mq_answers");
-      const isPaid = localStorage.getItem("mq_paid") === "true";
 
-      if (!answers || !isPaid) {
+      const urlParams = new URLSearchParams(window.location.search);
+      const isBypass = urlParams.get("bypass") === "true";
+      const isPaid = localStorage.getItem("mq_paid") === "true" || isBypass;
+
+      if (!answers) {
+        window.location.href = "/results";
+        return;
+      }
+
+      const overridePaidCheck = process.env.NODE_ENV === "development";
+      if (!isPaid && !overridePaidCheck) {
         window.location.href = "/results";
         return;
       }
 
       const { total, traitScores } = calculateScore(answers);
-      const label = getResultLabel(total);
-      setSummary({ total, traitScores, label });
+      // Determine which questions are flagged
+      const flaggedIds = flagQuestions.filter((id) => answers[id - 1] === true);
+      setSummary({ total, traitScores, flags: flaggedIds });
     }
   }, []);
+
+  // Dynamic trait insight components removed during MDX transition
+
+  if (!isClient) return null;
 
   const handleDownload = () => {
     if (!reportRef.current) return;
@@ -77,71 +183,8 @@ export default function FullReportPage() {
     });
   };
 
-  const traitInsights: Record<string, { low: string; medium: string; high: string }> = {
-    social: {
-      low: "You are socially comfortable and likely adapt well in social settings.",
-      medium: "You may experience some challenges with social cues occasionally.",
-      high: "Struggles with social cues and social interactions are common.",
-    },
-    sensory: {
-      low: "You experience low sensory impact and are generally comfortable with stimuli.",
-      medium: "You have some sensitivity to sensory stimuli.",
-      high: "Highly sensitive to sensory stimuli, which may impact daily life.",
-    },
-    routine: {
-      low: "You are flexible with changes and adapt well to new routines.",
-      medium: "You prefer some structure but can handle changes with effort.",
-      high: "Strong need for structure and routine to feel comfortable.",
-    },
-    communication: {
-      low: "Good communication skills and ease expressing yourself.",
-      medium: "Some challenges in communication but generally manage well.",
-      high: "Significant challenges in communication and expression.",
-    },
-    focus: {
-      low: "Able to focus well and maintain attention.",
-      medium: "Occasional difficulty maintaining focus.",
-      high: "Difficulty maintaining focus and sustaining attention.",
-    },
-  };
+  // Dynamic trait insight components removed during MDX transition
 
-  const traitRecommendations: Record<string, string> = {
-    routine: "You may benefit from more structured daily routines.",
-    sensory: "Try sensory-friendly environments for relaxation.",
-    social: "Consider communication strategies like social scripts or role-play.",
-    communication: "Practice active listening and clear expression techniques.",
-    focus: "Try mindfulness and focus-enhancing exercises.",
-  };
-
-  const renderTraitInsight = (trait: string, score: number) => {
-    const levelInfo = getTraitLevel(trait as Trait, score);
-    if (levelInfo.level <= 2) return traitInsights[trait].low;
-    if (levelInfo.level <= 4) return traitInsights[trait].medium;
-    return traitInsights[trait].high;
-  };
-
-  const traitQuestionCounts: Record<string, number> = {
-    social: 8,
-    sensory: 8,
-    routine: 8,
-    communication: 8,
-    focus: 8,
-  };
-
-  // Memoize top traits for consistent dynamic data usage
-  const topTraits = useMemo(() => getTopTraits(summary.traitScores, 3), [summary.traitScores]);
-  const top1 = topTraits[0];
-  const top2 = topTraits[1];
-  const top3 = topTraits[2];
-
-  // Memoize lowest scoring trait for strengths section
-const lowestTrait = useMemo(() => {
-  return Object.entries(summary.traitScores).reduce(
-    (minTrait, [trait, score]) =>
-      score < summary.traitScores[minTrait as Trait] ? (trait as Trait) : minTrait,
-    "social" as Trait
-  );
-}, [summary.traitScores]);
 
   return (
     <>
@@ -219,21 +262,23 @@ const lowestTrait = useMemo(() => {
         aria-label="Full Diagnostic Report"
         style={{
           padding: "4rem clamp(1rem, 5vw, 2rem)",
-          background: "linear-gradient(to bottom, #060618, #101025)",
-          color: "#fff",
+          background: "#ffffff",
+          color: "#1a1a1a",
           fontFamily: "'Inter', sans-serif",
           minHeight: "100vh",
         }}
       >
-        <h1 style={{ textAlign: "center", marginBottom: "2rem", fontSize: "2.2rem" }}>
+        <h1 style={{ textAlign: "center", marginBottom: "2rem", fontSize: "2.2rem", color: "#4A90A4" }}>
           Full Report
         </h1>
+
+        {/* --- Dynamic MDX Sections removed --- */}
 
         <div
           ref={reportRef}
           style={{
-            background: "rgba(255, 255, 255, 0.04)",
-            border: "1px solid rgba(255, 255, 255, 0.1)",
+            background: "#f9fbfc",
+            border: "1px solid #e4ebf0",
             borderRadius: "12px",
             padding: "2rem",
             maxWidth: "800px",
@@ -241,235 +286,194 @@ const lowestTrait = useMemo(() => {
             width: "100%",
           }}
         >
+          {/* Dynamic trait insight components removed during MDX transition */}
+          <div style={{ textAlign: "center", marginBottom: "2rem" }}>
+            <div
+              style={{
+                margin: "0 auto 1rem auto",
+                width: "90px",
+                height: "90px",
+                borderRadius: "50%",
+                border: "3px solid #4A90A4",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "1.4rem",
+                fontWeight: "600",
+                color: "#4A90A4",
+              }}
+            >
+              {summary.total}/40
+            </div>
+            <p style={{ fontSize: "1rem", color: "#4A4A4A", maxWidth: "600px", margin: "0 auto" }}>
+              {/* Dynamic overall category description removed during MDX transition */}
+            </p>
+          </div>
+{/* How You Fit In: render one matching level */}
+          {(() => {
+            const level = getOverallLevel(summary.total);
+            const HowComponent = howYouFitInComponents[level] || null;
+            return HowComponent ? <HowComponent /> : null;
+          })()}
+          {/* Trait Visual Breakdown */}
           <div
+            className="avoid-break"
             style={{
-              background: "#1c1c30",
+              background: "#f9fbfc",
               padding: "1.5rem",
-              borderRadius: "8px",
-              border: "1px solid rgba(255,255,255,0.05)",
-              marginBottom: "2rem",
+              borderRadius: "12px",
+              border: "1px solid #e4ebf0",
+              marginBottom: "3rem",
+              marginTop: 0,
+              pageBreakInside: "avoid",
+              breakInside: "avoid",
+              boxShadow: "0 0 10px rgba(74, 144, 164, 0.05)",
             }}
           >
-            <h2 style={{ fontSize: "1.4rem", marginBottom: "0.5rem" }}>How You Fit In</h2>
-            <p style={{ fontSize: "1.15rem", color: "#ccc", marginBottom: "0.25rem" }}>
-              <strong>Total Score:</strong> {summary.total}
-            </p>
-            <p style={{ fontSize: "1rem", color: "#ccc" }}>
-              {overallCategoryDescriptions[summary.label] || ""}
-            </p>
+            <div style={{ marginBottom: "2rem", textAlign: "center" }}>
+              <h3 style={{ fontSize: "1.4rem", marginBottom: "1rem", color: "#4A90A4" }}>Trait Visual Breakdown</h3>
+            </div>
+
+            <TraitLevelsAtAGlance scores={summary.traitScores} />
+
           </div>
 
-          {/* PDF Page 1: Strengths + Self-Awareness (Self-Awareness block moved above "What This Means") */}
-          <div className="pdf-page-container" style={{}}>
+{/* Flagged Traits Section (render matching level) */}
+{(() => {
+  const count = summary.flags.length;
+  const level = getFlaggedLevel(count);
+
+  switch (level) {
+    case 1:
+      return <FlaggedLevel1 />;
+    case 2:
+      return <FlaggedLevel2 flaggedIds={summary.flags} />;
+    case 3:
+      return <FlaggedLevel3 flaggedIds={summary.flags} />;
+    case 4:
+      return <FlaggedLevel4 flaggedIds={summary.flags} />;
+    case 5:
+      return <FlaggedLevel5 flaggedIds={summary.flags} />;
+    default:
+      return null;
+  }
+})()}
+
+          <div className="insight-section">
+            {/* Grouped Trait Insights Container */}
             <div
-              className="avoid-break"
-              aria-label="Your Strengths Based on Your Lowest Trait Score"
-              style={{ marginBottom: "3rem", background: "#1c1c30", padding: "1rem 1.5rem", borderRadius: "8px", border: "1px solid rgba(255,255,255,0.05)" }}
-            >
-              <h3 style={{ fontSize: "1.3rem", marginBottom: "0.5rem" }}>Your Strengths</h3>
-              <ul style={{ paddingLeft: "1rem", color: "#ccc", lineHeight: 1.6 }}>
-                {dynamicStrengths[lowestTrait]?.map((line: string, idx: number) => (
-                  <li key={idx}>{line}</li>
-                ))}
-              </ul>
-            </div>
-          {/* Suggested Tools or Strategies block, below detailed trait breakdowns */}
-          <div className="pdf-page-container" style={{}}>
-            <div className="avoid-break" style={{ marginBottom: "3rem", background: "#1c1c30", padding: "1.5rem", borderRadius: "8px", border: "1px solid rgba(255,255,255,0.05)" }}>
-              <h3 style={{ fontSize: "1.3rem", marginBottom: "0.5rem" }}>Suggested Tools or Strategies</h3>
-              <ul style={{ paddingLeft: "1.2rem", color: "#ccc", lineHeight: 1.6 }}>
-                {[top1, top2].map((trait) => {
-                  const score = summary.traitScores[trait];
-                  const level = getTraitLevel(trait, score).level;
-                  const rec = traitRecommendationsByLevel[trait][Math.min(level - 1, 3)];
-                  return <li key={trait}>{rec}</li>;
-                })}
-              </ul>
-            </div>
-          </div>
-            <div className="avoid-break" style={{ marginBottom: "3rem", background: "#1c1c30", padding: "1.5rem", borderRadius: "8px", border: "1px solid rgba(255,255,255,0.05)", pageBreakInside: "avoid", breakInside: "avoid" }}>
-              <h3 style={{ fontSize: "1.3rem", marginBottom: "1rem" }}>💡 Self-Awareness Reflections</h3>
-              <ul style={{ color: "#ccc", lineHeight: 1.6, paddingLeft: "1.2rem", listStyle: "disc" }}>
-                {[top1, top2, top3].map((trait) => {
-                  const level = getTraitLevel(trait, summary.traitScores[trait]).level;
-                  const text = selfAwarenessReflections[trait][level - 1];
-                  return <li key={trait}>{text}</li>;
-                })}
-              </ul>
-            </div>
-            <div className="avoid-break" style={{ marginBottom: "3rem", background: "#1c1c30", padding: "1rem 1.5rem", borderRadius: "8px", border: "1px solid rgba(255,255,255,0.05)", pageBreakInside: "avoid", breakInside: "avoid" }}>
-              <h3 style={{ fontSize: "1.3rem", marginBottom: "0.5rem" }}>What This Means</h3>
-              <p style={{ color: "#aaa" }}>
-                This summary is based on common behavioral patterns and is not a clinical diagnosis. Use it to better understand how you think and interact, and feel free to share it with someone you trust or a clinician.
-              </p>
-            </div>
-            {/* Bar Graph (Trait Visual Breakdown) in styled box */}
-            <div
-              className="avoid-break"
               style={{
-                background: "#1c1c30",
-                padding: "1.5rem",
-                borderRadius: "8px",
-                border: "1px solid rgba(255,255,255,0.05)",
+                background: "#ffffff",                   // pure white background
+                border: "1px solid #e4ebf0",             // light border
+                borderRadius: "12px",
+                padding: "1.5rem 2rem",
                 marginBottom: "3rem",
-                marginTop: 0,
-                pageBreakInside: "avoid",
-                breakInside: "avoid",
+                boxShadow: "0 2px 4px rgba(0,0,0,0.05)",  // subtle drop shadow
               }}
             >
-              <div style={{ marginBottom: "2rem", textAlign: "center" }}>
-                <h3 style={{ fontSize: "1.3rem", marginBottom: "1rem" }}>Trait Visual Breakdown</h3>
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "flex-end",
-                  gap: "1rem",
-                  flexWrap: "nowrap",
-                  overflowX: "auto",
-                  maxWidth: "100%",
-                  margin: "0 auto",
-                  textAlign: "center",
-                  minHeight: "240px",
-                  padding: "0.5rem 0",
-                }}
-              >
-                {Object.keys(summary.traitScores).map((trait) => {
-                  const value = summary.traitScores[trait as keyof typeof summary.traitScores];
-                  const score = value;
-                  const level = score >= 3 ? "high" : score === 2 ? "medium" : "low";
-                  const label = traitInsights[trait]?.[level] || "";
-                  return (
-                    <div
-                      key={trait}
-                      role="img"
-                      aria-label={`Bar for ${trait} trait, score: ${value} out of ${traitQuestionCounts[trait]}`}
-                      style={{
-                        width: "120px",
-                        minHeight: "220px",
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                      }}
-                    >
-                      <p style={{ marginBottom: "0.5rem", fontWeight: 500, fontSize: "0.85rem", textAlign: "center", lineHeight: 1.3, minHeight: "3.5rem" }}>{label}</p>
-                      <div style={{
-                        height: "100px",
-                        width: "100%",
-                        background: "#2c2c45",
-                        borderRadius: "6px",
-                        overflow: "hidden",
-                        display: "flex",
-                        alignItems: "flex-end",
-                        justifyContent: "center",
-                        minHeight: "100px",
-                      }}>
-                        <div style={{
-                          height: `${(value / traitQuestionCounts[trait]) * 100}%`,
-                          width: "100%",
-                          background: "#4e7fff",
-                          transition: "height 0.5s",
-                        }} />
-                      </div>
-                      <p style={{ marginTop: "0.5rem", fontWeight: "bold", fontSize: "0.95rem" }}>
-                        {value} / {traitQuestionCounts[trait]}
-                      </p>
-                    </div>
-                  );
-                })}
+              <h2 style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: "0.5rem",
+                fontSize: "1.75rem",
+                fontWeight: 600,
+                color: "#31758a",
+                marginBottom: "1rem",
+              }}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#31758a" viewBox="0 0 24 24">
+                  <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                </svg>
+                Trait Insights
+              </h2>
+
+              <div style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "1rem"                              // reduced gap between cards
+              }}>
+                {/* Communication Insight */}
+                {(() => {
+                  const commLevel = getCommunicationLevel(summary.traitScores.communication);
+                  const CommComponent = communicationComponents[commLevel] || null;
+                  return CommComponent ? <CommComponent /> : null;
+                })()}
+
+                <hr style={{
+                  border: 0,
+                  borderTop: "1px solid #e4ebf0",         // updated HR color
+                  margin: "1rem 0"                        // reduced HR margin
+                }} />
+
+                {/* Social Insight */}
+                {(() => {
+  const socLevel = getSocialLevel(summary.traitScores.social);
+  const SocComponent = socialComponents[socLevel] || null;
+  return SocComponent ? <SocComponent /> : null;
+})()}
+
+                <hr style={{
+                  border: 0,
+                  borderTop: "1px solid #e4ebf0",         // updated HR color
+                  margin: "1rem 0"                        // reduced HR margin
+                }} />
+
+                {/* Sensory Insight */}
+         {(() => {
+  const senLevel = getSensoryLevel(summary.traitScores.sensory);
+  const SenComponent = sensoryComponents[senLevel] || null;
+  return SenComponent ? <SenComponent /> : null;
+})()}
+
+                <hr style={{
+                  border: 0,
+                  borderTop: "1px solid #e4ebf0",         // updated HR color
+                  margin: "1rem 0"                        // reduced HR margin
+                }} />
+
+                {/* Routine Insight */}
+        {(() => {
+  const rouLevel = getRoutineLevel(summary.traitScores.routine);
+  const RouComponent = routineComponents[rouLevel] || null;
+  return RouComponent ? <RouComponent /> : null;
+})()}
+
+                <hr style={{
+                  border: 0,
+                  borderTop: "1px solid #e4ebf0",         // updated HR color
+                  margin: "1rem 0"                        // reduced HR margin
+                }} />
+
+                {/* Focus Insight */}
+       {(() => {
+  const focLevel = getFocusLevel(summary.traitScores.focus);
+  const FocComponent = focusComponents[focLevel] || null;
+  return FocComponent ? <FocComponent /> : null;
+})()}
               </div>
             </div>
+            {/* Self-Awareness Reflection: render one matching level */}
+  {/* Self-Awareness Reflection: render one matching level */}
+{(() => {
+  const level = getSelfAwarenessLevel(summary.total);
+  const SelfComponent = selfAwarenessComponents[level] || null;
+  return SelfComponent ? <SelfComponent /> : null;
+})()}
+{/* Natural Strengths: render one matching level */}
+{(() => {
+  const minScore = Math.min(
+    summary.traitScores.social,
+    summary.traitScores.sensory,
+    summary.traitScores.routine,
+    summary.traitScores.communication,
+    summary.traitScores.focus
+  );
+  const level = getNaturalStrengthLevel(minScore);
+  const NatComponent = naturalStrengthComponents[level] || null;
+  return NatComponent ? <NatComponent /> : null;
+})()}
           </div>
-
-          {/* (Removed duplicate PDF Page 2 as it's now included above) */}
-
-          {/* PDF Page 2: Detailed Breakdown (all traits, grouped in pairs to avoid mid-section breaks) */}
-          <h2 style={{ fontSize: "1.6rem", marginBottom: "1rem", marginTop: "2rem", borderBottom: "1px solid rgba(255,255,255,0.1)", paddingBottom: "0.5rem" }}>
-            Detailed Breakdown
-          </h2>
-          {/* Group trait breakdowns in pairs for PDF pages */}
-          {(Object.entries(summary.traitScores) as [Trait, number][])
-            .reduce((acc: [Trait, number][][], curr, idx, arr) => {
-              if (idx % 2 === 0) acc.push([curr]);
-              else acc[acc.length - 1].push(curr);
-              return acc;
-            }, [])
-            .map((pair, i, arr) => (
-              <div
-                key={i}
-                className={`pdf-page-container${i === arr.length - 1 ? "" : ""}`}
-                style={{}}
-              >
-                {pair.map(([trait, score]) => {
-                  const levelInfo = getTraitLevel(trait, score);
-                  const TraitMDX = traitComponents[trait](levelInfo.level);
-                  return (
-                    <div
-                      key={trait}
-                      className="avoid-break"
-                      style={{
-                        background: "#1c1c30",
-                        padding: "1.5rem",
-                        borderRadius: "8px",
-                        border: "1px solid rgba(255,255,255,0.05)",
-                        marginBottom: "3rem",
-                        marginTop: 0,
-                        pageBreakInside: "avoid",
-                        breakInside: "avoid",
-                      }}
-                    >
-                      <TraitMDX />
-                    </div>
-                  );
-                })}
-              </div>
-            ))}
-
-          {/* PDF Page: Flagged Traits + Helpful Resources (single visual block) */}
-          <div className="pdf-page-container" style={{}}>
-            <div
-              className="avoid-break"
-              style={{
-                maxWidth: "800px",
-                margin: "0 auto 3rem auto",
-                background: "#1c1c30",
-                padding: "1.25rem",
-                borderRadius: "8px",
-                border: "1px solid rgba(255,255,255,0.05)",
-                marginBottom: "3rem",
-                pageBreakInside: "avoid",
-                breakInside: "avoid",
-              }}
-            >
-              <h3 style={{ fontSize: "1.3rem", marginBottom: "0.5rem" }}>Flagged Traits Summary</h3>
-              <p style={{ color: "#ccc", marginBottom: "2rem" }}>
-                You triggered {
-                  (() => {
-                    const answers = loadFromStorage("mq_answers") as (boolean | null)[] | undefined;
-                    if (!answers) return 0;
-                    return flagQuestions.filter(id => answers[id - 1] === true).length;
-                  })()
-                } diagnostic-aligned traits.
-              </p>
-              <h3 style={{ fontSize: "1.3rem", marginBottom: "1rem" }}>🔗 Helpful Resources</h3>
-              <ul style={{ listStyle: "none", paddingLeft: 0, color: "#ccc", lineHeight: 1.8 }}>
-                {[top1, top2].flatMap((trait: Trait) => (traitResourceLinks[trait] || []).map((link: any) => ({ link, trait }))).map(({ link, trait }, idx) => (
-                  <li key={idx} style={{ marginBottom: "1rem" }}>
-                    <a
-                      href={link.url}
-                      style={linkStyle}
-                      aria-label={`Resource: ${link.title} for ${trait} trait`}
-                    >
-                      {link.icon} <strong>{link.title}</strong><br />
-                      <span style={{ fontSize: "0.9rem", color: "#aaa" }}>{link.description}</span>
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
+          {/* Dynamic trait insight components removed during MDX transition */}
         </div>
 
         {/* Disclaimer and PDF download button, grouped together */}
@@ -477,13 +481,14 @@ const lowestTrait = useMemo(() => {
           style={{
             maxWidth: "800px",
             margin: "3rem auto 0 auto",
-            background: "#1c1c30",
+            background: "#f9fbfc",
             padding: "1rem 1.5rem",
-            borderRadius: "8px",
-            border: "1px solid rgba(255,255,255,0.05)",
+            borderRadius: "12px",
+            border: "1px solid #e4ebf0",
             fontStyle: "italic",
-            color: "#aaa",
+            color: "#4A4A4A",
             textAlign: "center",
+            boxShadow: "0 0 10px rgba(74, 144, 164, 0.05)",
           }}
         >
           <p style={{ marginBottom: "1.7rem" }}>
@@ -495,17 +500,241 @@ const lowestTrait = useMemo(() => {
               style={{
                 padding: "1rem 2rem",
                 fontSize: "1.1rem",
-                background: "#4e7fff",
+                background: "#4A90A4",
                 color: "#fff",
                 border: "none",
-                borderRadius: "8px",
+                borderRadius: "12px",
                 cursor: "pointer",
+                fontWeight: 600,
               }}
             >
               Download as PDF
             </button>
           </div>
         </div>
+
+{/* Resources & Support Section (static) */}
+<div
+  style={{
+    maxWidth: "800px",
+    margin: "3rem auto 0 auto",
+    background: "#ffffff",
+    padding: "2rem",
+    borderRadius: "12px",
+    border: "1px solid #e4ebf0",
+    boxShadow: "0 0 15px rgba(0,0,0,0.05)",
+  }}
+>
+  {/* Header with icon */}
+  <div
+    style={{
+      textAlign: "center",
+      marginBottom: "1.5rem",
+      paddingBottom: "0.75rem",
+      borderBottom: "1px solid #e4ebf0",
+    }}
+  >
+    <h2
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: "0.5rem",
+        fontSize: "1.75rem",
+        color: "#31758a",
+      }}
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="28"
+        height="28"
+        fill="#31758a"
+        viewBox="0 0 24 24"
+      >
+        <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" />
+      </svg>
+      Resources & Support
+    </h2>
+  </div>
+
+  {/* Introductory Text */}
+  <p
+    style={{
+      fontSize: "1rem",
+      color: "#4a4a4a",
+      marginBottom: "1.5rem",
+      textAlign: "center",
+    }}
+  >
+    A curated list of organizations, helplines, and online resources for support and information:
+  </p>
+
+  {/* Two-column layout for resource links */}
+  <div
+    style={{
+      display: "grid",
+      gridTemplateColumns: "1fr",
+      gap: "1rem 2rem",
+    }}
+  >
+    <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+      <a
+        href="https://www.autismspeaks.org"
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{
+          fontWeight: 600,
+          color: "#4e7fff",
+          textDecoration: "none",
+          borderBottom: "1px solid #e4ebf0",
+          paddingBottom: "0.5rem",
+        }}
+      >
+        Autism Speaks
+      </a>
+      <p style={{ margin: 0, fontSize: "0.95rem", color: "#333" }}>
+        Comprehensive resources, toolkits, and local support group information.
+      </p>
+
+      <a
+        href="https://nationalautismassociation.org"
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{
+          fontWeight: 600,
+          color: "#4e7fff",
+          textDecoration: "none",
+          borderBottom: "1px solid #e4ebf0",
+          paddingBottom: "0.5rem",
+        }}
+      >
+        National Autism Association
+      </a>
+      <p style={{ margin: 0, fontSize: "0.95rem", color: "#333" }}>
+        Safety resources, free toolkits, and parent support networks.
+      </p>
+
+      <a
+        href="https://autisticadvocacy.org"
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{
+          fontWeight: 600,
+          color: "#4e7fff",
+          textDecoration: "none",
+          borderBottom: "1px solid #e4ebf0",
+          paddingBottom: "0.5rem",
+        }}
+      >
+        Autistic Self Advocacy Network (ASAN)
+      </a>
+      <p style={{ margin: 0, fontSize: "0.95rem", color: "#333" }}>
+        Advocacy, policy updates, and community stories from autistic individuals.
+      </p>
+
+      <a
+        href="https://childmind.org"
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{
+          fontWeight: 600,
+          color: "#4e7fff",
+          textDecoration: "none",
+          borderBottom: "1px solid #e4ebf0",
+          paddingBottom: "0.5rem",
+        }}
+      >
+        Child Mind Institute
+      </a>
+      <p style={{ margin: 0, fontSize: "0.95rem", color: "#333" }}>
+        Guides on diagnosis, therapy options, and coping strategies for families.
+      </p>
+    </div>
+
+    <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+      <a
+        href="https://www.autism-society.org"
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{
+          fontWeight: 600,
+          color: "#4e7fff",
+          textDecoration: "none",
+          borderBottom: "1px solid #e4ebf0",
+          paddingBottom: "0.5rem",
+        }}
+      >
+        Autism Society
+      </a>
+      <p style={{ margin: 0, fontSize: "0.95rem", color: "#333" }}>
+        Nationwide listings of local chapters, events, and assistance programs.
+      </p>
+
+      <a
+        href="tel:988"
+        style={{
+          fontWeight: 600,
+          color: "#4e7fff",
+          textDecoration: "none",
+          borderBottom: "1px solid #e4ebf0",
+          paddingBottom: "0.5rem",
+        }}
+      >
+        National Suicide Prevention Lifeline: 988
+      </a>
+      <p style={{ margin: 0, fontSize: "0.95rem", color: "#333" }}>
+        Call 988 (U.S. only) for 24/7 crisis support.
+      </p>
+
+      <a
+        href="sms:741741"
+        style={{
+          fontWeight: 600,
+          color: "#4e7fff",
+          textDecoration: "none",
+          borderBottom: "1px solid #e4ebf0",
+          paddingBottom: "0.5rem",
+        }}
+      >
+        Crisis Text Line: 741741
+      </a>
+      <p style={{ margin: 0, fontSize: "0.95rem", color: "#333" }}>
+        Text 741741 to connect with a trained counselor (U.S. & Canada).
+      </p>
+
+      <a
+        href="tel:1-800-799-7233"
+        style={{
+          fontWeight: 600,
+          color: "#4e7fff",
+          textDecoration: "none",
+          borderBottom: "1px solid #e4ebf0",
+          paddingBottom: "0.5rem",
+        }}
+      >
+        National Domestic Violence Hotline: 1-800-799-7233
+      </a>
+      <p style={{ margin: 0, fontSize: "0.95rem", color: "#333" }}>
+        24/7 support for individuals facing domestic violence (U.S.).
+      </p>
+
+      <a
+        href="tel:211"
+        style={{
+          fontWeight: 600,
+          color: "#4e7fff",
+          textDecoration: "none",
+          borderBottom: "1px solid #e4ebf0",
+          paddingBottom: "0.5rem",
+        }}
+      >
+        211
+      </a>
+      <p style={{ margin: 0, fontSize: "0.95rem", color: "#333" }}>
+        Dial 211 for local health and human services information in the U.S.
+      </p>
+    </div>
+  </div>
+</div>
 
         {/* Report generated info at the very bottom */}
         <div style={{ marginTop: "3rem", fontSize: "0.95rem", opacity: 0.6, textAlign: "center" }}>

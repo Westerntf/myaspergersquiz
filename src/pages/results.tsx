@@ -16,11 +16,11 @@ import { questions } from "../questions";
 import { loadStripe } from "@stripe/stripe-js";
 
 const traitComponents: Record<Trait, (level: number) => any> = {
-  social: (level) => dynamic(() => import(`../content/results/social/level-${level}.mdx`)),
-  sensory: (level) => dynamic(() => import(`../content/results/sensory/level-${level}.mdx`)),
-  routine: (level) => dynamic(() => import(`../content/results/routine/level-${level}.mdx`)),
-  communication: (level) => dynamic(() => import(`../content/results/communication/level-${level}.mdx`)),
-  focus: (level) => dynamic(() => import(`../content/results/focus/level-${level}.mdx`)),
+  social: (level) => dynamic(() => import(`../components/insights/traits/social/level-${level}.tsx`)),
+  sensory: (level) => dynamic(() => import(`../components/insights/traits/sensory/level-${level}.tsx`)),
+  routine: (level) => dynamic(() => import(`../components/insights/traits/routine/level-${level}.tsx`)),
+  communication: (level) => dynamic(() => import(`../components/insights/traits/communication/level-${level}.tsx`)),
+  focus: (level) => dynamic(() => import(`../components/insights/traits/focus/level-${level}.tsx`)),
 };
 
 
@@ -61,6 +61,19 @@ export default function ResultsPage() {
     const sessionId = new URLSearchParams(window.location.search).get("session_id");
     console.log("sessionId:", sessionId);
     console.log("mq_paid from storage:", localStorage.getItem("mq_paid"));
+
+    // Bypass payment if ?bypass=true is present in query string
+    const bypass = new URLSearchParams(window.location.search).get("bypass");
+    if (bypass === "true") {
+      setIsPaid(true);
+      localStorage.setItem("mq_paid", "true");
+      // Still run score calculation and summary setup below
+      const { total, traitScores } = calculateScore(answers || []);
+      const flags = flagQuestions.filter((id) => (answers || [])[id - 1] === true);
+      const level = getOverallLevel(total);
+      setSummary({ total, traitScores, flags, level });
+      return;
+    }
 
     if (!answers) {
       window.location.href = "/";
@@ -211,13 +224,6 @@ return isClient ? (
         boxSizing: "border-box"
       }}
     >
-      <div
-        className="container"
-        style={{
-          maxWidth: "100%",
-          padding: "0 1rem"
-        }}
-      >
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "1rem", marginBottom: "1rem", flexWrap: "wrap" }}>
           <img src="/myaspergersquiz-logo.png" alt="MyAspergersQuiz Logo" style={{ height: "50px", width: "50px" }} />
           <h1 style={{ fontSize: "2.5rem", color: '#31758a', margin: 0 }}>
@@ -571,49 +577,120 @@ return isClient ? (
           </div>
         </div>
       )}
-    </div>
-    <div style={{
-      marginTop: "2rem",
-      padding: "2rem",
-      background: "#ffffff",
-      borderRadius: "12px",
-      border: "1px solid #d9e4e8",
-      boxShadow: "0 2px 6px rgba(49, 117, 138, 0.05)",
-      maxWidth: "100%",
-      marginLeft: "auto",
-      marginRight: "auto",
-      width: "100%",
-      boxSizing: "border-box"
-    }}>
-      <h3 style={{
-        fontSize: "1.6rem",
-        color: "#31758a",
-        marginBottom: "1rem",
-        display: "flex",
-        alignItems: "center",
-        gap: "0.5rem"
-      }}>
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#31758a" viewBox="0 0 24 24">
-          <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 14h-2v-2h2v2zm0-4h-2V7h2v5z"/>
-        </svg>
-        Next Steps
-      </h3>
-      <ul style={{
-        paddingLeft: "1.5rem",
-        color: "#1a1a1a",
-        fontSize: "1.05rem",
-        lineHeight: 1.75,
-        listStyle: "disc"
-      }}>
-        <li><strong>Explore the Resource Hub:</strong> Access hand-picked support groups, therapy tools, and educational resources.</li>
-        <li><strong>Share with a clinician:</strong> Save or print your results PDF to support future assessments or discussions.</li>
-        <li><strong>Reflect and revisit:</strong> Use these insights as a foundation — your growth journey is ongoing.</li>
-      </ul>
+    {/* Resources & Support Section (static) */}
+    <div
+      style={{
+        maxWidth: "960px",
+        margin: "3rem auto",
+        background: "#ffffff",
+        padding: "2.5rem",
+        borderRadius: "12px",
+        border: "1px solid #d9e4e8",
+        boxShadow: "0 4px 12px rgba(49, 117, 138, 0.06)"
+      }}
+    >
+      <h2
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "0.5rem",
+          fontSize: "2rem",
+          color: "#31758a",
+          marginBottom: "1.5rem",
+          borderBottom: "1px solid #d9e4e8",
+          paddingBottom: "0.75rem"
+        }}
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#31758a" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+        Resources & Support
+      </h2>
+      <p style={{ fontSize: "0.9rem", color: "#5a6e74", marginBottom: "1rem", textAlign: "center" }}>
+        Tap or click any heading below to open the full resource in a new tab.
+      </p>
+      <p style={{ fontSize: "1rem", color: "#4a4a4a", marginBottom: "2rem" }}>
+        A curated list of helpful organizations, crisis helplines, and support networks:
+      </p>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+          gap: "1.5rem"
+        }}
+      >
+        {[
+          {
+            name: "Autism Speaks",
+            url: "https://www.autismspeaks.org",
+            desc: "Comprehensive resources, toolkits, and local support group information."
+          },
+          {
+            name: "National Autism Association",
+            url: "https://nationalautismassociation.org",
+            desc: "Safety resources, free toolkits, and parent support networks."
+          },
+          {
+            name: "Autistic Self Advocacy Network (ASAN)",
+            url: "https://autisticadvocacy.org",
+            desc: "Policy updates, self-advocacy, and community stories."
+          },
+          {
+            name: "Child Mind Institute",
+            url: "https://childmind.org",
+            desc: "Guides on diagnosis, therapy, and coping strategies for families."
+          },
+          {
+            name: "Autism Society",
+            url: "https://www.autism-society.org",
+            desc: "Nationwide chapters, events, and services."
+          },
+          {
+            name: "211 Helpline",
+            url: "tel:211",
+            desc: "Dial 211 for local health and human services (U.S.)."
+          }
+        ].map(({ name, url, desc }) => (
+          <div
+            key={name}
+            style={{
+              background: "#fff",
+              border: "1px solid #e4ebf0",
+              borderRadius: "10px",
+              padding: "1rem",
+              height: "160px",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
+              transition: "box-shadow 0.3s ease",
+              boxShadow: "0 1px 3px rgba(0,0,0,0.03)"
+            }}
+            onMouseOver={(e) => (e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.08)")}
+            onMouseOut={(e) => (e.currentTarget.style.boxShadow = "0 1px 3px rgba(0,0,0,0.03)")}
+          >
+            <a
+              href={url}
+              target={url.startsWith("http") ? "_blank" : "_self"}
+              rel="noopener noreferrer"
+              style={{
+                fontWeight: 600,
+                fontSize: "1.1rem",
+                color: "#31758a",
+                textDecoration: "none",
+                display: "block",
+                marginBottom: "0.5rem"
+              }}
+            >
+              {name}
+            </a>
+            <p style={{ fontSize: "0.95rem", color: "#333", margin: 0 }}>{desc}</p>
+          </div>
+        ))}
+      </div>
     </div>
     </main>
   </>
   ) : null;
 };
+
 
 const buttonStyle = {
   margin: "1rem",
