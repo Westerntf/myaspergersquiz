@@ -11,8 +11,8 @@ export const config = {
 };
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2025-04-30.basil",
-});
+// If Stripe version is 2025-04-30.basil
+apiVersion: '2025-04-30.basil',});
 
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!;
 
@@ -47,21 +47,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const db = getFirestore();
 
-    // Extract relevant metadata from the session
-    const uid = session.metadata?.uid;
-    const quizRunId = session.metadata?.quizRunId;
+    const uid = session.metadata?.uid as string | undefined;
+    const sessionId = session.metadata?.sessionId as string | undefined;
 
-    if (uid && quizRunId) {
-      await db.collection("purchases").add({
-        uid,
-        quizRunId,
-        paid: true,
-        createdAt: Timestamp.now(),
-      });
+    if (uid && sessionId) {
+      // Mark the existing session document as paid
+      await db
+        .collection("reports")
+        .doc(uid)
+        .collection("sessions")
+        .doc(sessionId)
+        .update({ paid: true });
 
-      console.log("✅ Purchase saved to Firestore:", { uid, quizRunId });
+      console.log(`✅ Marked session ${sessionId} as paid for user ${uid}`);
     } else {
-      console.warn("⚠️ Missing UID or quizRunId in Stripe metadata.");
+      console.warn("⚠️ Missing metadata (uid or sessionId) in Stripe session:", session.metadata);
     }
   }
 

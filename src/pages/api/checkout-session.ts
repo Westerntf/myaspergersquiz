@@ -1,9 +1,23 @@
 // src/pages/api/checkout-session.ts
 import { NextApiRequest, NextApiResponse } from "next";
 import Stripe from "stripe";
+import admin from "firebase-admin";
+import { getFirestore } from "firebase-admin/firestore";
+
+if (!admin.apps.length) {
+  admin.initializeApp({
+    credential: admin.credential.cert({
+      projectId: process.env.FIREBASE_PROJECT_ID,
+      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+      privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
+    }),
+  });
+}
+const db = getFirestore();
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
-apiVersion: "2025-04-30.basil",});
+  apiVersion: "2025-04-30.basil",
+});
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") {
@@ -19,11 +33,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     console.log("Request origin:", req.headers.origin);
     const origin = req.headers.origin || "https://myaspergersquiz.com";
 
-    const { priceId, quizId, userEmail } = req.body;
+    const { priceId, sessionId, uid, userEmail } = req.body;
 
-    if (!priceId || !userEmail) {
-      return res.status(400).json({ error: "Missing priceId or userEmail in request body" });
+    if (!priceId || !uid || !sessionId) {
+      return res.status(400).json({ error: "Missing priceId, sessionId, or uid in request body" });
     }
+
+    await db
+      .collection("reports")
+      .doc(uid)
+      .collection("sessions")
+      .doc(sessionId)
+      .set({
+        paid: false,
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      });
 
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
@@ -34,12 +58,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           quantity: 1,
         },
       ],
-      customer_email: req.body.userEmail,
-      success_url: `${origin}/results?success=true&session_id={CHECKOUT_SESSION_ID}`,
+      customer_email: userEmail,
+      success_url: `${origin}/full-report?sessionId=${sessionId}`,
       cancel_url: `${origin}/results?canceled=true`,
       metadata: {
-        quiz_id: quizId || "unknown",
-        session_uid: userEmail || "unknown",
+        uid,
+        sessionId,
       },
     });
 

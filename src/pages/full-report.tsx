@@ -137,61 +137,61 @@ export default function FullReportPage() {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  // --- ACCESS CHECK: Firebase Auth + Firestore, plus quiz answers & paid check ---
+  // --- ACCESS CHECK: Enforce session-specific gating per quiz session ---
   useEffect(() => {
     const checkAccess = async () => {
       const user = auth.currentUser;
-
       if (!user) {
-        router.push("/login");
+        router.replace("/login");
         return;
       }
 
-      const ref = doc(db, "purchases", user.uid);
-      const snap = await getDoc(ref);
-
-      if (!snap.exists() || !snap.data().paid) {
-        router.push("/not-paid");
+      const sessionId = new URLSearchParams(window.location.search).get("sessionId");
+      if (!sessionId) {
+        router.replace("/results");
         return;
       }
 
-      const sessionId = new URLSearchParams(window.location.search).get("session_id");
-      if (!sessionId || snap.data().session_id !== sessionId) {
-        router.push("/not-paid");
+      try {
+        const docRef = doc(db, "reports", user.uid, "sessions", sessionId);
+        const snap = await getDoc(docRef);
+        if (!snap.exists() || snap.data().paid !== true) {
+          router.replace("/results");
+          return;
+        }
+
+        const data = snap.data() as {
+          traitScores: { social: number; sensory: number; routine: number; communication: number; focus: number };
+          flags: number[];
+          total: number;
+        };
+
+        const roundedTraitScores = {
+          social: Math.round(data.traitScores.social),
+          sensory: Math.round(data.traitScores.sensory),
+          routine: Math.round(data.traitScores.routine),
+          communication: Math.round(data.traitScores.communication),
+          focus: Math.round(data.traitScores.focus),
+        };
+
+        const roundedTotal = Math.round(data.total);
+
+        setSummary({
+          total: roundedTotal,
+          traitScores: roundedTraitScores,
+          flags: data.flags,
+        });
+
+      } catch (err) {
+        console.error("Error fetching report:", err);
+        router.replace("/results");
         return;
       }
-
-      // --- Additional logic from second useEffect ---
-      const answers = loadFromStorage<(boolean | null)[]>("mq_answers");
-      const isPaid = localStorage.getItem("mq_paid") === "true";
-
-      if (!answers) {
-        window.location.href = "/results";
-        return;
-      }
-
-      if (!isPaid) {
-        window.location.href = "/results";
-        return;
-      }
-
-      const { total, traitScores } = calculateScore(answers);
-      const flaggedIds = flagQuestions.filter((id) => answers[id - 1] === true);
-      setSummary({ total, traitScores, flags: flaggedIds });
-
-      const refSave = doc(db, "reports", user.uid);
-      await setDoc(refSave, {
-        total,
-        traitScores,
-        flags: flaggedIds,
-        generatedAt: Date.now(),
-        session_id: sessionId || null,
-      });
 
       setLoading(false);
     };
+
     checkAccess();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
 
   useEffect(() => {
@@ -216,8 +216,7 @@ export default function FullReportPage() {
     });
   };
 
-  // Dynamic trait insight components removed during MDX transition
-
+  // All trait/insight rendering below uses summary, which is always based on the session-specific answers loaded above.
 
   return (
     <>

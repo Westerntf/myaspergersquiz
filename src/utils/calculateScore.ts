@@ -4,9 +4,9 @@ export type Trait = "social" | "sensory" | "routine" | "communication" | "focus"
 
 type ScoreMap = Record<Trait, number>;
 
-export function calculateScore(answers: (boolean | null)[]) {
-  let total = 0;
-  const traitScores: ScoreMap = {
+export function calculateScore(answers: number[]) {
+  let rawTotal = 0;
+  const traitRaw: ScoreMap = {
     social: 0,
     sensory: 0,
     routine: 0,
@@ -14,20 +14,26 @@ export function calculateScore(answers: (boolean | null)[]) {
     focus: 0,
   };
 
-  answers.forEach((value, index) => {
-    if (value) {
-      const question = questions[index];
-      const weight = question.weight || 1;
-      const trait = question.trait;
-
-      if (trait in traitScores) {
-        total += weight;
-        traitScores[trait as Trait] += weight;
-      } else {
-        console.warn(`Unrecognized trait "${trait}" at question ID ${question.id}`);
-      }
+  answers.forEach((weightValue, index) => {
+    const question = questions[index];
+    const trait = question.trait;
+    if (trait in traitRaw) {
+      rawTotal += weightValue;
+      traitRaw[trait as Trait] += weightValue;
+    } else {
+      console.warn(`Unrecognized trait "${trait}" at question ID ${question.id}`);
     }
   });
+
+  const total = Math.round(rawTotal);
+
+  const traitScores: ScoreMap = {
+    social: Math.round(traitRaw.social),
+    sensory: Math.round(traitRaw.sensory),
+    routine: Math.round(traitRaw.routine),
+    communication: Math.round(traitRaw.communication),
+    focus: Math.round(traitRaw.focus),
+  };
 
   return { total, traitScores };
 }

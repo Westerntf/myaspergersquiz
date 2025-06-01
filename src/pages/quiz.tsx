@@ -180,7 +180,15 @@ export default function QuizPage() {
           <h2 aria-live="polite" style={{ fontWeight: 700, fontSize: "1.75rem", marginBottom: "1rem", color: "#4A90A4" }}>
             Question {currentIndex + 1} of {questions.length}
           </h2>
-          <p className="question-text" style={{ fontSize: "1.1rem" }}>
+          <p
+            className="question-text"
+            style={{
+              fontSize: "1.1rem",
+              lineHeight: "1.5rem",
+              height: "6rem",            // fixed height for 4 lines
+              overflow: "hidden"
+            }}
+          >
             {currentQuestion.text}
           </p>
           {currentQuestion.example && (
