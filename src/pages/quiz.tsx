@@ -6,7 +6,6 @@ import { questions } from "../questions";
 import { db, auth } from "../lib/firebase";
 import { doc, setDoc } from "firebase/firestore";
 import {
-  getQuizSessionId,
   setQuizAnswers,
   setQuizRunId,
   setQuizSessionId
@@ -58,7 +57,7 @@ export default function QuizPage() {
       } else {
         // Firestore reporting: create a new quiz run per quiz completion
         const user = auth.currentUser;
-        const sessionId = getQuizSessionId();
+        const sessionId = localStorage.getItem("mq_quiz_id");
 
         if (user && sessionId) {
           const runId = `${user.uid}_${Date.now()}`;
