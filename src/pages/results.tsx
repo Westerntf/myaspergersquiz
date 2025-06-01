@@ -275,15 +275,17 @@ export default function ResultsPage() {
                   style={{
                     display: "inline-flex",
                     alignItems: "center",
-                    gap: "0.5rem",
+                    gap: "0.3rem",
                     backgroundColor: "#1DA1F2",
                     color: "#fff",
-                    padding: "0.4rem 0.8rem",
+                    padding: "0.25rem 0.5rem",
                     borderRadius: "6px",
                     textDecoration: "none",
-                    fontSize: "0.85rem",
-                    boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                    fontSize: "0.75rem",
+                    whiteSpace: "nowrap",
+                    boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
                     order: 1,
+                    flexShrink: 0,
                   }}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="#fff" viewBox="0 0 24 24">
