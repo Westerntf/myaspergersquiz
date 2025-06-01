@@ -5,18 +5,31 @@ import Head from "next/head";
 import { questions } from "../questions";
 import { db, auth } from "../lib/firebase";
 import { doc, setDoc } from "firebase/firestore";
+import {
+  getQuizSessionId,
+  setQuizAnswers,
+  setQuizRunId,
+  setQuizSessionId
+} from "../utils/storage";
 
 export default function QuizPage() {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [answers, setAnswers] = useState<(boolean | null)[]>(
-    Array(questions.length).fill(null)
-  );
-  const [selected, setSelected] = useState<null | boolean>(null);
+  const [answers, setAnswers] = useState<number[]>(Array(questions.length).fill(0));
+  const [selected, setSelected] = useState<number | null>(null);
   const [showExamples, setShowExamples] = useState<boolean[]>(
     Array(questions.length).fill(false)
   );
 
   const router = useRouter();
+
+  useEffect(() => {
+    // Generate a new quizId for each quiz run, regardless of any existing ID
+    const newQuizId = crypto.randomUUID();
+    setQuizSessionId(newQuizId);
+
+    // Clear any previous answers so each run is treated as new
+    localStorage.removeItem("mq_answers");
+  }, []);
 
   useEffect(() => {
     const editIndex = localStorage.getItem("mq_edit_index");
@@ -31,7 +44,7 @@ export default function QuizPage() {
 
   const currentQuestion = questions[currentIndex];
 
-  const handleAnswer = async (value: boolean) => {
+  const handleAnswer = async (value: number) => {
     setSelected(value);
     setTimeout(async () => {
       const updated = [...answers];
@@ -43,18 +56,21 @@ export default function QuizPage() {
       if (currentIndex < questions.length - 1) {
         setCurrentIndex(currentIndex + 1);
       } else {
-        // Firestore reporting
+        // Firestore reporting: create a new quiz run per quiz completion
         const user = auth.currentUser;
-        const sessionId = localStorage.getItem("mq_session_id");
+        const sessionId = getQuizSessionId();
 
         if (user && sessionId) {
-          await setDoc(doc(db, "reports", user.uid), {
-            startedAt: Date.now(),
-            session_id: sessionId,
-            status: "in_progress"
-          }, { merge: true });
+          const runId = `${user.uid}_${Date.now()}`;
+          await setDoc(doc(db, "quizRuns", runId), {
+            uid: user.uid,
+            sessionId: sessionId,
+            createdAt: Date.now(),
+            answers: updated
+          });
+          setQuizRunId(runId);
         }
-        localStorage.setItem("mq_answers", JSON.stringify(updated));
+        setQuizAnswers(updated);
         router.push("/review");
       }
     }, 250); // Shorter delay for visual feedback
@@ -67,6 +83,13 @@ export default function QuizPage() {
   };
 
   const percentComplete = Math.round((currentIndex / questions.length) * 100);
+
+  const numQuestions = questions.length;
+  const weightPerQuestion = 40 / numQuestions; // e.g., 2 if 20 questions
+  const noWeight = 0;
+  const maybeWeight = parseFloat((weightPerQuestion * (1 / 3)).toFixed(2));     // e.g., 0.67 when rounded to two decimals
+  const kindOfWeight = parseFloat((weightPerQuestion * (2 / 3)).toFixed(2));    // e.g., 1.33 when rounded
+  const yesWeight = weightPerQuestion;                                          // e.g., 2
 
   return (
     <>
@@ -162,7 +185,7 @@ export default function QuizPage() {
           <h2 aria-live="polite" style={{ fontWeight: 700, fontSize: "1.75rem", marginBottom: "1rem", color: "#4A90A4" }}>
             Question {currentIndex + 1} of {questions.length}
           </h2>
-          <p style={{ fontSize: "1.1rem", marginBottom: "1.5rem" }}>
+          <p className="question-text" style={{ fontSize: "1.1rem" }}>
             {currentQuestion.text}
           </p>
           {currentQuestion.example && (
@@ -211,53 +234,99 @@ export default function QuizPage() {
               )}
             </div>
           )}
-          <div className="button-group">
+          <div style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "1rem",
+            width: "100%",
+            maxWidth: "500px",
+            margin: "0 auto"
+          }}>
             <button
               aria-label="Answer Yes"
-              onClick={() => handleAnswer(true)}
+              onClick={() => handleAnswer(yesWeight)}
               style={{
-                ...buttonStyle,
-                padding: "0.9rem 1.75rem",
+                width: "100%",
+                padding: "0.9rem",
                 background: "#5a9aa8",
                 color: "#fff",
-                fontWeight: 600,
+                border: "none",
                 borderRadius: "12px",
-                letterSpacing: "0.25px",
-                fontSize: "1rem"
+                fontSize: "1rem",
+                fontWeight: 600,
+                cursor: "pointer",
               }}
             >
               Yes
             </button>
+
             <button
-              aria-label="Answer No"
-              onClick={() => handleAnswer(false)}
+              aria-label="Answer Sometimes"
+              onClick={() => handleAnswer(kindOfWeight)}
               style={{
-                ...buttonStyle,
-                padding: "0.9rem 1.75rem",
+                width: "100%",
+                padding: "0.9rem",
                 background: "transparent",
                 border: "2px solid #5a9aa8",
                 color: "#5a9aa8",
-                fontWeight: 600,
                 borderRadius: "12px",
-                letterSpacing: "0.25px",
-                fontSize: "1rem"
+                fontSize: "1rem",
+                fontWeight: 600,
+                cursor: "pointer",
+              }}
+            >
+              Sometimes
+            </button>
+
+            <button
+              aria-label="Answer Not Really"
+              onClick={() => handleAnswer(maybeWeight)}
+              style={{
+                width: "100%",
+                padding: "0.9rem",
+                background: "transparent",
+                border: "2px solid #5a9aa8",
+                color: "#5a9aa8",
+                borderRadius: "12px",
+                fontSize: "1rem",
+                fontWeight: 600,
+                cursor: "pointer",
+              }}
+            >
+              Not really
+            </button>
+
+            <button
+              aria-label="Answer No"
+              onClick={() => handleAnswer(noWeight)}
+              style={{
+                width: "100%",
+                padding: "0.9rem",
+                background: "transparent",
+                border: "2px solid #5a9aa8",
+                color: "#5a9aa8",
+                borderRadius: "12px",
+                fontSize: "1rem",
+                fontWeight: 600,
+                cursor: "pointer",
               }}
             >
               No
             </button>
+
             {currentIndex > 0 && (
               <button
                 onClick={handleBack}
                 style={{
-                  ...buttonStyle,
-                  padding: "0.9rem 1.75rem",
+                  width: "100%",
+                  padding: "0.9rem",
                   background: "transparent",
                   border: "2px solid #5a9aa8",
                   color: "#5a9aa8",
-                  fontWeight: 600,
                   borderRadius: "12px",
-                  letterSpacing: "0.25px",
-                  fontSize: "1rem"
+                  fontSize: "1rem",
+                  fontWeight: 600,
+                  cursor: "pointer",
                 }}
               >
                 ← Back
@@ -284,31 +353,6 @@ export default function QuizPage() {
             }} />
           </div>
         </div>
-        <style jsx>{`
-  .button-group {
-    display: flex;
-    flex-direction: column;
-    gap: 1.2rem;
-    align-items: center;
-    width: 100%;
-    max-width: 480px;
-  }
-
-  @media (max-width: 600px) {
-    .button-group {
-      gap: 0.5rem;
-      align-items: center;
-    }
-
-    .button-group button {
-      font-size: 0.8rem !important;
-      padding: 0.4rem 0.75rem !important;
-      width: 100% !important;
-      max-width: 88vw !important;
-      border-radius: 8px !important;
-    }
-  }
-`}</style>
       </main>
     </>
   );
@@ -327,3 +371,4 @@ const buttonStyle: React.CSSProperties = {
   transition: "background 0.2s ease-in-out",
   textAlign: "center"
 };
+// No redirect logic is present in this file.

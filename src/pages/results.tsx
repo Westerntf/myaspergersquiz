@@ -254,12 +254,14 @@ export default function ResultsPage() {
                 gap: "0.5rem",
               }}>
                 <h2 style={{
+                  order: 0,
                   fontSize: "1.5rem",
                   margin: 0,
                   color: "#31758a",
                   display: "flex",
                   alignItems: "center",
                   gap: "0.5rem",
+                  flexGrow: 1,
                 }}>
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#31758a" viewBox="0 0 24 24">
                     <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4S8 5.79 8 8s1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
@@ -281,6 +283,7 @@ export default function ResultsPage() {
                     textDecoration: "none",
                     fontSize: "0.85rem",
                     boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                    order: 1,
                   }}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="#fff" viewBox="0 0 24 24">
@@ -405,6 +408,7 @@ export default function ResultsPage() {
                   display: "flex",
                   alignItems: "center",
                   gap: "0.5rem",
+                  marginTop: "1rem",
                 }}
               >
                 <svg
@@ -442,7 +446,15 @@ export default function ResultsPage() {
                 Based on your answers, one area stood out most. Discover the rest in
                 your full report.
               </p>
-              <ul style={{ listStyle: "none", padding: 0, display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+              <ul style={{
+                listStyle: "none",
+                padding: 0,
+                display: "flex",
+                flexDirection: "column",
+                gap: "0.75rem",
+                width: "100%",
+                maxWidth: "95%",
+              }}>
                 {/* Primary flagged trait */}
                 <li key={summary.flags[0]} style={{
                   background: "#eef6f8",
