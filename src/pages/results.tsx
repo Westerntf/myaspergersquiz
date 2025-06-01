@@ -268,31 +268,6 @@ export default function ResultsPage() {
                   </svg>
                   How You Fit In
                 </h2>
-                <a
-                  href="https://twitter.com/intent/tweet?text=I%20just%20tried%20the%20MyAspergersQuiz%20free%20preview%20—%20see%20your%20own%20results%20at%20https%3A%2F%2Fmyaspergersquiz.com%2Fquiz"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: "0.3rem",
-                    backgroundColor: "#1DA1F2",
-                    color: "#fff",
-                    padding: "0.25rem 0.5rem",
-                    borderRadius: "6px",
-                    textDecoration: "none",
-                    fontSize: "0.75rem",
-                    whiteSpace: "nowrap",
-                    boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
-                    order: 1,
-                    flexShrink: 0,
-                  }}
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="#fff" viewBox="0 0 24 24">
-                    <path d="M23.954 4.569c-.885.392-1.83.656-2.825.775 1.014-.608 1.794-1.574 2.163-2.723-.95.555-2.005.959-3.127 1.184-.897-.959-2.178-1.559-3.594-1.559-2.723 0-4.928 2.205-4.928 4.917 0 .39.045.765.127 1.124-4.091-.205-7.719-2.165-10.148-5.144-.423.722-.666 1.561-.666 2.475 0 1.71.87 3.213 2.188 4.096-.807-.026-1.566-.247-2.228-.616v.061c0 2.385 1.697 4.374 3.946 4.827-.413.111-.849.171-1.296.171-.314 0-.615-.03-.917-.086.631 1.953 2.445 3.377 4.604 3.416-1.68 1.319-3.809 2.105-6.102 2.105-.39 0-.779-.023-1.17-.067 2.189 1.394 4.768 2.209 7.557 2.209 9.054 0 14-7.496 14-13.986 0-.21 0-.42-.015-.63.961-.695 1.8-1.562 2.46-2.549l-.047-.02z"/>
-                  </svg>
-                  Share on Twitter
-                </a>
               </div>
               <div
                 style={{
