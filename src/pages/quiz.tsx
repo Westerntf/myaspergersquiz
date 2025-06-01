@@ -5,11 +5,6 @@ import Head from "next/head";
 import { questions } from "../questions";
 import { db, auth } from "../lib/firebase";
 import { doc, setDoc } from "firebase/firestore";
-import {
-  setQuizAnswers,
-  setQuizRunId,
-  setQuizSessionId
-} from "../utils/storage";
 
 export default function QuizPage() {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -22,11 +17,9 @@ export default function QuizPage() {
   const router = useRouter();
 
   useEffect(() => {
-    // Generate a new quizId for each quiz run, regardless of any existing ID
+    // On mount, create and store a new quiz ID, clear previous answers
     const newQuizId = crypto.randomUUID();
-    setQuizSessionId(newQuizId);
-
-    // Clear any previous answers so each run is treated as new
+    localStorage.setItem("mq_quiz_id", newQuizId);
     localStorage.removeItem("mq_answers");
   }, []);
 
@@ -67,9 +60,12 @@ export default function QuizPage() {
             createdAt: Date.now(),
             answers: updated
           });
-          setQuizRunId(runId);
+          // Save runId for future reference
+          localStorage.setItem("mq_run_id", runId);
         }
-        setQuizAnswers(updated);
+
+        // Persist completed answers for review/results
+        localStorage.setItem("mq_answers", JSON.stringify(updated));
         router.push("/review");
       }
     }, 250); // Shorter delay for visual feedback
