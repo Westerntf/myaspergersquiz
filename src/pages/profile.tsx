@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { auth, db } from "../lib/firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -13,27 +13,35 @@ export default function ProfilePage() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (!user) {
-        setUserEmail(null);
         setLoading(false);
+        router.replace("/login");
         return;
       }
 
       setUserEmail(user.email);
-
-      // Fetch latest paid session for this user
-      const purchaseRef = doc(db, "purchases", user.uid);
-      const purchaseSnap = await getDoc(purchaseRef);
-      const sessionId = purchaseSnap.exists() ? purchaseSnap.data().session_id : null;
-
-      if (sessionId) {
-        const reportRef = doc(db, "reports", user.uid);
-        const reportSnap = await getDoc(reportRef);
-        if (reportSnap.exists() && reportSnap.data().session_id === sessionId) {
-          setReport(reportSnap.data());
-        }
-      }
-
       setLoading(false);
+
+      try {
+        const sessionsRef = collection(db, "reports", user.uid, "sessions");
+        const q = query(sessionsRef, where("paid", "==", true));
+        const sessionSnaps = await getDocs(q);
+
+        type ReportDoc = {
+          id: string;
+          total?: number;
+          traitScores?: Record<string, number>;
+          flags?: string[];
+        };
+
+        const allReports: ReportDoc[] = sessionSnaps.docs.map(docSnap => ({
+          id: docSnap.id,
+          ...(docSnap.data() as Omit<ReportDoc, "id">),
+        }));
+        setReport(allReports);
+      } catch (error) {
+        console.error("Error fetching reports:", error);
+      }
+      // No need to setLoading(false) here—loading was cleared early.
     });
 
     return () => unsubscribe();
@@ -46,46 +54,6 @@ export default function ProfilePage() {
 
   if (loading) {
     return <div style={{ textAlign: "center", marginTop: "4rem" }}>Loading profile...</div>;
-  }
-
-  if (!userEmail) {
-    return (
-      <main style={{
-        maxWidth: "600px",
-        margin: "3rem auto",
-        padding: "2rem",
-        background: "#fff",
-        borderRadius: "12px",
-        boxShadow: "0 0 10px rgba(0,0,0,0.05)"
-      }}>
-        <h1 style={{ color: "#31758a", marginBottom: "1rem" }}>You're not logged in</h1>
-        <p style={{ marginBottom: "1.5rem" }}>
-          To view your profile and full report, please log in or sign up.
-        </p>
-        <div style={{ display: "flex", gap: "1rem" }}>
-          <a href="/login" style={{
-            padding: "0.75rem 1.25rem",
-            backgroundColor: "#31758a",
-            color: "#fff",
-            borderRadius: "8px",
-            textDecoration: "none",
-            fontWeight: 600
-          }}>
-            Log In
-          </a>
-          <a href="/signup" style={{
-            padding: "0.75rem 1.25rem",
-            backgroundColor: "#31758a",
-            color: "#fff",
-            borderRadius: "8px",
-            textDecoration: "none",
-            fontWeight: 600
-          }}>
-            Sign Up
-          </a>
-        </div>
-      </main>
-    );
   }
 
   return (
@@ -108,22 +76,42 @@ export default function ProfilePage() {
 
       <hr style={{ margin: "1.5rem 0" }} />
 
-      {report ? (
+      {report && report.length > 0 ? (
         <>
-          <h2 style={{ color: "#31758a" }}>Most Recent Full Report</h2>
-          <p><strong>Total Score:</strong> {report.total}</p>
-          <ul>
-            {Object.entries(report.traitScores).map(([trait, score]) => (
-              <li key={trait}>
-                {trait.charAt(0).toUpperCase() + trait.slice(1)}: {String(score)}
-              </li>
-            ))}
-          </ul>
-          <p><strong>Flagged Questions:</strong> {report.flags?.join(", ") || "None"}</p>
+          <h2 style={{ color: "#31758a" }}>Your Past Full Reports</h2>
+          {report.map((r: any) => (
+            <div key={r.id} style={{ marginBottom: "1.5rem", padding: "1rem", background: "#fff", borderRadius: "8px", boxShadow: "0 0 6px rgba(0,0,0,0.05)" }}>
+              <p><strong>Session ID:</strong> {r.id}</p>
+              <p><strong>Total Score:</strong> {r.total}</p>
+              <ul>
+                {Object.entries(r.traitScores).map(([trait, score]) => (
+                  <li key={trait}>
+                    {trait.charAt(0).toUpperCase() + trait.slice(1)}: {String(score)}
+                  </li>
+                ))}
+              </ul>
+              <p><strong>Flagged Questions:</strong> {r.flags?.join(", ") || "None"}</p>
+              <a
+                href={`/full-report?sessionId=${r.id}`}
+                style={{
+                  marginTop: "0.5rem",
+                  display: "inline-block",
+                  padding: "0.5rem 1rem",
+                  backgroundColor: "#31758a",
+                  color: "#fff",
+                  borderRadius: "8px",
+                  textDecoration: "none",
+                  fontWeight: 600
+                }}
+              >
+                View Full Report
+              </a>
+            </div>
+          ))}
         </>
       ) : (
         <p style={{ color: "#777", fontStyle: "italic", textAlign: "center" }}>
-          No full report found yet.
+          No full reports found yet.
         </p>
       )}
 
@@ -162,20 +150,6 @@ export default function ProfilePage() {
             textDecoration: "none",
             fontWeight: 500
           }}>➤ Take the Quiz Again</a>
-        </li>
-        <li>
-          <a href="/full-report" style={{
-            color: "#31758a",
-            textDecoration: "none",
-            fontWeight: 500
-          }}>➤ View Full Report</a>
-        </li>
-        <li>
-          <a href="/results" style={{
-            color: "#31758a",
-            textDecoration: "none",
-            fontWeight: 500
-          }}>➤ Summary Results Page</a>
         </li>
       </ul>
 
