@@ -93,9 +93,9 @@ export default function ReviewPage() {
                 {answers[i] === 1
                   ? "Yes"
                   : answers[i] === 0.67
-                  ? "Kind of"
+                  ? "Sometimes"
                   : answers[i] === 0.33
-                  ? "Maybe"
+                  ? "Not really"
                   : answers[i] === 0
                   ? "No"
                   : "Not answered"}
