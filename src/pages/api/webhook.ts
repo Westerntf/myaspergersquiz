@@ -11,8 +11,8 @@ export const config = {
 };
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-// If Stripe version is 2025-04-30.basil
-apiVersion: '2025-04-30.basil',});
+  apiVersion: "2025-04-30.basil",
+});
 
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!;
 
@@ -21,16 +21,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(405).send("Method Not Allowed");
   }
 
-  const buf = await buffer(req);
-  const sig = req.headers["stripe-signature"]!;
+  const sig = req.headers["stripe-signature"];
+  if (!sig) {
+    console.error("Missing Stripe signature header");
+    return res.status(400).send("Missing Stripe signature");
+  }
 
   let event: Stripe.Event;
-
+  let buf: Buffer;
   try {
+    buf = await buffer(req);
     event = stripe.webhooks.constructEvent(buf, sig, endpointSecret);
   } catch (err) {
-    console.error("Webhook error:", err);
-    return res.status(400).send(`Webhook Error: ${err instanceof Error ? err.message : "Unknown error"}`);
+    console.error("Webhook signature verification failed:", err);
+    return res.status(400).send(
+      `Webhook Error: ${err instanceof Error ? err.message : "Unknown error"}`
+    );
   }
 
   // Handle the event type
@@ -38,32 +44,43 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const session = event.data.object as Stripe.Checkout.Session;
     console.log("✅ Payment completed:", session.id);
 
-    // Initialize Firebase Admin SDK only once
-    if (!getApps().length) {
-      initializeApp({
-        credential: cert(JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY!)),
-      });
-    }
+    try {
+      // Initialize Firebase Admin SDK only once
+      if (!getApps().length) {
+        initializeApp({
+          credential: cert(JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY!)),
+        });
+      }
 
-    const db = getFirestore();
+      const db = getFirestore();
+      const uid = session.metadata?.uid as string | undefined;
+      const sessionId = session.metadata?.sessionId as string | undefined;
 
-    const uid = session.metadata?.uid as string | undefined;
-    const sessionId = session.metadata?.sessionId as string | undefined;
+      if (!uid || !sessionId) {
+        console.warn("⚠️ Missing metadata (uid or sessionId) in Stripe session:", session.metadata);
+        return res.status(400).send("Missing uid or sessionId in Stripe metadata");
+      }
 
-    if (uid && sessionId) {
-      // Mark the existing session document as paid
       await db
         .collection("reports")
         .doc(uid)
         .collection("sessions")
         .doc(sessionId)
-        .update({ paid: true });
+        .set(
+          {
+            paid: true,
+            paidAt: Timestamp.now(),
+          },
+          { merge: true }
+        );
 
       console.log(`✅ Marked session ${sessionId} as paid for user ${uid}`);
-    } else {
-      console.warn("⚠️ Missing metadata (uid or sessionId) in Stripe session:", session.metadata);
+    } catch (err) {
+      console.error("❌ Firestore update failed:", err);
+      return res.status(500).send("Firestore update failed");
     }
   }
 
+  // Always return 200 if nothing failed above
   res.status(200).json({ received: true });
 }
