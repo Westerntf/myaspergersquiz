@@ -90,17 +90,32 @@ export default function ProfilePage() {
   }
 
   return (
-    <main
-      style={{
-        maxWidth: "720px",
-        margin: "3rem auto",
-        padding: "2.5rem",
-        background: "#f9fbfc",
-        borderRadius: "16px",
-        boxShadow: "0 4px 16px rgba(0, 0, 0, 0.06)",
-      }}
-      aria-busy={loading}
-    >
+    <>
+      <style jsx>{`
+        @media (max-width: 600px) {
+          main {
+            padding: 1rem !important;
+            margin: 1rem !important;
+          }
+          h1 {
+            font-size: 1.5rem !important;
+          }
+          ul {
+            padding-left: 1rem !important;
+          }
+        }
+      `}</style>
+      <main
+        style={{
+          maxWidth: "720px",
+          margin: "3rem auto",
+          padding: "2.5rem",
+          background: "#f9fbfc",
+          borderRadius: "16px",
+          boxShadow: "0 4px 16px rgba(0, 0, 0, 0.06)",
+        }}
+        aria-busy={loading}
+      >
 <Head>
   {/* Primary SEO */}
   <title>Your Profile | MyAspergersQuiz.com</title>
@@ -236,18 +251,20 @@ export default function ProfilePage() {
                 background: "#fff",
                 borderRadius: "8px",
                 boxShadow: "0 0 6px rgba(0,0,0,0.05)",
+                width: "100%",
+                boxSizing: "border-box",
               }}
             >
-              <p>
+              <p style={{ wordBreak: "break-word", overflowWrap: "break-word" }}>
                 <strong>Session ID:</strong> {r.id}
               </p>
               <p>
                 <strong>Total Score:</strong> {r.totalScore ?? "N/A"}
               </p>
               {r.traitScores ? (
-                <ul>
+                <ul style={{ paddingLeft: "1rem", marginTop: "0.5rem", marginBottom: "0.5rem" }}>
                   {Object.entries(r.traitScores).map(([trait, score]) => (
-                    <li key={trait}>
+                    <li key={trait} style={{ marginBottom: "0.25rem" }}>
                       {trait.charAt(0).toUpperCase() + trait.slice(1)}: {String(score)}
                     </li>
                   ))}
@@ -332,7 +349,7 @@ export default function ProfilePage() {
         Dashboard Links
       </h3>
       <ul style={{ listStyle: "none", paddingLeft: 0, lineHeight: "2" }}>
-        <li>
+        <li style={{ marginBottom: "0.25rem" }}>
           <a
             href="/quiz"
             style={{
@@ -367,5 +384,6 @@ export default function ProfilePage() {
         Log Out
       </button>
     </main>
+    </>
   );
 }
