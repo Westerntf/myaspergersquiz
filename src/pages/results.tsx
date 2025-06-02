@@ -3,13 +3,11 @@
 import { useEffect, useState, useRef, useMemo } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { loadStripe } from "@stripe/stripe-js";
 import { onAuthStateChanged, getAuth, User } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { calculateScore } from "../utils/calculateScore";
 import { getOverallLevel } from "../utils/getOverallLevel";
 import { getResultLabel } from "../utils/getResultLabel";
-import { loadFromStorage } from "../utils/storage";
 import { db, auth } from "../lib/firebase"; // adjust paths if necessary
 import { questions } from "../questions";
 import { flagQuestions } from "../utils/flagQuestions";
@@ -51,57 +49,81 @@ export default function ResultsPage() {
     return () => unsubscribe();
   }, []);
 
-  // 3) Gating logic: load answers, quizId, compute summary, check payment
+  // 3) Gating logic: load answers, quizId, compute summary, check payment (updated version)
   useEffect(() => {
-    const answers = loadFromStorage<number[]>("mq_answers") as number[] | null;
-    const storedQuizId = localStorage.getItem("mq_quiz_id");
-    setQuizId(storedQuizId);
+    let attempts = 0;
+    let cancelled = false;
 
-    if (answers === null || storedQuizId === null) {
-      setTimeout(() => {
-        const checkAnswers = loadFromStorage<number[]>("mq_answers") as number[] | null;
-        const checkQuizId = localStorage.getItem("mq_quiz_id");
-        if (checkAnswers === null || checkQuizId === null) {
-          router.replace("/");
+    const tryLoad = async () => {
+      let storedQuizId = localStorage.getItem("quizRunId");
+      setQuizId(storedQuizId);
+
+      let answers: number[] | null = null;
+      const storedAnswersRaw = localStorage.getItem("quizAnswers");
+      if (storedAnswersRaw) {
+        try {
+          answers = JSON.parse(storedAnswersRaw) as number[];
+        } catch {
+          answers = null;
         }
-      }, 100);
-      return;
-    }
+      }
 
-    if (
-      !answers ||
-      !Array.isArray(answers) ||
-      answers.length === 0 ||
-      !storedQuizId ||
-      typeof storedQuizId !== "string"
-    ) {
-      console.warn("Invalid quiz state: redirecting to homepage");
-      router.replace("/");
-      return;
-    }
+      // If no answers found locally and user is logged in, try Firestore
+      if ((!answers || answers.length !== 40) && user && storedQuizId) {
+        try {
+          const runDoc = await getDoc(doc(db, "quizRuns", storedQuizId));
+          if (runDoc.exists()) {
+            const runData = runDoc.data();
+            if (Array.isArray(runData.answers) && runData.answers.length === 40) {
+              answers = runData.answers as number[];
+            }
+          }
+        } catch (e) {
+          console.error("Error fetching quizRuns from Firestore:", e);
+        }
+      }
 
-    // Compute summary
-    const { total, traitScores } = calculateScore(answers as any);
-    const flags = flagQuestions.filter((qId) => {
-      const val = answers[qId - 1];
-      return typeof val === "number" && val >= 0.67;
-    });
-    const level = getOverallLevel(total);
-    setSummary({ total, traitScores, flags, level });
+      // If we don't have answers, and we've tried fewer than 30 times (6 seconds), try again shortly
+      if ((!storedQuizId || !answers || answers.length === 0) && attempts < 30 && !cancelled) {
+        attempts += 1;
+        setTimeout(tryLoad, 200);
+        return;
+      }
 
-    // If logged in, verify payment
-    if (user && storedQuizId) {
-      fetch(`/api/verify-payment?uid=${user.uid}&sessionId=${storedQuizId}`)
-        .then((res) => res.json())
-        .then((data) => {
+      if (!storedQuizId || !answers || answers.length === 0) {
+        // After many retries, still nothing, redirect.
+        router.replace("/");
+        return;
+      }
+
+      // Compute summary
+      const { total, traitScores } = calculateScore(answers);
+      const flags = flagQuestions.filter((qId) => {
+        const val = answers![qId - 1];
+        return typeof val === "number" && val >= 0.67;
+      });
+      const level = getOverallLevel(total);
+      setSummary({ total, traitScores, flags, level });
+
+      // Verify payment if logged in
+      if (user && storedQuizId) {
+        try {
+          const res = await fetch(`/api/verify-payment?uid=${user.uid}&sessionId=${storedQuizId}`);
+          const data = await res.json();
           setIsPaid(data.paid === true);
-        })
-        .catch((err) => {
+        } catch (err) {
           console.error("Error checking payment status:", err);
           setIsPaid(false);
-        });
+        }
+      }
+    };
+
+    if (isClient) {
+      tryLoad();
+      // On unmount, cancel any pending retry loop
+      return () => { cancelled = true; };
     }
-  }, [user, router]);
+  }, [user, isClient, router]);
 
   // 4) Handle checkout redirect
   const handleCheckout = async () => {
@@ -109,7 +131,7 @@ export default function ResultsPage() {
       router.replace("/login");
       return;
     }
-    const storedQuizId = localStorage.getItem("mq_quiz_id");
+    const storedQuizId = localStorage.getItem("quizRunId");
     if (!storedQuizId) {
       alert("Quiz ID not found. Please retake the quiz.");
       return;
@@ -124,11 +146,12 @@ export default function ResultsPage() {
         userEmail: user.email,
       }),
     });
-    const { sessionId: stripeSessionId } = await response.json();
-    const stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
-    if (stripeSessionId) {
-      await stripe!.redirectToCheckout({ sessionId: stripeSessionId });
+    const { url } = await response.json();
+    if (!url) {
+      console.error("Checkout session URL not returned");
+      return;
     }
+    window.location.href = url;
   };
 
   // 5) Download PDF via window.print()

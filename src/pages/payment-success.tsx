@@ -17,9 +17,9 @@ export default function PaymentSuccess() {
         return;
       }
 
-      try {
-        const res = await fetch(`/api/verify-payment?session_id=${sessionId}`);
-        const data = await res.json();
+   try {
+  const res = await fetch(`/api/verify-payment?uid=${user.uid}&sessionId=${sessionId}`);
+  const data = await res.json();
 
         if (!data.paid) {
           router.push("/not-paid");

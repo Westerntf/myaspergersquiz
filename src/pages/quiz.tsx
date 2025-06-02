@@ -5,6 +5,9 @@ import Head from "next/head";
 import { questions } from "../questions";
 import { db, auth } from "../lib/firebase";
 import { doc, setDoc } from "firebase/firestore";
+import { calculateScore } from "../utils/calculateScore";
+import { getOverallLevel } from "../utils/getOverallLevel";
+import { flagQuestions } from "../utils/flagQuestions";
 
 export default function QuizPage() {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -19,8 +22,8 @@ export default function QuizPage() {
   useEffect(() => {
     // On mount, create and store a new quiz ID, clear previous answers
     const newQuizId = crypto.randomUUID();
-    localStorage.setItem("mq_quiz_id", newQuizId);
-    localStorage.removeItem("mq_answers");
+    localStorage.setItem("quizRunId", newQuizId);
+    localStorage.removeItem("quizAnswers");
   }, []);
 
   useEffect(() => {
@@ -50,22 +53,41 @@ export default function QuizPage() {
       } else {
         // Firestore reporting: create a new quiz run per quiz completion
         const user = auth.currentUser;
-        const sessionId = localStorage.getItem("mq_quiz_id");
+        const sessionId = localStorage.getItem("quizRunId");
 
         if (user && sessionId) {
           const runId = `${user.uid}_${Date.now()}`;
+
+          // Calculate scores & flags for the report
+          const { total, traitScores } = calculateScore(updated);
+          const level = getOverallLevel(total);
+          const triggeredFlags = flagQuestions.filter(idx => updated[idx - 1] >= 0.67);
+
+          // Save quiz run for resuming (existing logic)
           await setDoc(doc(db, "quizRuns", runId), {
             uid: user.uid,
             sessionId: sessionId,
             createdAt: Date.now(),
             answers: updated
           });
-          // Save runId for future reference
-          localStorage.setItem("mq_run_id", runId);
+
+          // --- NEW: Save full report data for payment unlock/profile ---
+          await setDoc(doc(db, "reports", user.uid, "sessions", runId), {
+            answers: updated,
+            total,
+            traitScores,
+            level,
+            flags: triggeredFlags,
+            createdAt: Date.now(),
+            paid: false // webhook will update this after payment
+          });
+
+          // Save runId for future reference, overwriting previous quizRunId
+          localStorage.setItem("quizRunId", runId);
         }
 
         // Persist completed answers for review/results
-        localStorage.setItem("mq_answers", JSON.stringify(updated));
+        localStorage.setItem("quizAnswers", JSON.stringify(updated));
         router.push("/review");
       }
     }, 250); // Shorter delay for visual feedback

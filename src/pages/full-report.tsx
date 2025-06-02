@@ -2,7 +2,6 @@ import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/router";
 import { auth, db } from "../lib/firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import { loadFromStorage } from "../utils/storage";
 import { calculateScore } from "../utils/calculateScore";
 import { flagQuestions } from "../utils/flagQuestions";
 import { getSelfAwarenessLevel } from "../utils/getSelfAwarenessLevel";
@@ -137,9 +136,9 @@ export default function FullReportPage() {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  // --- ACCESS CHECK: Enforce session-specific gating per quiz session ---
+  // --- ACCESS CHECK & DATA LOAD ---
   useEffect(() => {
-    const checkAccess = async () => {
+    const init = async () => {
       const user = auth.currentUser;
       if (!user) {
         router.replace("/login");
@@ -147,51 +146,69 @@ export default function FullReportPage() {
       }
 
       const sessionId = new URLSearchParams(window.location.search).get("sessionId");
-      if (!sessionId) {
+      if (typeof sessionId !== "string") {
         router.replace("/results");
         return;
       }
 
+      // Verify payment status
       try {
-        const docRef = doc(db, "reports", user.uid, "sessions", sessionId);
-        const snap = await getDoc(docRef);
-        if (!snap.exists() || snap.data().paid !== true) {
+        const res = await fetch(`/api/verify-payment?uid=${user.uid}&sessionId=${sessionId}`);
+        const data = await res.json();
+        if (!data.paid) {
           router.replace("/results");
           return;
         }
-
-        const data = snap.data() as {
-          traitScores: { social: number; sensory: number; routine: number; communication: number; focus: number };
-          flags: number[];
-          total: number;
-        };
-
-        const roundedTraitScores = {
-          social: Math.round(data.traitScores.social),
-          sensory: Math.round(data.traitScores.sensory),
-          routine: Math.round(data.traitScores.routine),
-          communication: Math.round(data.traitScores.communication),
-          focus: Math.round(data.traitScores.focus),
-        };
-
-        const roundedTotal = Math.round(data.total);
-
-        setSummary({
-          total: roundedTotal,
-          traitScores: roundedTraitScores,
-          flags: data.flags,
-        });
-
       } catch (err) {
-        console.error("Error fetching report:", err);
+        console.error("Error verifying payment:", err);
         router.replace("/results");
         return;
       }
 
+      // Fetch answers
+      let answers: number[] | null = null;
+      try {
+        // Attempt to fetch from Firestore quizRuns/{sessionId}
+        const runDoc = await getDoc(doc(db, "quizRuns", sessionId));
+        if (runDoc.exists()) {
+          const runData = runDoc.data();
+          answers = runData.answers as number[];
+        }
+      } catch {
+        // Fallback to localStorage
+        const raw = localStorage.getItem("quizAnswers");
+        if (raw) {
+          answers = JSON.parse(raw) as number[];
+        }
+      }
+
+      if (!answers || answers.length !== 40) {
+        console.error("Invalid or missing answers for session:", sessionId);
+        router.replace("/results");
+        return;
+      }
+
+      // Compute summary
+      const { total, traitScores } = calculateScore(answers);
+      const flags = flagQuestions.filter(qId => {
+        const val = answers[qId - 1];
+        return typeof val === "number" && val >= 0.67;
+      });
+
+      const roundedTraitScores = {
+        social: Math.round(traitScores.social),
+        sensory: Math.round(traitScores.sensory),
+        routine: Math.round(traitScores.routine),
+        communication: Math.round(traitScores.communication),
+        focus: Math.round(traitScores.focus),
+      };
+      const roundedTotal = Math.round(total);
+
+      setSummary({ total: roundedTotal, traitScores: roundedTraitScores, flags });
       setLoading(false);
     };
 
-    checkAccess();
+    init();
   }, [router]);
 
   useEffect(() => {

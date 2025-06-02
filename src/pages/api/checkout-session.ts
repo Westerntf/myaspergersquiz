@@ -67,8 +67,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       },
     });
 
-    console.log("Stripe session creation response:", session);
-    return res.status(200).json({ sessionId: session.id, session });
+    // console.log("Stripe session creation response:", session);
+    return res.status(200).json({ url: session.url });
   } catch (err) {
     console.error("Stripe session creation error:", err instanceof Error ? err.message : String(err));
     return res.status(500).json({ error: "Unable to create Stripe session." });

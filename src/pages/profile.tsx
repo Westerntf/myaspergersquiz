@@ -83,13 +83,17 @@ export default function ProfilePage() {
             <div key={r.id} style={{ marginBottom: "1.5rem", padding: "1rem", background: "#fff", borderRadius: "8px", boxShadow: "0 0 6px rgba(0,0,0,0.05)" }}>
               <p><strong>Session ID:</strong> {r.id}</p>
               <p><strong>Total Score:</strong> {r.total}</p>
-              <ul>
-                {Object.entries(r.traitScores).map(([trait, score]) => (
-                  <li key={trait}>
-                    {trait.charAt(0).toUpperCase() + trait.slice(1)}: {String(score)}
-                  </li>
-                ))}
-              </ul>
+              {r.traitScores ? (
+                <ul>
+                  {Object.entries(r.traitScores).map(([trait, score]) => (
+                    <li key={trait}>
+                      {trait.charAt(0).toUpperCase() + trait.slice(1)}: {String(score)}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p style={{ color: "#a33" }}><em>No trait scores found for this session.</em></p>
+              )}
               <p><strong>Flagged Questions:</strong> {r.flags?.join(", ") || "None"}</p>
               <a
                 href={`/full-report?sessionId=${r.id}`}

@@ -2,13 +2,19 @@
 import { useEffect, useState } from "react";
 import { questions } from "../questions";
 import { useRouter } from "next/router";
+import { calculateScore } from "../utils/calculateScore";
+import { getOverallLevel } from "../utils/getOverallLevel";
+import { flagQuestions } from "../utils/flagQuestions";
+import { getAuth } from "firebase/auth";
+import { getFirestore, setDoc, doc } from "firebase/firestore";
+
 export default function ReviewPage() {
   const [answers, setAnswers] = useState<number[]>([]);
   const router = useRouter();
 
   useEffect(() => {
-    const quizId = localStorage.getItem("mq_quiz_id");
-    const answersJson = localStorage.getItem("mq_answers");
+    const quizId = localStorage.getItem("quizRunId");
+    const answersJson = localStorage.getItem("quizAnswers");
     let savedAnswers: number[] = [];
 
     if (answersJson) {
@@ -30,16 +36,39 @@ export default function ReviewPage() {
   }, []);
 
   const handleEdit = (index: number) => {
-    localStorage.setItem("mq_edit_index", index.toString());
+    localStorage.setItem("quizEditIndex", index.toString());
     router.push("/quiz");
   };
 
-  const handleConfirm = () => {
-    router.push("/results");
+  const handleConfirm = async () => {
+    const user = getAuth().currentUser;
+    const sessionId = localStorage.getItem("quizRunId");
+    if (user && sessionId) {
+      const db = getFirestore();
+
+      // Calculate scores and flags
+      const { total, traitScores } = calculateScore(answers);
+      const level = getOverallLevel(total);
+      const triggeredFlags = flagQuestions.filter(idx => answers[idx - 1] >= 0.67);
+
+      await setDoc(doc(db, "reports", user.uid, "sessions", sessionId), {
+        answers,
+        total,
+        traitScores,
+        level,
+        flags: triggeredFlags,
+        createdAt: Date.now(),
+        paid: false // webhook will update this to true after payment
+      }, { merge: true });
+
+      router.push("/results");
+    } else {
+      router.push("/results");
+    }
   };
 
   return (
-    <main style={{
+    <main style={   {
       padding: "4rem 1rem",
       maxWidth: "700px",
       margin: "0 auto",
@@ -123,7 +152,7 @@ export default function ReviewPage() {
       </ul>
       <div style={{ textAlign: "center", marginTop: "2rem" }}>
         <button
-          onClick={handleConfirm}
+          onClick={() => handleConfirm()}
           style={{
             padding: "1rem 2rem",
             background: "#4A90A4",
