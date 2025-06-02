@@ -1,3 +1,4 @@
+// Extra SEO and accessibility polish added by ChatGPT (June 2025)
 // src/pages/quiz.tsx
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
@@ -110,24 +111,64 @@ export default function QuizPage() {
 
   return (
     <>
-    <Head>
-  <title>Take the Quiz – Autism Spectrum Traits Assessment</title>
-  <meta name="description" content="Answer 40 thoughtful questions in a respectful and private environment. Explore how your traits align with patterns found in autism." />
+<Head>
+  {/* Primary Meta */}
+  <title>{`Question ${currentIndex + 1} – Autism Spectrum Traits Assessment | MyAspergersQuiz`}</title>
+  <meta name="description" content="Take our 40-question, research-informed quiz to explore your social, sensory, and routine patterns. Instant results, private, and no sign-up required. Discover your autism spectrum traits in minutes." />
+  <meta name="keywords" content="autism, aspergers, quiz, autism test, spectrum, neurodivergent, social traits, sensory traits, routine, communication, adult autism quiz, online assessment, self-discovery, psychology" />
+  <meta name="author" content="MyAspergersQuiz Team" />
+  <meta name="copyright" content="Copyright © 2025 MyAspergersQuiz. All rights reserved." />
+  <meta name="subject" content="Autism Spectrum Self-Assessment Quiz" />
+  <meta name="rating" content="General" />
+
+  {/* Robots, Canonical, Language */}
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <meta httpEquiv="content-language" content="en" />
+  <link rel="canonical" href="https://myaspergersquiz.com/quiz" />
+  <link rel="alternate" hrefLang="en" href="https://myaspergersquiz.com/quiz" />
+
+  {/* Open Graph */}
+  <meta property="og:type" content="website" />
   <meta property="og:title" content="Take the Quiz – Autism Spectrum Traits Assessment" />
   <meta property="og:description" content="40-question, research-informed quiz designed to help you reflect on social, sensory, and routine patterns linked to neurodivergence." />
   <meta property="og:image" content="https://myaspergersquiz.com/og-quiz.jpg" />
+  <meta property="og:image:alt" content="Screenshot of the MyAspergersQuiz autism spectrum quiz." />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
   <meta property="og:url" content="https://myaspergersquiz.com/quiz" />
+  <meta property="og:site_name" content="MyAspergersQuiz" />
+  <meta property="og:locale" content="en_AU" />
+  <meta property="og:updated_time" content="2025-06-02T00:00:00+00:00" />
+
+  {/* Twitter Card */}
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Take the Quiz – Autism Spectrum Traits Assessment" />
-  <meta name="twitter:description" content="Explore how your mind works in just 3–5 minutes. No sign-up needed. Private. Instant results." />
+  <meta name="twitter:description" content="Explore your mind in just 3–5 minutes. No sign-up needed. Private. Instant results." />
   <meta name="twitter:image" content="https://myaspergersquiz.com/og-quiz.jpg" />
+  <meta name="twitter:image:alt" content="Screenshot of the MyAspergersQuiz autism spectrum quiz." />
+  <meta name="twitter:site" content="@myaspergersquiz" />
+  <meta name="twitter:creator" content="@myaspergersquiz" />
+
+  {/* PWA and Apple */}
+  <meta name="apple-mobile-web-app-title" content="MyAspergersQuiz" />
+  <meta name="application-name" content="MyAspergersQuiz" />
+  <meta name="theme-color" content="#4A90A4" />
   <link rel="icon" href="/myaspergersquiz-logo.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
+
+  {/* Performance */}
+  <link rel="preload" href="/myaspergersquiz-logo.png" as="image" />
+
+  {/* Structured Data */}
   <script
     type="application/ld+json"
     dangerouslySetInnerHTML={{
       __html: JSON.stringify({
         "@context": "https://schema.org",
         "@type": "FAQPage",
+        "inLanguage": "en",
         "mainEntity": [
           {
             "@type": "Question",
@@ -157,21 +198,99 @@ export default function QuizPage() {
       })
     }}
   />
-  <link rel="canonical" href="https://myaspergersquiz.com/quiz" />
+  <script
+    type="application/ld+json"
+    dangerouslySetInnerHTML={{
+      __html: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "inLanguage": "en",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://myaspergersquiz.com/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Quiz",
+            "item": "https://myaspergersquiz.com/quiz"
+          }
+        ]
+      })
+    }}
+  />
+  <script
+    type="application/ld+json"
+    dangerouslySetInnerHTML={{
+      __html: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "Quiz",
+        "name": "Autism Spectrum Traits Quiz",
+        "description": "A 40-question, research-informed quiz to help you explore your social, sensory, and routine patterns.",
+        "about": {
+          "@type": "Thing",
+          "name": "Autism Spectrum Traits"
+        },
+        "provider": {
+          "@type": "Organization",
+          "name": "MyAspergersQuiz",
+          "url": "https://myaspergersquiz.com/"
+        },
+        "inLanguage": "en",
+        "author": {
+          "@type": "Organization",
+          "name": "MyAspergersQuiz",
+          "url": "https://myaspergersquiz.com/"
+        }
+      })
+    }}
+  />
+  <script
+    type="application/ld+json"
+    dangerouslySetInnerHTML={{
+      __html: JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "MyAspergersQuiz",
+        "url": "https://myaspergersquiz.com/",
+        "logo": "https://myaspergersquiz.com/myaspergersquiz-logo.png",
+        "sameAs": [
+          "https://twitter.com/myaspergersquiz"
+        ],
+        "inLanguage": "en"
+      })
+    }}
+  />
 </Head>
-      <main className="quiz-container" style={{
-        background: "#f9fbfc",
-        color: "#1a1a1a",
-        padding: "2rem 1rem",
-        minHeight: "100vh",
-        fontFamily: "'Inter', sans-serif",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        boxSizing: "border-box"
-      }}>
+      <main
+        className="quiz-container"
+        role="main"
+        aria-label="Autism Spectrum Quiz"
+        style={{
+          background: "#f9fbfc",
+          color: "#1a1a1a",
+          padding: "2rem 1rem",
+          minHeight: "100vh",
+          fontFamily: "'Inter', sans-serif",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          boxSizing: "border-box"
+        }}
+      >
         <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "2rem" }}>
-          <img src="/myaspergersquiz-logo.png" alt="Logo" width={32} height={32} style={{ borderRadius: "6px" }} />
+          <img
+            src="/myaspergersquiz-logo.png"
+            alt="MyAspergersQuiz logo"
+            width={32}
+            height={32}
+            style={{ borderRadius: "6px" }}
+            loading="eager"
+            onError={e => { (e.target as HTMLImageElement).src = "/fallback-logo.png"; }}
+          />
           <h1 style={{ fontSize: "1.4rem", color: "#4A90A4", margin: 0 }}>MyAspergersQuiz</h1>
         </div>
         <section style={{ marginBottom: "1.5rem", textAlign: "center", maxWidth: "600px", marginInline: "auto" }}>
@@ -199,7 +318,11 @@ export default function QuizPage() {
             boxShadow: "0 2px 8px rgba(0,0,0,0.1)"
           }}
         >
-          <h2 aria-live="polite" style={{ fontWeight: 700, fontSize: "1.75rem", marginBottom: "1rem", color: "#4A90A4" }}>
+          <h2
+            aria-live="polite"
+            tabIndex={0}
+            style={{ fontWeight: 700, fontSize: "1.75rem", marginBottom: "1rem", color: "#4A90A4" }}
+          >
             Question {currentIndex + 1} of {questions.length}
           </h2>
           <p
@@ -217,6 +340,11 @@ export default function QuizPage() {
             <div style={{ marginBottom: "1.5rem" }}>
               <button
                 aria-describedby="example-desc"
+                aria-label={
+                  showExamples[currentIndex]
+                    ? `Hide Example for question ${currentIndex + 1}`
+                    : `Show Example for question ${currentIndex + 1}`
+                }
                 onClick={() => {
                   const updated = [...showExamples];
                   updated[currentIndex] = !updated[currentIndex];
@@ -341,6 +469,7 @@ export default function QuizPage() {
 
             {currentIndex > 0 && (
               <button
+                aria-label="Go to Previous Question"
                 onClick={handleBack}
                 style={{
                   width: "100%",
@@ -360,9 +489,24 @@ export default function QuizPage() {
           </div>
         </div>
 
-        <div className="progress-container" style={{ width: "100%", maxWidth: "480px", margin: "0 auto", marginTop: "2rem", marginBottom: "2rem", textAlign: "center" }}>
+        <div
+          className="progress-container"
+          style={{
+            width: "100%",
+            maxWidth: "480px",
+            margin: "0 auto",
+            marginTop: "2rem",
+            marginBottom: "2rem",
+            textAlign: "center"
+          }}
+          aria-label={`Quiz progress: ${percentComplete}% complete`}
+          role="progressbar"
+          aria-valuenow={percentComplete}
+          aria-valuemin={0}
+          aria-valuemax={100}
+        >
           <p style={{ marginBottom: "0.75rem", fontSize: "1rem", fontWeight: 500, opacity: 0.8 }}>
-            Progress: {percentComplete}%
+            Progress: <span aria-live="polite">{percentComplete}%</span>
           </p>
           <div style={{
             height: "12px",
@@ -397,3 +541,5 @@ const buttonStyle: React.CSSProperties = {
   textAlign: "center"
 };
 // No redirect logic is present in this file.
+
+// Reminder: For best accessibility and SEO, set <html lang="en"> globally in _document.js if not already done.
