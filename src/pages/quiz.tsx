@@ -112,44 +112,43 @@ export default function QuizPage() {
   return (
     <>
 <Head>
-  {/* Primary Meta */}
-  <title>{`Question ${currentIndex + 1} – Autism Spectrum Traits Assessment | MyAspergersQuiz`}</title>
-  <meta name="description" content="Take our 40-question, research-informed quiz to explore your social, sensory, and routine patterns. Instant results, private, and no sign-up required. Discover your autism spectrum traits in minutes." />
-  <meta name="keywords" content="autism, aspergers, quiz, autism test, spectrum, neurodivergent, social traits, sensory traits, routine, communication, adult autism quiz, online assessment, self-discovery, psychology" />
+  {/* Primary SEO */}
+  <title>{`Question ${currentIndex + 1} – Autism Spectrum Traits Quiz | MyAspergersQuiz.com`}</title>
+  <meta name="description" content="Take the research-backed MyAspergersQuiz – a 40-question self-assessment to explore autism spectrum traits. Free, anonymous, instant results. Mobile friendly, no account required." />
+  <meta name="keywords" content="autism quiz, aspergers self test, online autism quiz, spectrum traits, neurodivergent, autism assessment, free autism test, ASD quiz, online autism screener, instant results, self-reflection, social, sensory, routine, communication, focus, MyAspergersQuiz" />
   <meta name="author" content="MyAspergersQuiz Team" />
-  <meta name="copyright" content="Copyright © 2025 MyAspergersQuiz. All rights reserved." />
+  <meta name="copyright" content="MyAspergersQuiz.com" />
   <meta name="subject" content="Autism Spectrum Self-Assessment Quiz" />
-  <meta name="rating" content="General" />
-
-  {/* Robots, Canonical, Language */}
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
-  <meta httpEquiv="content-language" content="en" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="canonical" href="https://myaspergersquiz.com/quiz" />
-  <link rel="alternate" hrefLang="en" href="https://myaspergersquiz.com/quiz" />
+  <link rel="alternate" href="https://myaspergersquiz.com/quiz" hrefLang="en-au" />
+  <link rel="alternate" href="https://myaspergersquiz.com/quiz" hrefLang="en-us" />
+  <link rel="alternate" href="https://myaspergersquiz.com/quiz" hrefLang="x-default" />
 
-  {/* Open Graph */}
+  {/* Open Graph / Social */}
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="Take the Quiz – Autism Spectrum Traits Assessment" />
-  <meta property="og:description" content="40-question, research-informed quiz designed to help you reflect on social, sensory, and routine patterns linked to neurodivergence." />
+  <meta property="og:title" content="Take the Autism Spectrum Traits Quiz | MyAspergersQuiz.com" />
+  <meta property="og:description" content="Answer 40 questions and get instant insight into social, sensory, routine, and focus traits. 100% private. No sign up needed." />
   <meta property="og:image" content="https://myaspergersquiz.com/og-quiz.jpg" />
-  <meta property="og:image:alt" content="Screenshot of the MyAspergersQuiz autism spectrum quiz." />
+  <meta property="og:image:alt" content="Preview of the MyAspergersQuiz online autism quiz" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta property="og:url" content="https://myaspergersquiz.com/quiz" />
-  <meta property="og:site_name" content="MyAspergersQuiz" />
+  <meta property="og:site_name" content="MyAspergersQuiz.com" />
   <meta property="og:locale" content="en_AU" />
-  <meta property="og:updated_time" content="2025-06-02T00:00:00+00:00" />
+  <meta property="og:updated_time" content="2025-06-02T00:00:00+10:00" />
 
-  {/* Twitter Card */}
+  {/* Twitter */}
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Take the Quiz – Autism Spectrum Traits Assessment" />
-  <meta name="twitter:description" content="Explore your mind in just 3–5 minutes. No sign-up needed. Private. Instant results." />
+  <meta name="twitter:title" content="Take the Autism Spectrum Traits Quiz" />
+  <meta name="twitter:description" content="Free, private, research-backed online quiz for autism spectrum traits. Instantly see your results." />
   <meta name="twitter:image" content="https://myaspergersquiz.com/og-quiz.jpg" />
-  <meta name="twitter:image:alt" content="Screenshot of the MyAspergersQuiz autism spectrum quiz." />
+  <meta name="twitter:image:alt" content="Screenshot of the MyAspergersQuiz autism spectrum quiz" />
   <meta name="twitter:site" content="@myaspergersquiz" />
   <meta name="twitter:creator" content="@myaspergersquiz" />
 
-  {/* PWA and Apple */}
+  {/* PWA/Apple/Brand */}
   <meta name="apple-mobile-web-app-title" content="MyAspergersQuiz" />
   <meta name="application-name" content="MyAspergersQuiz" />
   <meta name="theme-color" content="#4A90A4" />
@@ -160,110 +159,92 @@ export default function QuizPage() {
 
   {/* Performance */}
   <link rel="preload" href="/myaspergersquiz-logo.png" as="image" />
+  <link rel="preload" href="/fonts/Inter-var-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
 
-  {/* Structured Data */}
-  <script
-    type="application/ld+json"
-    dangerouslySetInnerHTML={{
-      __html: JSON.stringify({
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        "inLanguage": "en",
-        "mainEntity": [
-          {
-            "@type": "Question",
-            "name": "What is this quiz for?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "This quiz is designed to help individuals explore patterns in social behavior, communication, sensory processing, and routines often linked to neurodivergence."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "How long does it take?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "The quiz takes about 3–5 minutes to complete."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Is it private?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Yes, all answers are stored locally and never sent to a server."
-            }
-          }
-        ]
-      })
-    }}
-  />
-  <script
-    type="application/ld+json"
-    dangerouslySetInnerHTML={{
-      __html: JSON.stringify({
-        "@context": "https://schema.org",
-        "@type": "BreadcrumbList",
-        "inLanguage": "en",
-        "itemListElement": [
-          {
-            "@type": "ListItem",
-            "position": 1,
-            "name": "Home",
-            "item": "https://myaspergersquiz.com/"
-          },
-          {
-            "@type": "ListItem",
-            "position": 2,
-            "name": "Quiz",
-            "item": "https://myaspergersquiz.com/quiz"
-          }
-        ]
-      })
-    }}
-  />
-  <script
-    type="application/ld+json"
-    dangerouslySetInnerHTML={{
-      __html: JSON.stringify({
-        "@context": "https://schema.org",
-        "@type": "Quiz",
-        "name": "Autism Spectrum Traits Quiz",
-        "description": "A 40-question, research-informed quiz to help you explore your social, sensory, and routine patterns.",
-        "about": {
-          "@type": "Thing",
-          "name": "Autism Spectrum Traits"
-        },
-        "provider": {
-          "@type": "Organization",
-          "name": "MyAspergersQuiz",
-          "url": "https://myaspergersquiz.com/"
-        },
-        "inLanguage": "en",
-        "author": {
-          "@type": "Organization",
-          "name": "MyAspergersQuiz",
-          "url": "https://myaspergersquiz.com/"
-        }
-      })
-    }}
-  />
-  <script
-    type="application/ld+json"
-    dangerouslySetInnerHTML={{
-      __html: JSON.stringify({
-        "@context": "https://schema.org",
+  {/* JSON-LD: Quiz Schema */}
+  <script type="application/ld+json">
+    {`{
+      "@context": "https://schema.org",
+      "@type": "Quiz",
+      "name": "Autism Spectrum Traits Quiz",
+      "description": "A science-based, private online quiz to explore your social, sensory, and routine patterns. Get instant results in minutes.",
+      "about": {
+        "@type": "Thing",
+        "name": "Autism Spectrum Traits"
+      },
+      "provider": {
         "@type": "Organization",
         "name": "MyAspergersQuiz",
-        "url": "https://myaspergersquiz.com/",
-        "logo": "https://myaspergersquiz.com/myaspergersquiz-logo.png",
-        "sameAs": [
-          "https://twitter.com/myaspergersquiz"
-        ],
-        "inLanguage": "en"
-      })
-    }}
-  />
+        "url": "https://myaspergersquiz.com/"
+      },
+      "inLanguage": "en",
+      "audience": {
+        "@type": "Audience",
+        "audienceType": "People interested in self-discovery, autism, and neurodiversity"
+      }
+    }`}
+  </script>
+  {/* JSON-LD: FAQPage */}
+  <script type="application/ld+json">
+    {`{
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Is this quiz free and private?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, MyAspergersQuiz is free, private, and no registration is required unless you want to save your results."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How long does it take?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Typically takes 3–5 minutes to complete all 40 questions."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Who is this quiz for?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The quiz is suitable for adults and older teens seeking self-insight into autism traits. Not a diagnosis."
+          }
+        }
+      ]
+    }`}
+  </script>
+  {/* JSON-LD: BreadcrumbList */}
+  <script type="application/ld+json">
+    {`{
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://myaspergersquiz.com/" },
+        { "@type": "ListItem", "position": 2, "name": "Quiz", "item": "https://myaspergersquiz.com/quiz" }
+      ]
+    }`}
+  </script>
+  {/* JSON-LD: Organization */}
+  <script type="application/ld+json">
+    {`{
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "MyAspergersQuiz",
+      "url": "https://myaspergersquiz.com/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://myaspergersquiz.com/myaspergersquiz-logo.png",
+        "width": 32,
+        "height": 32,
+        "caption": "MyAspergersQuiz logo"
+      },
+      "sameAs": ["https://twitter.com/myaspergersquiz"]
+    }`}
+  </script>
 </Head>
       <main
         className="quiz-container"

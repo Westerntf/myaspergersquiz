@@ -173,61 +173,148 @@ export default function ResultsPage() {
 
   return (
     <>
-      <Head>
-        <title>Results – Autism Traits Summary | MyAspergersQuiz.com</title>
-        <meta
-          name="description"
-          content="See your personalized breakdown of social, sensory, and behavioral traits."
-        />
-        <meta property="og:title" content="Your Autism Traits Results – See Your Summary" />
-        <meta
-          property="og:description"
-          content="A private, science-informed summary of your unique traits."
-        />
-        <meta property="og:image" content="https://myaspergersquiz.com/og-results.jpg" />
-        <meta property="og:url" content="https://myaspergersquiz.com/results" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Your Autism Traits Results – See Your Summary" />
-        <meta
-          name="twitter:description"
-          content="Explore your traits with a private, science-based quiz."
-        />
-        <meta name="twitter:image" content="https://myaspergersquiz.com/og-results.jpg" />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "Article",
-              mainEntityOfPage: {
-                "@type": "WebPage",
-                "@id": "https://myaspergersquiz.com/results",
-              },
-              headline: "Your Autism Traits Results – See Your Summary",
-              description:
-                "A professional and respectful review of your unique communication, sensory, and behavioral patterns.",
-              image: "https://myaspergersquiz.com/og-results.jpg",
-              author: {
-                "@type": "Organization",
-                name: "MyAspergersQuiz.com",
-              },
-              publisher: {
-                "@type": "Organization",
-                name: "MyAspergersQuiz.com",
-                logo: {
-                  "@type": "ImageObject",
-                  url: "https://myaspergersquiz.com/logo.png",
-                },
-              },
-              datePublished: "2025-05-25",
-              dateModified: new Date().toISOString().split("T")[0],
-            }),
-          }}
-        />
-        <link rel="canonical" href="https://myaspergersquiz.com/results" />
-      </Head>
+<Head>
+  {/* Primary SEO */}
+  <title>Your Results | Autism & Asperger’s Trait Quiz – MyAspergersQuiz.com</title>
+  <meta name="description" content="See your private, science-based autism and Asperger’s trait summary. Instant results with trait breakdown, insights, and next steps. Discover your unique neurodivergent profile." />
+  <meta name="keywords" content="autism results, aspergers results, autism trait quiz, quiz outcome, neurodivergent results, trait analysis, autism assessment, spectrum profile, personalized autism quiz, MyAspergersQuiz.com" />
+  <meta name="author" content="MyAspergersQuiz Team" />
+  <meta name="copyright" content="MyAspergersQuiz.com" />
+  <meta name="subject" content="Personal Autism Quiz Results" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <meta name="referrer" content="origin-when-cross-origin" />
+  <meta name="theme-color" content="#31758a" />
+  <meta httpEquiv="content-language" content="en" />
+  <link rel="canonical" href="https://myaspergersquiz.com/results" />
+  <link rel="alternate" href="https://myaspergersquiz.com/results" hrefLang="en-au" />
+  <link rel="alternate" href="https://myaspergersquiz.com/results" hrefLang="en-us" />
+  <link rel="alternate" href="https://myaspergersquiz.com/results" hrefLang="x-default" />
 
-      <main
+  {/* Open Graph / Facebook / LinkedIn */}
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Your Results – Autism & Asperger’s Quiz Outcome" />
+  <meta property="og:description" content="A private, research-based trait summary. See your personalized spectrum profile instantly and get next steps for self-discovery." />
+  <meta property="og:image" content="https://myaspergersquiz.com/og-results.jpg" />
+  <meta property="og:image:alt" content="Results summary preview from MyAspergersQuiz.com" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:url" content="https://myaspergersquiz.com/results" />
+  <meta property="og:site_name" content="MyAspergersQuiz.com" />
+  <meta property="og:locale" content="en_AU" />
+  <meta property="article:section" content="Results" />
+  <meta property="article:author" content="MyAspergersQuiz Team" />
+  <meta property="article:published_time" content="2025-05-25T09:00:00+10:00" />
+  <meta property="article:modified_time" content={new Date().toISOString()} />
+
+  {/* Twitter/X */}
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Your Results – Autism & Asperger’s Quiz Outcome" />
+  <meta name="twitter:description" content="Discover your unique neurodivergent strengths and insights. View your results and next steps with MyAspergersQuiz.com." />
+  <meta name="twitter:image" content="https://myaspergersquiz.com/og-results.jpg" />
+  <meta name="twitter:image:alt" content="Preview of your quiz results from MyAspergersQuiz.com" />
+  <meta name="twitter:site" content="@MyAspergersQuiz" />
+  <meta name="twitter:creator" content="@MyAspergersQuiz" />
+
+  {/* Brand / PWA */}
+  <meta name="apple-mobile-web-app-title" content="MyAspergersQuiz" />
+  <meta name="application-name" content="MyAspergersQuiz" />
+  <link rel="icon" href="/myaspergersquiz-logo.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
+
+  {/* Performance */}
+  <link rel="preload" href="/myaspergersquiz-logo.png" as="image" />
+  <link rel="preload" href="/fonts/Inter-var-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+
+  {/* JSON-LD: Article, FAQPage, BreadcrumbList, Organization */}
+  <script type="application/ld+json">{`
+    {
+      "@context": "https://schema.org",
+      "@type": ["Article", "FAQPage"],
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://myaspergersquiz.com/results"
+      },
+      "headline": "Your Results – Personalized Autism & Asperger’s Trait Summary",
+      "description": "Private summary of your autism spectrum traits, including social, sensory, routine, communication, and focus strengths.",
+      "image": "https://myaspergersquiz.com/og-results.jpg",
+      "publisher": {
+        "@type": "Organization",
+        "name": "MyAspergersQuiz.com",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://myaspergersquiz.com/myaspergersquiz-logo.png"
+        }
+      },
+      "datePublished": "2025-05-25",
+      "dateModified": "${new Date().toISOString().split("T")[0]}",
+      "about": [
+        "autism",
+        "Asperger's",
+        "trait analysis",
+        "neurodiversity",
+        "self-assessment",
+        "autism spectrum"
+      ],
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "How accurate is this quiz?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "It’s based on research-backed questions but not a clinical diagnosis. Use it for self-reflection."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I share my results?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "You’re welcome to share your overall score, and if you purchase the full report, you can share your detailed trait breakdowns."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How quickly will I get my Full Report?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Immediately after purchase, you’ll be redirected to download your PDF in seconds."
+          }
+        }
+      ]
+    }
+  `}</script>
+  <script type="application/ld+json">{`
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://myaspergersquiz.com/" },
+        { "@type": "ListItem", "position": 2, "name": "Results", "item": "https://myaspergersquiz.com/results" }
+      ]
+    }
+  `}</script>
+  <script type="application/ld+json">{`
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "MyAspergersQuiz",
+      "url": "https://myaspergersquiz.com/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://myaspergersquiz.com/myaspergersquiz-logo.png",
+        "width": 32,
+        "height": 32,
+        "caption": "MyAspergersQuiz logo"
+      },
+      "sameAs": ["https://twitter.com/myaspergersquiz"]
+    }
+  `}</script>
+</Head>
+
+      <main role="main" aria-label="Quiz Results Summary"
         style={{
           background: "#fdfdfd",
           color: "#1a1a1a",
@@ -236,37 +323,45 @@ export default function ResultsPage() {
           boxSizing: "border-box",
         }}
       >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: "1rem",
-            marginBottom: "1rem",
-            flexWrap: "wrap",
-          }}
+        <article
+          itemScope
+          itemType="https://schema.org/Article"
+          aria-label="Quiz Results Article"
+          style={{ margin: "0 auto", maxWidth: 850 }}
         >
-          <img
-            src="/myaspergersquiz-logo.png"
-            alt="MyAspergersQuiz Logo"
-            style={{ height: "50px", width: "50px" }}
-          />
-          <h1 style={{ fontSize: "2.5rem", color: "#31758a", margin: 0 }}>
-            Your Quiz Results
-          </h1>
-        </div>
-
-        <div
-          role="region"
-          aria-labelledby="personalized-insights"
-          style={{
-            background: "#ffffff",
-            borderRadius: "10px",
-            padding: "2rem",
-            border: "1px solid #d9e4e8",
-            boxShadow: "0 2px 6px rgba(49, 117, 138, 0.05)",
-          }}
-        >
+          <header>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "1rem",
+                marginBottom: "1rem",
+                flexWrap: "wrap",
+              }}
+            >
+              <img
+                src="/myaspergersquiz-logo.png"
+                alt="MyAspergersQuiz Logo"
+                style={{ height: "50px", width: "50px" }}
+              />
+              <h1 style={{ fontSize: "2.5rem", color: "#31758a", margin: 0 }}>
+                Your Quiz Results
+              </h1>
+            </div>
+          </header>
+          <section aria-labelledby="personalized-insights">
+            <div
+              role="region"
+              aria-labelledby="personalized-insights"
+              style={{
+                background: "#ffffff",
+                borderRadius: "10px",
+                padding: "2rem",
+                border: "1px solid #d9e4e8",
+                boxShadow: "0 2px 6px rgba(49, 117, 138, 0.05)",
+              }}
+            >
           {summary.level !== null && (
             <>
               <div style={{
@@ -901,7 +996,42 @@ export default function ResultsPage() {
               </div>
             </>
           )}
-        </div>
+            </div>
+          </section>
+          <footer style={{ marginTop: "2.5rem" }}>
+            <nav aria-label="Breadcrumb">
+              <ol
+                itemScope
+                itemType="https://schema.org/BreadcrumbList"
+                style={{ display: "flex", gap: "0.5rem", listStyle: "none", padding: 0, margin: 0 }}
+              >
+                <li
+                  itemProp="itemListElement"
+                  itemScope
+                  itemType="https://schema.org/ListItem"
+                  style={{ display: "flex", alignItems: "center" }}
+                >
+                  <a href="/" itemProp="item">
+                    <span itemProp="name">Home</span>
+                  </a>
+                  <meta itemProp="position" content="1" />
+                  <span aria-hidden="true" style={{ margin: "0 0.5rem" }}>/</span>
+                </li>
+                <li
+                  itemProp="itemListElement"
+                  itemScope
+                  itemType="https://schema.org/ListItem"
+                  style={{ display: "flex", alignItems: "center" }}
+                >
+                  <a href="/results" itemProp="item">
+                    <span itemProp="name">Results</span>
+                  </a>
+                  <meta itemProp="position" content="2" />
+                </li>
+              </ol>
+            </nav>
+          </footer>
+        </article>
       </main>
     </>
   );

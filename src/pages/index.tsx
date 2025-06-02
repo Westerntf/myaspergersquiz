@@ -29,35 +29,186 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Free Online Autism Traits Quiz | MyAspergersQuiz.com</title>
-        <meta
-          name="description"
-          content="Take a free, research-informed quiz to explore traits commonly associated with autism. Instant results. Private and easy to understand."
-        />
-        <meta property="og:title" content="Discover Your Traits – Free Autism Spectrum Quiz" />
-        <meta
-          property="og:description"
-          content="Curious about how your mind works? Take a free quiz and explore social, sensory, and cognitive patterns linked with autism traits."
-        />
-        <meta property="og:image" content="https://myaspergersquiz.com/og-home.jpg" />
-        <meta property="og:url" content="https://myaspergersquiz.com/" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Free Autism Spectrum Traits Quiz" />
-        <meta
-          name="twitter:description"
-          content="Take a 3–5 minute quiz and explore how your traits align with patterns found in autism."
-        />
-        <meta name="twitter:image" content="https://myaspergersquiz.com/og-home.jpg" />
-        <link rel="canonical" href="https://myaspergersquiz.com/" />
+  <title>Free Online Autism Traits Quiz | MyAspergersQuiz.com</title>
+  <meta name="description" content="Science-based, private, and anonymous online autism/Asperger’s traits quiz. Free for all ages. Instantly see your results and unlock a full personalized report." />
+  <meta name="keywords" content="autism quiz, aspergers checklist, ASD self test online, private autism assessment, anonymous autism quiz, neurodivergent test, research-based autism screening, science-based, instant results, free ASD quiz, autism symptoms test, autism spectrum disorder, 2025 autism screener, autism questionnaire free, is my child autistic, asd online screener 2025" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://myaspergersquiz.com/" />
+  <link rel="alternate" href="https://myaspergersquiz.com/" hrefLang="en-au" />
+  <link rel="alternate" href="https://myaspergersquiz.com/" hrefLang="en-us" />
+  <link rel="alternate" href="https://myaspergersquiz.com/" hrefLang="x-default" />
+  <meta property="og:title" content="Discover Your Traits – Free Autism Spectrum Quiz" />
+  <meta property="og:description" content="Curious about how your mind works? Take a free quiz and explore social, sensory, and cognitive patterns linked with autism traits." />
+  <meta property="og:image" content="https://myaspergersquiz.com/og-home.jpg" />
+  <meta property="og:image:alt" content="MyAspergersQuiz logo and tagline" />
+  <meta property="og:url" content="https://myaspergersquiz.com/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="en_AU" />
+  <meta property="og:site_name" content="MyAspergersQuiz.com" />
+  <meta property="og:updated_time" content="2025-06-02T00:00:00+10:00" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Free Autism Spectrum Traits Quiz" />
+  <meta name="twitter:description" content="Take a 3–5 minute quiz and explore how your traits align with patterns found in autism." />
+  <meta name="twitter:image" content="https://myaspergersquiz.com/og-home.jpg" />
+  <meta name="twitter:image:alt" content="MyAspergersQuiz logo and tagline" />
+  <meta name="twitter:site" content="@myaspergersquiz" />
+  <meta name="twitter:creator" content="@myaspergersquiz" />
+  <meta name="twitter:label1" content="Quiz duration" />
+  <meta name="twitter:data1" content="5 minutes" />
+  <meta name="twitter:label2" content="Privacy" />
+  <meta name="twitter:data2" content="Anonymous, science-based" />
+  <meta httpEquiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="language" content="English" />
+  <meta name="author" content="MyAspergersQuiz Team" />
+  <meta name="copyright" content="MyAspergersQuiz.com" />
+  <meta name="theme-color" content="#4A90A4" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="MyAspergersQuiz" />
+  <meta name="format-detection" content="telephone=no" />
+  {/* Optional: Search engine verification meta tags */}
+  <meta name="google-site-verification" content="your-google-site-verification-code-here" />
+  <meta name="msvalidate.01" content="your-bing-site-verification-code-here" />
+  <meta name="yandex-verification" content="your-yandex-verification-code-here" />
+  <meta name="revisit-after" content="7 days" />
+  <meta name="distribution" content="global" />
+  {/* Preloads */}
+  <link rel="preload" as="image" href="/myaspergersquiz-logo.png" />
+  <link rel="preload" href="/fonts/Inter-var-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+  {/* -- Structured Data -- */}
+  <script type="application/ld+json" dangerouslySetInnerHTML={{
+    __html: `{
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "url": "https://myaspergersquiz.com/",
+      "name": "MyAspergersQuiz",
+      "publisher": {
+        "@type": "Organization",
+        "name": "MyAspergersQuiz Team",
+        "url": "https://myaspergersquiz.com/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://myaspergersquiz.com/myaspergersquiz-logo.png",
+          "width": 32,
+          "height": 32,
+          "caption": "MyAspergersQuiz logo"
+        }
+      },
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://myaspergersquiz.com/search?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }`
+  }} />
+  <script type="application/ld+json" dangerouslySetInnerHTML={{
+    __html: `{
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Is this autism quiz free and private?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes! The quiz is free, anonymous, and your answers are not stored unless you choose to save your results in your account."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I get a full report after the quiz?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "You get instant results. You can optionally unlock a detailed report with deeper insight and a downloadable PDF."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How long does the quiz take to complete?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The quiz typically takes about 5 minutes to complete."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is this quiz suitable for all ages?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, the quiz is designed for individuals aged 16 and older to explore their traits."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is this quiz accessible for screen readers?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, the quiz and all main features are designed to be accessible for screen readers and keyboard navigation. If you encounter any issues, please let us know."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do you sell or share my data?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. We do not sell or share your data. Your responses are private and not stored unless you create an account and choose to save your results."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I take this quiz on my phone?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Absolutely! The quiz is fully mobile-friendly and works on all modern smartphones and tablets."
+          }
+        }
+      ]
+    }`
+  }} />
+  <script type="application/ld+json" dangerouslySetInnerHTML={{
+    __html: `{
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://myaspergersquiz.com/" },
+        { "@type": "ListItem", "position": 2, "name": "Quiz", "item": "https://myaspergersquiz.com/quiz" },
+        { "@type": "ListItem", "position": 3, "name": "Full Report", "item": "https://myaspergersquiz.com/full-report" }
+      ]
+    }`
+  }} />
+  <script type="application/ld+json" dangerouslySetInnerHTML={{
+    __html: `{
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "MyAspergersQuiz Team",
+      "url": "https://myaspergersquiz.com/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://myaspergersquiz.com/myaspergersquiz-logo.png",
+        "width": 32,
+        "height": 32,
+        "caption": "MyAspergersQuiz logo"
+      },
+      "sameAs": [
+        "https://twitter.com/myaspergersquiz"
+      ]
+    }`
+  }} />
       </Head>
-      <main style={{
-        background: "#fdfdfd",
-        color: "#1a1a1a",
-        padding: "2rem 1rem",
-        fontFamily: "'Inter', sans-serif",
-        width: "100vw",
-        boxSizing: "border-box"
-      }}>
+      <main
+        id="main-content"
+        tabIndex={-1}
+        style={{
+          background: "#fdfdfd",
+          color: "#1a1a1a",
+          padding: "2rem 1rem",
+          fontFamily: "'Inter', sans-serif",
+          width: "100vw",
+          boxSizing: "border-box"
+        }}
+      >
         <div style={{
           backgroundColor: "#eaf6f8",
           border: "1px solid #4A90A4",
@@ -118,6 +269,14 @@ export default function Home() {
         </span>
       </div>
       <p style={{ fontSize: "0.9rem", color: "#4A90A4", margin: "0 0 0.75rem 0", lineHeight: "1.5" }}>Explore with Ease. Reflect with Confidence.</p>
+      {/* Visually hidden breadcrumb navigation for SEO & accessibility */}
+      <nav aria-label="Breadcrumb" style={{ position: "absolute", left: "-10000px", top: "auto", width: "1px", height: "1px", overflow: "hidden" }}>
+        <ol>
+          <li><a href="/">Home</a></li>
+          <li><a href="/quiz">Quiz</a></li>
+          <li><a href="/full-report">Full Report</a></li>
+        </ol>
+      </nav>
     </div>
     <div style={{ textAlign: "center", marginTop: "1.25rem" }}>
       <h1 style={{
@@ -149,24 +308,28 @@ export default function Home() {
         Discover how your traits align with patterns in social, sensory, and behavioral dimensions.
       </p>
       <a href="/quiz" style={{ textDecoration: "none" }}>
-        <button style={{
-          background: "#4A90A4",
-          color: "#fff",
-          border: "none",
-          borderRadius: "6px",
-          padding: "1rem 2.4rem",
-          width: "100%",
-          maxWidth: "280px",
-          margin: "0 auto",
-          fontSize: "1rem",
-          cursor: "pointer",
-          boxShadow: "0 2px 6px rgba(0, 0, 0, 0.1)",
-          transition: "background 0.2s ease",
-          marginTop: "1rem",
-          marginBottom: "1.25rem",
-          display: "block"
-        }} onMouseOver={(e) => e.currentTarget.style.background = '#3b7183'}
-          onMouseOut={(e) => e.currentTarget.style.background = '#4A90A4'}>
+        <button
+          aria-label="Start the Autism Traits Quiz"
+          style={{
+            background: "#4A90A4",
+            color: "#fff",
+            border: "none",
+            borderRadius: "6px",
+            padding: "1rem 2.4rem",
+            width: "100%",
+            maxWidth: "280px",
+            margin: "0 auto",
+            fontSize: "1rem",
+            cursor: "pointer",
+            boxShadow: "0 2px 6px rgba(0, 0, 0, 0.1)",
+            transition: "background 0.2s ease",
+            marginTop: "1rem",
+            marginBottom: "1.25rem",
+            display: "block"
+          }}
+          onMouseOver={(e) => e.currentTarget.style.background = '#3b7183'}
+          onMouseOut={(e) => e.currentTarget.style.background = '#4A90A4'}
+        >
           Start the Quiz
         </button>
       </a>
@@ -301,6 +464,12 @@ export default function Home() {
     </div>
   </div>
       </main>
+      <footer style={{ textAlign: "center", color: "#4A90A4", fontSize: "0.9rem", marginTop: "3rem", marginBottom: "1.5rem" }}>
+        &copy; {new Date().getFullYear()} MyAspergersQuiz.com &mdash;
+        <a href="/privacy" style={{ color: "#4A90A4", margin: "0 0.75em" }}>Privacy</a>
+        <a href="/terms" style={{ color: "#4A90A4", margin: "0 0.75em" }}>Terms</a>
+        <a href="/contact" style={{ color: "#4A90A4", margin: "0 0.75em" }}>Contact</a>
+      </footer>
     </>
   );
 }

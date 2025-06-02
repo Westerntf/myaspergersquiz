@@ -1,4 +1,21 @@
+# *
 User-agent: *
 Allow: /
 
+# *
+User-agent: *
+Disallow: /admin
+Disallow: /dashboard
+Disallow: /api
+Disallow: /secret-page
+Disallow: /dev
+Disallow: /drafts
+Disallow: /404
+Disallow: /500
+Disallow: /maintenance
+
+# Host
+Host: https://myaspergersquiz.com
+
+# Sitemaps
 Sitemap: https://myaspergersquiz.com/sitemap.xml

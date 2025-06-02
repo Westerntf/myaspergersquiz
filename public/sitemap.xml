@@ -1,35 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://myaspergersquiz.com/</loc>
-    <lastmod>2025-05-25</lastmod>
-  </url>
-  <url>
-    <loc>https://myaspergersquiz.com/quiz</loc>
-    <lastmod>2025-05-25</lastmod>
-  </url>
-  <url>
-    <loc>https://myaspergersquiz.com/results</loc>
-    <lastmod>2025-05-25</lastmod>
-  </url>
-  <url>
-    <loc>https://myaspergersquiz.com/full-report</loc>
-    <lastmod>2025-05-25</lastmod>
-  </url>
-  <url>
-    <loc>https://myaspergersquiz.com/resources</loc>
-    <lastmod>2025-05-25</lastmod>
-  </url>
-  <url>
-    <loc>https://myaspergersquiz.com/privacy</loc>
-    <lastmod>2025-05-25</lastmod>
-  </url>
-  <url>
-    <loc>https://myaspergersquiz.com/terms</loc>
-    <lastmod>2025-05-25</lastmod>
-  </url>
-  <url>
-    <loc>https://myaspergersquiz.com/contact</loc>
-    <lastmod>2025-05-25</lastmod>
-  </url>
-</urlset>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<sitemap><loc>https://myaspergersquiz.com/sitemap-0.xml</loc></sitemap>
+<sitemap><loc>https://myaspergersquiz.com/sitemap.xml</loc></sitemap>
+</sitemapindex>

@@ -1,0 +1,16 @@
+{
+  "name": "MyAspergersQuiz",
+  "short_name": "MAQ",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fdfdfd",
+  "theme_color": "#4A90A4",
+  "description": "A private, science-based online autism traits quiz for all ages.",
+  "icons": [
+    {
+      "src": "/myaspergersquiz-logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
+}

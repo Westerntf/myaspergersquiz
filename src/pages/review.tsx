@@ -7,6 +7,7 @@ import { getOverallLevel } from "../utils/getOverallLevel";
 import { flagQuestions } from "../utils/flagQuestions";
 import { getAuth } from "firebase/auth";
 import { getFirestore, setDoc, doc } from "firebase/firestore";
+import Head from "next/head";
 
 export default function ReviewPage() {
   const [answers, setAnswers] = useState<number[]>([]);
@@ -68,15 +69,37 @@ export default function ReviewPage() {
   };
 
   return (
-    <main style={   {
-      padding: "4rem 1rem",
-      maxWidth: "700px",
-      margin: "0 auto",
-      fontFamily: "'Inter', sans-serif",
-      color: "#1a1a1a",
-      background: "#fdfdfd",
-      minHeight: "100vh"
-    }}>
+    <>
+      <Head>
+        <title>Review Your Quiz Answers | MyAspergersQuiz</title>
+        <meta
+          name="description"
+          content="Check and edit your responses before submitting your MyAspergersQuiz. Ensure accuracy for a more personalized report."
+        />
+        <meta name="keywords" content="aspergers, quiz, review answers, autism spectrum, neurodiversity, edit quiz, online assessment" />
+        <meta property="og:title" content="Review Your Quiz Answers | MyAspergersQuiz" />
+        <meta property="og:description" content="Check and edit your responses before submitting your MyAspergersQuiz. Ensure accuracy for a more personalized report." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://www.myaspergersquiz.com/review" />
+        <meta property="og:site_name" content="MyAspergersQuiz" />
+        <meta property="og:image" content="https://www.myaspergersquiz.com/og-image.png" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Review Your Quiz Answers | MyAspergersQuiz" />
+        <meta name="twitter:description" content="Check and edit your responses before submitting your MyAspergersQuiz. Ensure accuracy for a more personalized report." />
+        <meta name="twitter:image" content="https://www.myaspergersquiz.com/og-image.png" />
+        <link rel="canonical" href="https://www.myaspergersquiz.com/review" />
+        <meta name="robots" content="index, follow" />
+        <html lang="en" />
+      </Head>
+      <main aria-label="Review your answers" style={   {
+        padding: "4rem 1rem",
+        maxWidth: "700px",
+        margin: "0 auto",
+        fontFamily: "'Inter', sans-serif",
+        color: "#1a1a1a",
+        background: "#fdfdfd",
+        minHeight: "100vh"
+      }}>
       <div style={{
         display: "flex",
         justifyContent: "space-between",
@@ -168,6 +191,7 @@ export default function ReviewPage() {
           Confirm and Proceed to Payment
         </button>
       </div>
-    </main>
+      </main>
+    </>
   );
 }

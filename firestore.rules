@@ -8,10 +8,10 @@ service cloud.firestore {
       allow write: if false;
     }
 
-    // Quiz runs - users can only read/write their own quiz run sessions
-    match /quizRuns/{sessionId} {
-      allow read, write: if request.auth != null && request.resource.data.uid == request.auth.uid;
-    }
+ // Quiz runs - users can only read/write their own quiz run sessions
+match /quizRuns/{sessionId} {
+  allow read, write: if request.auth != null && resource.data.uid == request.auth.uid;
+}
 
     // Reports - users can only read/write their own reports under their userId
     match /reports/{userId}/sessions/{sessionId} {

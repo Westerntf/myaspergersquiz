@@ -300,51 +300,146 @@ useEffect(() => {
         }
         /* Only apply PDF layout for html2pdf.js output (it uses print media) */
       `}</style>
-      <Head>
-        <title>Full Report – Detailed Autism Trait Analysis | MyAspergersQuiz.com</title>
-        <meta name="description" content="Access your full diagnostic-style report, including trait analysis, self-awareness insights, and personalized tools." />
-        <meta property="og:title" content="Full Report – Detailed Autism Trait Analysis" />
-        <meta property="og:description" content="A detailed breakdown of your autism trait scores, personal reflections, and helpful resources – based on your quiz results." />
-        <meta property="og:image" content="https://myaspergersquiz.com/og-full-report.jpg" />
-        <meta property="og:url" content="https://myaspergersquiz.com/full-report" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Full Report – Detailed Autism Trait Analysis" />
-        <meta name="twitter:description" content="Explore your complete trait profile and gain meaningful insights to help on your self-understanding journey." />
-        <meta name="twitter:image" content="https://myaspergersquiz.com/og-full-report.jpg" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        {/* Structured data for SEO */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "Article",
-              "mainEntityOfPage": {
-                "@type": "WebPage",
-                "@id": "https://myaspergersquiz.com/full-report"
-              },
-              "headline": "Full Report – Detailed Autism Trait Analysis",
-              "description": "A personalized summary of autism-related traits including strengths, insights, and helpful tools. Based on quiz responses from MyAspergersQuiz.com.",
-              "image": "https://myaspergersquiz.com/og-full-report.jpg",
-              "author": {
-                "@type": "Organization",
-                "name": "MyAspergersQuiz.com"
-              },
-              "publisher": {
-                "@type": "Organization",
-                "name": "MyAspergersQuiz.com",
-                "logo": {
-                  "@type": "ImageObject",
-                  "url": "https://myaspergersquiz.com/logo.png"
-                }
-              },
-              "datePublished": "2025-05-25",
-              "dateModified": new Date().toISOString().split("T")[0]
-            })
-          }}
-        />
-        <link rel="canonical" href="https://myaspergersquiz.com/full-report" />
-      </Head>
+<Head>
+  {/* Primary SEO */}
+  <title>Full Diagnostic Report | Autism & Asperger’s Trait Insights – MyAspergersQuiz.com</title>
+  <meta name="description" content="Your complete, science-backed autism and Asperger’s full report: trait analysis, strengths, self-awareness reflections, and personalized recommendations. Private, instant, and downloadable as PDF." />
+  <meta name="keywords" content="autism report, autism quiz results, Asperger's report, diagnostic report, spectrum traits, neurodiversity, autism test, ASD, quiz insights, trait breakdown, personalized autism report, full assessment, MyAspergersQuiz.com" />
+  <meta name="author" content="MyAspergersQuiz Team" />
+  <meta name="copyright" content="MyAspergersQuiz.com" />
+  <meta name="subject" content="Personal Autism Spectrum Full Report" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <meta name="referrer" content="origin-when-cross-origin" />
+  <meta name="theme-color" content="#31758a" />
+  <meta httpEquiv="content-language" content="en" />
+  <link rel="canonical" href="https://myaspergersquiz.com/full-report" />
+  <link rel="alternate" href="https://myaspergersquiz.com/full-report" hrefLang="en-au" />
+  <link rel="alternate" href="https://myaspergersquiz.com/full-report" hrefLang="en-us" />
+  <link rel="alternate" href="https://myaspergersquiz.com/full-report" hrefLang="x-default" />
+
+  {/* Open Graph / Facebook / LinkedIn */}
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Full Report – Personalized Autism & Asperger’s Insights" />
+  <meta property="og:description" content="Get your private, in-depth autism spectrum results with trait analysis, insights, strengths, and personalized recommendations. Download as PDF." />
+  <meta property="og:image" content="https://myaspergersquiz.com/og-full-report.jpg" />
+  <meta property="og:image:alt" content="Screenshot of a full autism report from MyAspergersQuiz.com" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:url" content="https://myaspergersquiz.com/full-report" />
+  <meta property="og:site_name" content="MyAspergersQuiz.com" />
+  <meta property="og:locale" content="en_AU" />
+  <meta property="article:section" content="Results" />
+  <meta property="article:author" content="MyAspergersQuiz Team" />
+  <meta property="article:published_time" content="2025-05-25T09:00:00+10:00" />
+  <meta property="article:modified_time" content={new Date().toISOString()} />
+
+  {/* Twitter/X */}
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Full Report – Personalized Autism & Asperger’s Insights" />
+  <meta name="twitter:description" content="Your unique spectrum report with insights, strengths, and trait breakdown. Instantly downloadable. Private and secure." />
+  <meta name="twitter:image" content="https://myaspergersquiz.com/og-full-report.jpg" />
+  <meta name="twitter:image:alt" content="Preview of your autism report from MyAspergersQuiz.com" />
+  <meta name="twitter:site" content="@MyAspergersQuiz" />
+  <meta name="twitter:creator" content="@MyAspergersQuiz" />
+
+  {/* Brand / PWA */}
+  <meta name="apple-mobile-web-app-title" content="MyAspergersQuiz" />
+  <meta name="application-name" content="MyAspergersQuiz" />
+  <link rel="icon" href="/myaspergersquiz-logo.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
+
+  {/* Performance */}
+  <link rel="preload" href="/myaspergersquiz-logo.png" as="image" />
+  <link rel="preload" href="/fonts/Inter-var-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+
+  {/* JSON-LD: Article, MedicalWebPage, FAQPage, BreadcrumbList, Organization */}
+  <script type="application/ld+json">{`
+    {
+      "@context": "https://schema.org",
+      "@type": ["Article", "MedicalWebPage", "FAQPage"],
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://myaspergersquiz.com/full-report"
+      },
+      "headline": "Full Report – Detailed Autism & Asperger’s Trait Analysis",
+      "description": "A personalized summary of autism and Asperger’s traits including strengths, insights, and helpful tools. Instantly generated from your quiz results at MyAspergersQuiz.com.",
+      "image": "https://myaspergersquiz.com/og-full-report.jpg",
+      "publisher": {
+        "@type": "Organization",
+        "name": "MyAspergersQuiz.com",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://myaspergersquiz.com/myaspergersquiz-logo.png"
+        }
+      },
+      "datePublished": "2025-05-25",
+      "dateModified": "${new Date().toISOString().split("T")[0]}",
+      "about": [
+        "autism",
+        "Asperger's",
+        "trait analysis",
+        "neurodiversity",
+        "self-assessment",
+        "autism spectrum"
+      ],
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Is this autism report a diagnosis?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. This full report is educational and for self-reflection only. For a clinical diagnosis, please consult a licensed professional."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I download my report?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Click the 'Download PDF' button on your report page to save or print your personalized summary instantly."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Are my results private?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, your report and answers are private and protected. Only you can view and download your full report."
+          }
+        }
+      ]
+    }
+  `}</script>
+  <script type="application/ld+json">{`
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://myaspergersquiz.com/" },
+        { "@type": "ListItem", "position": 2, "name": "Full Report", "item": "https://myaspergersquiz.com/full-report" }
+      ]
+    }
+  `}</script>
+  <script type="application/ld+json">{`
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "MyAspergersQuiz",
+      "url": "https://myaspergersquiz.com/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://myaspergersquiz.com/myaspergersquiz-logo.png",
+        "width": 32,
+        "height": 32,
+        "caption": "MyAspergersQuiz logo"
+      },
+      "sameAs": ["https://twitter.com/myaspergersquiz"]
+    }
+  `}</script>
+</Head>
       <main
         role="main"
         aria-label="Full Diagnostic Report"
