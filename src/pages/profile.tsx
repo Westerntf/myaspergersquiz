@@ -77,10 +77,15 @@ function ReportSummaryChart({ reports, className }: { reports: ReportDoc[]; clas
           <Legend
             verticalAlign="bottom"
             height={40}
-            wrapperStyle={{ fontWeight: 600, color: "#31758a" }}
+            wrapperStyle={{ fontWeight: 600, color: "#31758a", fontSize: 12 }}
             iconSize={14}
             layout="horizontal"
             align="center"
+            formatter={(value: string, entry: any) => {
+              const report = reports.find((r) => r.id === entry.payload?.id);
+              const shortId = report ? `${report.id.slice(0, 8)}...` : value;
+              return <span title={report?.id || value}>{`Session ${entry.index + 1} (${shortId})`}</span>;
+            }}
           />
         </RadarChart>
       </ResponsiveContainer>
