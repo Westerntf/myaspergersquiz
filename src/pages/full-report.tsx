@@ -136,80 +136,97 @@ export default function FullReportPage() {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  // --- ACCESS CHECK & DATA LOAD ---
-  useEffect(() => {
-    const init = async () => {
-      const user = auth.currentUser;
-      if (!user) {
-        router.replace("/login");
-        return;
-      }
+useEffect(() => {
+  const init = async () => {
+    const user = auth.currentUser;
+    if (!user) {
+      router.replace("/login");
+      return;
+    }
 
-      const sessionId = new URLSearchParams(window.location.search).get("sessionId");
-      if (typeof sessionId !== "string") {
+    const sessionId = new URLSearchParams(window.location.search).get("sessionId");
+    if (typeof sessionId !== "string") {
+      router.replace("/results");
+      return;
+    }
+
+    // Verify payment status
+    try {
+      const res = await fetch(`/api/verify-payment?uid=${user.uid}&sessionId=${sessionId}`);
+      const data = await res.json();
+      if (!data.paid) {
         router.replace("/results");
         return;
       }
+    } catch (err) {
+      console.error("Error verifying payment:", err);
+      router.replace("/results");
+      return;
+    }
 
-      // Verify payment status
-      try {
-        const res = await fetch(`/api/verify-payment?uid=${user.uid}&sessionId=${sessionId}`);
-        const data = await res.json();
-        if (!data.paid) {
-          router.replace("/results");
-          return;
-        }
-      } catch (err) {
-        console.error("Error verifying payment:", err);
-        router.replace("/results");
-        return;
+    // Fetch answers
+    let answers: number[] | null = null;
+    try {
+      // Attempt to fetch from Firestore quizRuns/{sessionId}
+      const runDoc = await getDoc(doc(db, "quizRuns", sessionId));
+      if (runDoc.exists()) {
+        const runData = runDoc.data();
+        answers = runData.answers as number[];
       }
-
-      // Fetch answers
-      let answers: number[] | null = null;
-      try {
-        // Attempt to fetch from Firestore quizRuns/{sessionId}
-        const runDoc = await getDoc(doc(db, "quizRuns", sessionId));
-        if (runDoc.exists()) {
-          const runData = runDoc.data();
-          answers = runData.answers as number[];
-        }
-      } catch {
-        // Fallback to localStorage
-        const raw = localStorage.getItem("quizAnswers");
-        if (raw) {
-          answers = JSON.parse(raw) as number[];
-        }
+    } catch {
+      // Fallback to localStorage
+      const raw = localStorage.getItem("quizAnswers");
+      if (raw) {
+        answers = JSON.parse(raw) as number[];
       }
+    }
 
-      if (!answers || answers.length !== 40) {
-        console.error("Invalid or missing answers for session:", sessionId);
-        router.replace("/results");
-        return;
-      }
+    if (!answers || answers.length !== 40) {
+      console.error("Invalid or missing answers for session:", sessionId);
+      router.replace("/results");
+      return;
+    }
 
-      // Compute summary
-      const { total, traitScores } = calculateScore(answers);
-      const flags = flagQuestions.filter(qId => {
-        const val = answers[qId - 1];
-        return typeof val === "number" && val >= 0.67;
-      });
+    // Compute summary
+    const { total, traitScores } = calculateScore(answers);
+    const flags = flagQuestions.filter(qId => {
+      const val = answers[qId - 1];
+      return typeof val === "number" && val >= 0.67;
+    });
 
-      const roundedTraitScores = {
-        social: Math.round(traitScores.social),
-        sensory: Math.round(traitScores.sensory),
-        routine: Math.round(traitScores.routine),
-        communication: Math.round(traitScores.communication),
-        focus: Math.round(traitScores.focus),
-      };
-      const roundedTotal = Math.round(total);
-
-      setSummary({ total: roundedTotal, traitScores: roundedTraitScores, flags });
-      setLoading(false);
+    const roundedTraitScores = {
+      social: Math.round(traitScores.social),
+      sensory: Math.round(traitScores.sensory),
+      routine: Math.round(traitScores.routine),
+      communication: Math.round(traitScores.communication),
+      focus: Math.round(traitScores.focus),
     };
+    const roundedTotal = Math.round(total);
 
-    init();
-  }, [router]);
+    // --- NEW: Save this session's report to Firestore ---
+    try {
+      await setDoc(
+        doc(db, "reports", user.uid, "sessions", sessionId),
+        {
+          paid: true,
+          totalScore: roundedTotal,
+          traitScores: roundedTraitScores,
+          flags,
+          answers,
+          generatedAt: new Date(),
+        },
+        { merge: true }
+      );
+    } catch (error) {
+      console.error("Error saving report to Firestore:", error);
+    }
+
+    setSummary({ total: roundedTotal, traitScores: roundedTraitScores, flags });
+    setLoading(false);
+  };
+
+  init();
+}, [router]);
 
   useEffect(() => {
     setIsClient(true);

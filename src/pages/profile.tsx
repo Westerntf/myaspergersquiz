@@ -2,12 +2,20 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { auth, db } from "../lib/firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, getDocs, query, where, orderBy } from "firebase/firestore";
+
+type ReportDoc = {
+  id: string;
+  totalScore?: number;
+  traitScores?: Record<string, number>;
+  flags?: string[];
+  fullReportUrl?: string;
+};
 
 export default function ProfilePage() {
   const router = useRouter();
   const [userEmail, setUserEmail] = useState<string | null>(null);
-  const [report, setReport] = useState<any>(null);
+  const [reports, setReports] = useState<ReportDoc[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -23,21 +31,14 @@ export default function ProfilePage() {
 
       try {
         const sessionsRef = collection(db, "reports", user.uid, "sessions");
-        const q = query(sessionsRef, where("paid", "==", true));
+        const q = query(sessionsRef, where("paid", "==", true), orderBy("generatedAt", "desc"));
         const sessionSnaps = await getDocs(q);
-
-        type ReportDoc = {
-          id: string;
-          total?: number;
-          traitScores?: Record<string, number>;
-          flags?: string[];
-        };
 
         const allReports: ReportDoc[] = sessionSnaps.docs.map(docSnap => ({
           id: docSnap.id,
           ...(docSnap.data() as Omit<ReportDoc, "id">),
         }));
-        setReport(allReports);
+        setReports(allReports);
       } catch (error) {
         console.error("Error fetching reports:", error);
       }
@@ -76,13 +77,13 @@ export default function ProfilePage() {
 
       <hr style={{ margin: "1.5rem 0" }} />
 
-      {report && report.length > 0 ? (
+      {reports && reports.length > 0 ? (
         <>
           <h2 style={{ color: "#31758a" }}>Your Past Full Reports</h2>
-          {report.map((r: any) => (
+          {reports.map((r) => (
             <div key={r.id} style={{ marginBottom: "1.5rem", padding: "1rem", background: "#fff", borderRadius: "8px", boxShadow: "0 0 6px rgba(0,0,0,0.05)" }}>
               <p><strong>Session ID:</strong> {r.id}</p>
-              <p><strong>Total Score:</strong> {r.total}</p>
+              <p><strong>Total Score:</strong> {r.totalScore}</p>
               {r.traitScores ? (
                 <ul>
                   {Object.entries(r.traitScores).map(([trait, score]) => (
@@ -110,6 +111,26 @@ export default function ProfilePage() {
               >
                 View Full Report
               </a>
+              {r.fullReportUrl && (
+                <a
+                  href={r.fullReportUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    marginTop: "0.5rem",
+                    marginLeft: "0.5rem",
+                    display: "inline-block",
+                    padding: "0.5rem 1rem",
+                    backgroundColor: "#31758a",
+                    color: "#fff",
+                    borderRadius: "8px",
+                    textDecoration: "none",
+                    fontWeight: 600
+                  }}
+                >
+                  Download PDF Report
+                </a>
+              )}
             </div>
           ))}
         </>
@@ -118,26 +139,6 @@ export default function ProfilePage() {
           No full reports found yet.
         </p>
       )}
-
-      {/* PDF Download Button */}
-      <button
-        onClick={() => window.print()}
-        style={{
-          marginTop: "1rem",
-          marginRight: "1rem",
-          padding: "0.75rem 1.5rem",
-          backgroundColor: "#31758a",
-          color: "#fff",
-          border: "none",
-          borderRadius: "12px",
-          cursor: "pointer",
-          fontWeight: 600,
-          fontSize: "1rem",
-          boxShadow: "0 2px 6px rgba(0,0,0,0.1)"
-        }}
-      >
-        Download Report (PDF)
-      </button>
 
       {/* Dashboard Navigation Links */}
       <h3 style={{
