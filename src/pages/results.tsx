@@ -55,8 +55,10 @@ export default function ResultsPage() {
     let cancelled = false;
 
     const tryLoad = async () => {
-      let storedQuizId = localStorage.getItem("quizRunId");
-      setQuizId(storedQuizId);
+      // Prefer sessionId from query string
+      const urlSessionId = router.query.sessionId as string | undefined;
+      const storedQuizId = urlSessionId ?? localStorage.getItem("quizRunId");
+      setQuizId(storedQuizId ?? null);
 
       let answers: number[] | null = null;
       const storedAnswersRaw = localStorage.getItem("quizAnswers");
@@ -68,7 +70,7 @@ export default function ResultsPage() {
         }
       }
 
-      // If no answers found locally and user is logged in, try Firestore
+      // If no answers and have sessionId and user, try Firestore
       if ((!answers || answers.length !== 40) && user && storedQuizId) {
         try {
           const runDoc = await getDoc(doc(db, "quizRuns", storedQuizId));
@@ -83,7 +85,7 @@ export default function ResultsPage() {
         }
       }
 
-      // If we don't have answers, and we've tried fewer than 30 times (6 seconds), try again shortly
+      // Retry if no answers yet
       if ((!storedQuizId || !answers || answers.length === 0) && attempts < 30 && !cancelled) {
         attempts += 1;
         setTimeout(tryLoad, 200);
@@ -91,7 +93,7 @@ export default function ResultsPage() {
       }
 
       if (!storedQuizId || !answers || answers.length === 0) {
-        // After many retries, still nothing, redirect.
+        // After retries, redirect to home
         router.replace("/");
         return;
       }
@@ -120,7 +122,6 @@ export default function ResultsPage() {
 
     if (isClient) {
       tryLoad();
-      // On unmount, cancel any pending retry loop
       return () => { cancelled = true; };
     }
   }, [user, isClient, router]);

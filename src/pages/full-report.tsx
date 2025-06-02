@@ -7,7 +7,7 @@ import { flagQuestions } from "../utils/flagQuestions";
 import { getSelfAwarenessLevel } from "../utils/getSelfAwarenessLevel";
 import { getNaturalStrengthLevel } from "../utils/getNaturalStrengthLevel";
 import { getFlaggedLevel } from "../utils/getFlaggedLevel";
-
+import { onAuthStateChanged, User } from "firebase/auth";
 import FlaggedLevel1 from "../components/insights/flagged-traits/level-1";
 import FlaggedLevel2 from "../components/insights/flagged-traits/level-2";
 import FlaggedLevel3 from "../components/insights/flagged-traits/level-3";
@@ -120,39 +120,61 @@ const tableCellStyle = { padding: "0.75rem", textAlign: "center", borderBottom: 
 const linkStyle = { color: "#4e7fff", textDecoration: "none" };
 
 
+// Define the Summary type above the component
+type Summary = {
+  total: number;
+  traitScores: {
+    social: number;
+    sensory: number;
+    routine: number;
+    communication: number;
+    focus: number;
+  };
+  flags: number[];
+};
+
 export default function FullReportPage() {
-  const [isClient, setIsClient] = useState(false);
-  const [summary, setSummary] = useState<{
-    total: number;
-    traitScores: { social: number; sensory: number; routine: number; communication: number; focus: number };
-    flags: number[];
-  }>({
+  // Auth state handling
+  const [user, setUser] = useState<User | null>(null);
+  const [authLoading, setAuthLoading] = useState(true);
+
+  // Summary state (initial values)
+  const [summary, setSummary] = useState<Summary>({
     total: 0,
     traitScores: { social: 0, sensory: 0, routine: 0, communication: 0, focus: 0 },
     flags: [],
   });
-
-  const reportRef = useRef<HTMLDivElement>(null);
+  const reportRef = useRef(null);
   const [loading, setLoading] = useState(true);
+  const [isClient, setIsClient] = useState(false);
   const router = useRouter();
 
-useEffect(() => {
-  const init = async () => {
-    const user = auth.currentUser;
-    if (!user) {
-      router.replace("/login");
-      return;
-    }
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (u: User | null) => {
+      setUser(u);
+      setAuthLoading(false);
+    });
+    return unsubscribe;
+  }, []);
 
+  // --- MAIN LOGIC (WAIT FOR AUTH) ---
+useEffect(() => {
+  if (authLoading) return; // Wait for Firebase Auth to load
+
+  if (!user) {
+    router.replace("/login");
+    return;
+  }
+
+  const init = async () => {
     const sessionId = new URLSearchParams(window.location.search).get("sessionId");
     if (typeof sessionId !== "string") {
       router.replace("/results");
       return;
     }
 
-    // Verify payment status
     try {
-      const res = await fetch(`/api/verify-payment?uid=${user.uid}&sessionId=${sessionId}`);
+      const res = await fetch(`/api/verify-payment?uid=${user?.uid}&sessionId=${sessionId}`);
       const data = await res.json();
       if (!data.paid) {
         router.replace("/results");
@@ -164,20 +186,18 @@ useEffect(() => {
       return;
     }
 
-    // Fetch answers
-    let answers: number[] | null = null;
+    // Fetch answers from Firestore or localStorage
+    let answers = null;
     try {
-      // Attempt to fetch from Firestore quizRuns/{sessionId}
       const runDoc = await getDoc(doc(db, "quizRuns", sessionId));
       if (runDoc.exists()) {
         const runData = runDoc.data();
-        answers = runData.answers as number[];
+        answers = runData.answers;
       }
     } catch {
-      // Fallback to localStorage
       const raw = localStorage.getItem("quizAnswers");
       if (raw) {
-        answers = JSON.parse(raw) as number[];
+        answers = JSON.parse(raw);
       }
     }
 
@@ -203,7 +223,7 @@ useEffect(() => {
     };
     const roundedTotal = Math.round(total);
 
-    // --- NEW: Save this session's report to Firestore ---
+    // Save report to Firestore
     try {
       await setDoc(
         doc(db, "reports", user.uid, "sessions", sessionId),
@@ -226,14 +246,15 @@ useEffect(() => {
   };
 
   init();
-}, [router]);
+}, [authLoading, user, router]);
 
   useEffect(() => {
     setIsClient(true);
   }, []);
 
-  // Dynamic trait insight components removed during MDX transition
-
+  if (authLoading) {
+    return <div style={{ textAlign: "center", marginTop: "5rem" }}>Checking login status…</div>;
+  }
   if (!isClient || loading) {
     return <div style={{ textAlign: "center", marginTop: "5rem" }}>Checking access...</div>;
   }
@@ -731,3 +752,4 @@ useEffect(() => {
   </>
   );
 }
+/* setIsClient is now handled by useState; no implementation needed here. */
