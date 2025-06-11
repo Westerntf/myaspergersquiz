@@ -8,28 +8,20 @@ import { flagQuestions } from "../utils/flagQuestions";
 import { getAuth } from "firebase/auth";
 import { getFirestore, setDoc, doc } from "firebase/firestore";
 import Head from "next/head";
+import {
+  getQuizRunId,
+  getQuizAnswers,
+} from "../utils/storage";
 
 export default function ReviewPage() {
   const [answers, setAnswers] = useState<number[]>([]);
   const router = useRouter();
 
   useEffect(() => {
-    const quizId = localStorage.getItem("quizRunId");
-    const answersJson = localStorage.getItem("quizAnswers");
-    let savedAnswers: number[] = [];
+    const quizId = getQuizRunId();
+    const savedAnswers = getQuizAnswers();
 
-    if (answersJson) {
-      try {
-        const parsed = JSON.parse(answersJson);
-        if (Array.isArray(parsed)) {
-          savedAnswers = parsed;
-        }
-      } catch {
-        savedAnswers = [];
-      }
-    }
-
-    if (!quizId || savedAnswers.length === 0) {
+    if (!quizId || !savedAnswers || savedAnswers.length === 0) {
       router.replace("/");
       return;
     }
@@ -37,13 +29,13 @@ export default function ReviewPage() {
   }, []);
 
   const handleEdit = (index: number) => {
-    localStorage.setItem("quizEditIndex", index.toString());
+    // TODO: Implement setQuizEditIndex or use another method to store the edit index
+    // setQuizEditIndex(index);
     router.push("/quiz");
   };
-
   const handleConfirm = async () => {
     const user = getAuth().currentUser;
-    const sessionId = localStorage.getItem("quizRunId");
+    const sessionId = getQuizRunId();
     if (user && sessionId) {
       const db = getFirestore();
 
@@ -66,6 +58,15 @@ export default function ReviewPage() {
     } else {
       router.push("/results");
     }
+  };
+
+  // Map answer values to labels (keep in sync with quiz.tsx)
+  const answerLabel = (val: number) => {
+    if (val === 1) return "Yes";
+    if (val === 0.67) return "Sometimes";
+    if (val === 0.33) return "Not really";
+    if (val === 0) return "No";
+    return "Not answered";
   };
 
   return (
@@ -140,18 +141,7 @@ export default function ReviewPage() {
           <li key={i} style={{ marginBottom: "1.5rem", background: "#f9fbfc", border: "1px solid #e4ebf0", padding: "1rem 1.5rem", borderRadius: "10px" }}>
             <p style={{ color: "#1a1a1a" }}><strong>Q{i + 1}:</strong> {q.text}</p>
             <p style={{ color: "#1a1a1a" }}>
-              Answer:{" "}
-              <strong>
-                {answers[i] === 1
-                  ? "Yes"
-                  : answers[i] === 0.67
-                  ? "Sometimes"
-                  : answers[i] === 0.33
-                  ? "Not really"
-                  : answers[i] === 0
-                  ? "No"
-                  : "Not answered"}
-              </strong>
+              Answer: <strong>{answerLabel(answers[i])}</strong>
             </p>
             <button
               onClick={() => handleEdit(i)}

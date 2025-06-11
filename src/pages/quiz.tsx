@@ -1,5 +1,3 @@
-// Extra SEO and accessibility polish added by ChatGPT (June 2025)
-// src/pages/quiz.tsx
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
@@ -9,6 +7,13 @@ import { doc, setDoc } from "firebase/firestore";
 import { calculateScore } from "../utils/calculateScore";
 import { getOverallLevel } from "../utils/getOverallLevel";
 import { flagQuestions } from "../utils/flagQuestions";
+import {
+  getQuizRunId,
+  setQuizRunId,
+  clearQuizRunId,
+  setQuizAnswers,
+  clearQuizAnswers,
+} from "../utils/storage";
 
 export default function QuizPage() {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -17,14 +22,15 @@ export default function QuizPage() {
   const [showExamples, setShowExamples] = useState<boolean[]>(
     Array(questions.length).fill(false)
   );
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const router = useRouter();
 
   useEffect(() => {
     // On mount, create and store a new quiz ID, clear previous answers
     const newQuizId = crypto.randomUUID();
-    localStorage.setItem("quizRunId", newQuizId);
-    localStorage.removeItem("quizAnswers");
+    setQuizRunId(newQuizId);
+    clearQuizAnswers();
   }, []);
 
   useEffect(() => {
@@ -52,44 +58,42 @@ export default function QuizPage() {
       if (currentIndex < questions.length - 1) {
         setCurrentIndex(currentIndex + 1);
       } else {
-        // Firestore reporting: create a new quiz run per quiz completion
+        setIsSubmitting(true);
+        // Firestore reporting: use the same sessionId everywhere
         const user = auth.currentUser;
-        const sessionId = localStorage.getItem("quizRunId");
+        const sessionId = getQuizRunId();
 
-        if (user && sessionId) {
-          const runId = `${user.uid}_${Date.now()}`;
+        try {
+          if (user && sessionId) {
+            // Calculate scores & flags for the report
+            const { total, traitScores } = calculateScore(updated);
+            const level = getOverallLevel(total);
+            const triggeredFlags = flagQuestions.filter(idx => updated[idx - 1] >= 0.67);
 
-          // Calculate scores & flags for the report
-          const { total, traitScores } = calculateScore(updated);
-          const level = getOverallLevel(total);
-          const triggeredFlags = flagQuestions.filter(idx => updated[idx - 1] >= 0.67);
+            // Save quiz run for resuming (existing logic)
+            await setDoc(doc(db, "quizRuns", sessionId), {
+              uid: user.uid,
+              sessionId: sessionId,
+              createdAt: Date.now(),
+              answers: updated
+            });
 
-          // Save quiz run for resuming (existing logic)
-          await setDoc(doc(db, "quizRuns", runId), {
-            uid: user.uid,
-            sessionId: sessionId,
-            createdAt: Date.now(),
-            answers: updated
-          });
-
-          // --- NEW: Save full report data for payment unlock/profile ---
-          await setDoc(doc(db, "reports", user.uid, "sessions", runId), {
-            answers: updated,
-            total,
-            traitScores,
-            level,
-            flags: triggeredFlags,
-            createdAt: Date.now(),
-            paid: false // webhook will update this after payment
-          });
-
-          // Save runId for future reference, overwriting previous quizRunId
-          localStorage.setItem("quizRunId", runId);
+            // --- NEW: Save full report data for payment unlock/profile ---
+            await setDoc(doc(db, "reports", user.uid, "sessions", sessionId), {
+              answers: updated,
+              total,
+              traitScores,
+              level,
+              flags: triggeredFlags,
+              createdAt: Date.now(),
+              paid: false // webhook will update this after payment
+            });
+          }
+          setQuizAnswers(updated);
+          router.push("/results");
+        } catch (err) {
+          alert("There was a problem saving your results. Please try again.");
         }
-
-        // Persist completed answers for review/results
-        localStorage.setItem("quizAnswers", JSON.stringify(updated));
-        router.push("/review");
       }
     }, 250); // Shorter delay for visual feedback
   };
@@ -111,141 +115,146 @@ export default function QuizPage() {
 
   return (
     <>
-<Head>
-  {/* Primary SEO */}
-  <title>{`Question ${currentIndex + 1} – Autism Spectrum Traits Quiz | MyAspergersQuiz.com`}</title>
-  <meta name="description" content="Take the research-backed MyAspergersQuiz – a 40-question self-assessment to explore autism spectrum traits. Free, anonymous, instant results. Mobile friendly, no account required." />
-  <meta name="keywords" content="autism quiz, aspergers self test, online autism quiz, spectrum traits, neurodivergent, autism assessment, free autism test, ASD quiz, online autism screener, instant results, self-reflection, social, sensory, routine, communication, focus, MyAspergersQuiz" />
-  <meta name="author" content="MyAspergersQuiz Team" />
-  <meta name="copyright" content="MyAspergersQuiz.com" />
-  <meta name="subject" content="Autism Spectrum Self-Assessment Quiz" />
-  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="canonical" href="https://myaspergersquiz.com/quiz" />
-  <link rel="alternate" href="https://myaspergersquiz.com/quiz" hrefLang="en-au" />
-  <link rel="alternate" href="https://myaspergersquiz.com/quiz" hrefLang="en-us" />
-  <link rel="alternate" href="https://myaspergersquiz.com/quiz" hrefLang="x-default" />
+      <Head>
+        {/* Primary SEO */}
+        <title>{`Question ${currentIndex + 1} – Autism Spectrum Traits Quiz | MyAspergersQuiz.com`}</title>
+        <meta name="description" content="Take the research-backed MyAspergersQuiz – a 40-question self-assessment to explore autism spectrum traits. Free, anonymous, instant results. Mobile friendly, no account required." />
+        <meta name="keywords" content="autism quiz, aspergers self test, online autism quiz, spectrum traits, neurodivergent, autism assessment, free autism test, ASD quiz, online autism screener, instant results, self-reflection, social, sensory, routine, communication, focus, MyAspergersQuiz" />
+        <meta name="author" content="MyAspergersQuiz Team" />
+        <meta name="copyright" content="MyAspergersQuiz.com" />
+        <meta name="subject" content="Autism Spectrum Self-Assessment Quiz" />
+        <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="canonical" href="https://myaspergersquiz.com/quiz" />
+        <link rel="alternate" href="https://myaspergersquiz.com/quiz" hrefLang="en-au" />
+        <link rel="alternate" href="https://myaspergersquiz.com/quiz" hrefLang="en-us" />
+        <link rel="alternate" href="https://myaspergersquiz.com/quiz" hrefLang="x-default" />
 
-  {/* Open Graph / Social */}
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="Take the Autism Spectrum Traits Quiz | MyAspergersQuiz.com" />
-  <meta property="og:description" content="Answer 40 questions and get instant insight into social, sensory, routine, and focus traits. 100% private. No sign up needed." />
-  <meta property="og:image" content="https://myaspergersquiz.com/og-quiz.jpg" />
-  <meta property="og:image:alt" content="Preview of the MyAspergersQuiz online autism quiz" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-  <meta property="og:url" content="https://myaspergersquiz.com/quiz" />
-  <meta property="og:site_name" content="MyAspergersQuiz.com" />
-  <meta property="og:locale" content="en_AU" />
-  <meta property="og:updated_time" content="2025-06-02T00:00:00+10:00" />
+        {/* Open Graph / Social */}
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="Take the Autism Spectrum Traits Quiz | MyAspergersQuiz.com" />
+        <meta property="og:description" content="Answer 40 questions and get instant insight into social, sensory, routine, and focus traits. 100% private. No sign up needed." />
+        <meta property="og:image" content="https://myaspergersquiz.com/og-quiz.jpg" />
+        <meta property="og:image:alt" content="Preview of the MyAspergersQuiz online autism quiz" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:url" content="https://myaspergersquiz.com/quiz" />
+        <meta property="og:site_name" content="MyAspergersQuiz.com" />
+        <meta property="og:locale" content="en_AU" />
+        <meta property="og:updated_time" content="2025-06-02T00:00:00+10:00" />
 
-  {/* Twitter */}
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Take the Autism Spectrum Traits Quiz" />
-  <meta name="twitter:description" content="Free, private, research-backed online quiz for autism spectrum traits. Instantly see your results." />
-  <meta name="twitter:image" content="https://myaspergersquiz.com/og-quiz.jpg" />
-  <meta name="twitter:image:alt" content="Screenshot of the MyAspergersQuiz autism spectrum quiz" />
-  <meta name="twitter:site" content="@myaspergersquiz" />
-  <meta name="twitter:creator" content="@myaspergersquiz" />
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Take the Autism Spectrum Traits Quiz" />
+        <meta name="twitter:description" content="Free, private, research-backed online quiz for autism spectrum traits. Instantly see your results." />
+        <meta name="twitter:image" content="https://myaspergersquiz.com/og-quiz.jpg" />
+        <meta name="twitter:image:alt" content="Screenshot of the MyAspergersQuiz autism spectrum quiz" />
+        <meta name="twitter:site" content="@myaspergersquiz" />
+        <meta name="twitter:creator" content="@myaspergersquiz" />
 
-  {/* PWA/Apple/Brand */}
-  <meta name="apple-mobile-web-app-title" content="MyAspergersQuiz" />
-  <meta name="application-name" content="MyAspergersQuiz" />
-  <meta name="theme-color" content="#4A90A4" />
-  <link rel="icon" href="/myaspergersquiz-logo.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-  <link rel="manifest" href="/site.webmanifest" />
-  <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
+        {/* PWA/Apple/Brand */}
+        <meta name="apple-mobile-web-app-title" content="MyAspergersQuiz" />
+        <meta name="application-name" content="MyAspergersQuiz" />
+        <meta name="theme-color" content="#4A90A4" />
+        <link rel="icon" href="/myaspergersquiz-logo.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <link rel="manifest" href="/site.webmanifest" />
+        <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
 
-  {/* Performance */}
-  <link rel="preload" href="/myaspergersquiz-logo.png" as="image" />
-  <link rel="preload" href="/fonts/Inter-var-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        {/* Performance */}
+        <link rel="preload" href="/myaspergersquiz-logo.png" as="image" />
+        <link rel="preload" href="/fonts/Inter-var-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
 
-  {/* JSON-LD: Quiz Schema */}
-  <script type="application/ld+json">
-    {`{
-      "@context": "https://schema.org",
-      "@type": "Quiz",
-      "name": "Autism Spectrum Traits Quiz",
-      "description": "A science-based, private online quiz to explore your social, sensory, and routine patterns. Get instant results in minutes.",
-      "about": {
-        "@type": "Thing",
-        "name": "Autism Spectrum Traits"
-      },
-      "provider": {
-        "@type": "Organization",
-        "name": "MyAspergersQuiz",
-        "url": "https://myaspergersquiz.com/"
-      },
-      "inLanguage": "en",
-      "audience": {
-        "@type": "Audience",
-        "audienceType": "People interested in self-discovery, autism, and neurodiversity"
-      }
-    }`}
-  </script>
-  {/* JSON-LD: FAQPage */}
-  <script type="application/ld+json">
-    {`{
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "Is this quiz free and private?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Yes, MyAspergersQuiz is free, private, and no registration is required unless you want to save your results."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "How long does it take?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Typically takes 3–5 minutes to complete all 40 questions."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Who is this quiz for?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "The quiz is suitable for adults and older teens seeking self-insight into autism traits. Not a diagnosis."
-          }
-        }
-      ]
-    }`}
-  </script>
-  {/* JSON-LD: BreadcrumbList */}
-  <script type="application/ld+json">
-    {`{
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://myaspergersquiz.com/" },
-        { "@type": "ListItem", "position": 2, "name": "Quiz", "item": "https://myaspergersquiz.com/quiz" }
-      ]
-    }`}
-  </script>
-  {/* JSON-LD: Organization */}
-  <script type="application/ld+json">
-    {`{
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      "name": "MyAspergersQuiz",
-      "url": "https://myaspergersquiz.com/",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "https://myaspergersquiz.com/myaspergersquiz-logo.png",
-        "width": 32,
-        "height": 32,
-        "caption": "MyAspergersQuiz logo"
-      },
-      "sameAs": ["https://twitter.com/myaspergersquiz"]
-    }`}
-  </script>
-</Head>
+        {/* JSON-LD: Quiz Schema */}
+        <script type="application/ld+json">
+          {`{
+            "@context": "https://schema.org",
+            "@type": "Quiz",
+            "name": "Autism Spectrum Traits Quiz",
+            "description": "A science-based, private online quiz to explore your social, sensory, and routine patterns. Get instant results in minutes.",
+            "about": {
+              "@type": "Thing",
+              "name": "Autism Spectrum Traits"
+            },
+            "provider": {
+              "@type": "Organization",
+              "name": "MyAspergersQuiz",
+              "url": "https://myaspergersquiz.com/"
+            },
+            "inLanguage": "en",
+            "audience": {
+              "@type": "Audience",
+              "audienceType": "People interested in self-discovery, autism, and neurodiversity"
+            }
+          }`}
+        </script>
+        {/* JSON-LD: FAQPage */}
+        <script type="application/ld+json">
+          {`{
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "Is this quiz free and private?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes, MyAspergersQuiz is free, private, and no registration is required unless you want to save your results."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "How long does it take?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Typically takes 3–5 minutes to complete all 40 questions."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Who is this quiz for?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "The quiz is suitable for adults and older teens seeking self-insight into autism traits. Not a diagnosis."
+                }
+              }
+            ]
+          }`}
+        </script>
+        {/* JSON-LD: BreadcrumbList */}
+        <script type="application/ld+json">
+          {`{
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://myaspergersquiz.com/" },
+              { "@type": "ListItem", "position": 2, "name": "Quiz", "item": "https://myaspergersquiz.com/quiz" }
+            ]
+          }`}
+        </script>
+        {/* JSON-LD: Organization */}
+        <script type="application/ld+json">
+          {`{
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "name": "MyAspergersQuiz",
+            "url": "https://myaspergersquiz.com/",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://myaspergersquiz.com/myaspergersquiz-logo.png",
+              "width": 32,
+              "height": 32,
+              "caption": "MyAspergersQuiz logo"
+            },
+            "sameAs": ["https://twitter.com/myaspergersquiz"]
+          }`}
+        </script>
+      </Head>
+      {isSubmitting && (
+        <div style={{ textAlign: "center", margin: "2rem" }}>
+          <span>Saving your results...</span>
+        </div>
+      )}
       <main
         className="quiz-container"
         role="main"
@@ -379,6 +388,7 @@ export default function QuizPage() {
             <button
               aria-label="Answer Yes"
               onClick={() => handleAnswer(yesWeight)}
+              disabled={selected !== null}
               style={{
                 width: "100%",
                 padding: "0.9rem",
@@ -388,7 +398,8 @@ export default function QuizPage() {
                 borderRadius: "12px",
                 fontSize: "1rem",
                 fontWeight: 600,
-                cursor: "pointer",
+                cursor: selected !== null ? "not-allowed" : "pointer",
+                opacity: selected !== null ? 0.6 : 1,
               }}
             >
               Yes
@@ -397,6 +408,7 @@ export default function QuizPage() {
             <button
               aria-label="Answer Sometimes"
               onClick={() => handleAnswer(kindOfWeight)}
+              disabled={selected !== null}
               style={{
                 width: "100%",
                 padding: "0.9rem",
@@ -406,7 +418,8 @@ export default function QuizPage() {
                 borderRadius: "12px",
                 fontSize: "1rem",
                 fontWeight: 600,
-                cursor: "pointer",
+                cursor: selected !== null ? "not-allowed" : "pointer",
+                opacity: selected !== null ? 0.6 : 1,
               }}
             >
               Sometimes
@@ -415,6 +428,7 @@ export default function QuizPage() {
             <button
               aria-label="Answer Not Really"
               onClick={() => handleAnswer(maybeWeight)}
+              disabled={selected !== null}
               style={{
                 width: "100%",
                 padding: "0.9rem",
@@ -424,7 +438,8 @@ export default function QuizPage() {
                 borderRadius: "12px",
                 fontSize: "1rem",
                 fontWeight: 600,
-                cursor: "pointer",
+                cursor: selected !== null ? "not-allowed" : "pointer",
+                opacity: selected !== null ? 0.6 : 1,
               }}
             >
               Not really
@@ -433,6 +448,7 @@ export default function QuizPage() {
             <button
               aria-label="Answer No"
               onClick={() => handleAnswer(noWeight)}
+              disabled={selected !== null}
               style={{
                 width: "100%",
                 padding: "0.9rem",
@@ -442,7 +458,8 @@ export default function QuizPage() {
                 borderRadius: "12px",
                 fontSize: "1rem",
                 fontWeight: 600,
-                cursor: "pointer",
+                cursor: selected !== null ? "not-allowed" : "pointer",
+                opacity: selected !== null ? 0.6 : 1,
               }}
             >
               No

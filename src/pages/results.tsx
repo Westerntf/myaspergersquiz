@@ -3,14 +3,18 @@
 import { useEffect, useState, useRef, useMemo } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { onAuthStateChanged, getAuth, User } from "firebase/auth";
+import { onAuthStateChanged, User } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { calculateScore } from "../utils/calculateScore";
 import { getOverallLevel } from "../utils/getOverallLevel";
 import { getResultLabel } from "../utils/getResultLabel";
-import { db, auth } from "../lib/firebase"; // adjust paths if necessary
+import { db, auth } from "../lib/firebase";
 import { questions } from "../questions";
 import { flagQuestions } from "../utils/flagQuestions";
+import {
+  getQuizRunId,
+  getQuizAnswers,
+} from "../utils/storage";
 
 type Trait = "social" | "sensory" | "routine" | "communication" | "focus";
 
@@ -57,26 +61,22 @@ export default function ResultsPage() {
     const tryLoad = async () => {
       // Prefer sessionId from query string
       const urlSessionId = router.query.sessionId as string | undefined;
-      const storedQuizId = urlSessionId ?? localStorage.getItem("quizRunId");
+      const storedQuizId = urlSessionId ?? getQuizRunId();
       setQuizId(storedQuizId ?? null);
 
       let answers: number[] | null = null;
-      const storedAnswersRaw = localStorage.getItem("quizAnswers");
-      if (storedAnswersRaw) {
-        try {
-          answers = JSON.parse(storedAnswersRaw) as number[];
-        } catch {
-          answers = null;
-        }
+      const storedAnswers = getQuizAnswers();
+      if (storedAnswers && storedAnswers.length === questions.length) {
+        answers = storedAnswers;
       }
 
       // If no answers and have sessionId and user, try Firestore
-      if ((!answers || answers.length !== 40) && user && storedQuizId) {
+      if ((!answers || answers.length !== questions.length) && user && storedQuizId) {
         try {
           const runDoc = await getDoc(doc(db, "quizRuns", storedQuizId));
           if (runDoc.exists()) {
             const runData = runDoc.data();
-            if (Array.isArray(runData.answers) && runData.answers.length === 40) {
+            if (Array.isArray(runData.answers) && runData.answers.length === questions.length) {
               answers = runData.answers as number[];
             }
           }
@@ -94,6 +94,7 @@ export default function ResultsPage() {
 
       if (!storedQuizId || !answers || answers.length === 0) {
         // After retries, redirect to home
+        alert("Could not load your quiz results. Please retake the quiz.");
         router.replace("/");
         return;
       }
@@ -132,7 +133,7 @@ export default function ResultsPage() {
       router.replace("/login");
       return;
     }
-    const storedQuizId = localStorage.getItem("quizRunId");
+    const storedQuizId = getQuizRunId();
     if (!storedQuizId) {
       alert("Quiz ID not found. Please retake the quiz.");
       return;

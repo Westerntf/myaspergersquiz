@@ -1,8 +1,8 @@
+// src/pages/api/verify-payment.ts
 import type { NextApiRequest, NextApiResponse } from "next";
 import { initializeApp, cert, getApps } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
 
-// Initialize Firebase Admin only once
 if (!getApps().length) {
   initializeApp({
     credential: cert({
@@ -23,7 +23,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (!uid || !sessionId) {
     return res.status(400).json({ error: "Missing uid or sessionId" });
   }
-
   try {
     const docRef = db.collection("reports").doc(uid).collection("sessions").doc(sessionId);
     const snap = await docRef.get();

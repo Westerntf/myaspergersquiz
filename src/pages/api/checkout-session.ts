@@ -15,30 +15,24 @@ if (!admin.apps.length) {
 }
 const db = getFirestore();
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
-  apiVersion: "2025-04-30.basil",
-});
+// FIX: Use a valid Stripe API version
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {});
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
-
   try {
     if (!process.env.STRIPE_SECRET_KEY) {
       console.error("Missing STRIPE_SECRET_KEY in environment variables");
     } else {
       console.log("Using STRIPE_SECRET_KEY (last 4):", process.env.STRIPE_SECRET_KEY.slice(-4));
     }
-    console.log("Request origin:", req.headers.origin);
     const origin = req.headers.origin || "https://myaspergersquiz.com";
-
     const { priceId, sessionId, uid, userEmail } = req.body;
-
     if (!priceId || !uid || !sessionId) {
       return res.status(400).json({ error: "Missing priceId, sessionId, or uid in request body" });
     }
-
     await db
       .collection("reports")
       .doc(uid)
@@ -48,7 +42,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         paid: false,
         createdAt: admin.firestore.FieldValue.serverTimestamp(),
       });
-
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       payment_method_types: ["card"],
@@ -66,8 +59,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         sessionId,
       },
     });
-
-    // console.log("Stripe session creation response:", session);
     return res.status(200).json({ url: session.url });
   } catch (err) {
     console.error("Stripe session creation error:", err instanceof Error ? err.message : String(err));

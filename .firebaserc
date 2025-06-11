@@ -1,5 +1,9 @@
 {
   "projects": {
-    "default": "myaspergersquiz-a96bb"
-  }
+    "default": "myaspergersquiz-a96bb",
+    "defult": "myaspergersquiz-a96bb",
+    "DEFUALT": "myaspergersquiz-v2"
+  },
+  "targets": {},
+  "etags": {}
 }
