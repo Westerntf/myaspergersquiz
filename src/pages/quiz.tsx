@@ -113,6 +113,33 @@ export default function QuizPage() {
   const kindOfWeight = parseFloat((weightPerQuestion * (2 / 3)).toFixed(2));    // e.g., 1.33 when rounded
   const yesWeight = weightPerQuestion;                                          // e.g., 2
 
+  // Responsive box style for both desktop and mobile
+  const boxStyle: React.CSSProperties = {
+    background: "#fff",
+    border: "1.5px solid #e4ebf0",
+    borderRadius: "16px",
+    boxShadow: "0 4px 24px rgba(49,117,138,0.07)",
+    padding: "clamp(1.2rem, 4vw, 2rem) clamp(0.7rem, 3vw, 1.5rem) clamp(1.7rem, 5vw, 2.2rem)",
+    marginBottom: "2.2rem",
+    maxWidth: 600,
+    width: "95vw",
+    marginInline: "auto",
+    textAlign: "center",
+    boxSizing: "border-box"
+  };
+
+  // Responsive button style
+  const buttonStyle: React.CSSProperties = {
+    width: "100%",
+    padding: "clamp(0.8rem, 2vw, 0.9rem)",
+    fontSize: "clamp(1rem, 2.5vw, 1.1rem)",
+    borderRadius: "12px",
+    fontWeight: 600,
+    cursor: "pointer",
+    transition: "all 0.2s ease-in-out",
+    margin: 0
+  };
+
   return (
     <>
       <Head>
@@ -255,72 +282,114 @@ export default function QuizPage() {
           <span>Saving your results...</span>
         </div>
       )}
-      <main
-        className="quiz-container"
-        role="main"
-        aria-label="Autism Spectrum Quiz"
-        style={{
-          background: "#f9fbfc",
-          color: "#1a1a1a",
-          padding: "2rem 1rem",
-          minHeight: "100vh",
-          fontFamily: "'Inter', sans-serif",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          boxSizing: "border-box"
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "2rem" }}>
-          <img
-            src="/myaspergersquiz-logo.png"
-            alt="MyAspergersQuiz logo"
-            width={32}
-            height={32}
-            style={{ borderRadius: "6px" }}
-            loading="eager"
-            onError={e => { (e.target as HTMLImageElement).src = "/fallback-logo.png"; }}
-          />
-          <h1 style={{ fontSize: "1.4rem", color: "#4A90A4", margin: 0 }}>MyAspergersQuiz</h1>
-        </div>
-        <section style={{ marginBottom: "1.5rem", textAlign: "center", maxWidth: "600px", marginInline: "auto" }}>
-          <h2 style={{ fontSize: "1.5rem", fontWeight: "600", marginBottom: "0.5rem" }}>
-            Self-Insight Starts Here
-          </h2>
-          <p style={{ color: "#4A90A4", fontSize: "1rem", fontWeight: 500, marginTop: "0.25rem", marginBottom: "0.75rem" }}>
-            Estimated time to complete: 3–5 minutes
-          </p>
-          <p style={{ fontSize: "0.95rem", lineHeight: "1.5", opacity: 0.7 }}>
+      <main style={{ background: "#f9fbfc", minHeight: "100vh", padding: "clamp(1.5rem, 5vw, 2.5rem) 0" }}>
+        {/* Self-Insight box with logo/title header inside */}
+        <section style={boxStyle}>
+          {/* Self-Insight header and content */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "0.8rem",
+              marginBottom: "1.1rem",
+              flexWrap: "wrap"
+            }}
+          >
+            <img
+              src="/myaspergersquiz-logo.png"
+              alt="MyAspergersQuiz logo"
+              width={32}
+              height={32}
+              style={{
+                borderRadius: "8px",
+                boxShadow: "0 2px 8px rgba(49,117,138,0.10)",
+                flexShrink: 0,
+                minWidth: 32,
+                minHeight: 32
+              }}
+              loading="eager"
+              onError={e => { (e.target as HTMLImageElement).src = "/fallback-logo.png"; }}
+            />
+            <h2
+              style={{
+                fontSize: "clamp(1.2rem, 4vw, 2.1rem)",
+                fontWeight: 900,
+                margin: 0,
+                color: "transparent",
+                background: "linear-gradient(90deg, #31758a 30%,rgb(80, 163, 186) 100%)",
+                backgroundClip: "text",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                letterSpacing: "0.01em",
+                fontFamily: "'Inter', sans-serif",
+                textShadow: "0 2px 8px rgba(49, 88, 100, 0.1)",
+                lineHeight: 1.1,
+                wordBreak: "break-word"
+              }}
+            >
+              Self-Insight Starts Here
+            </h2>
+          </div>
+          <div style={{
+            marginBottom: "0.7rem",
+            fontSize: "clamp(0.95rem, 2.5vw, 1.08rem)"
+          }}>
+            <span style={{
+              color: "#4A90A4",
+              fontWeight: 800
+            }}>
+              Estimated time to complete: 3–5 minutes
+            </span>
+          </div>
+          <p style={{
+            fontSize: "clamp(0.98rem, 2.5vw, 1.05rem)",
+            color: "#3a4a54",
+            lineHeight: 1.7,
+            opacity: 0.92,
+            margin: 0
+          }}>
             This quiz is designed to help you explore patterns in how you interact, process, and experience the world around you. Your answers may highlight meaningful insights worth reflecting on.
           </p>
         </section>
+
+        {/* Question Box */}
         <div
           key={currentIndex}
           className="question-box"
           style={{
             background: "#fff",
-            border: "1px solid #d9e4e8",
-            borderRadius: "16px",
-            padding: "2rem 2rem 2.5rem 2rem",
-            width: "100%",
-            maxWidth: "480px",
+            border: "1.5px solid #d2e6ee",
+            borderRadius: "18px",
+            boxShadow: "0 8px 32px rgba(49,117,138,0.10)",
+            padding: "clamp(1.2rem, 4vw, 2.2rem) clamp(0.7rem, 3vw, 1.2rem) clamp(2.2rem, 5vw, 2.7rem)",
+            width: "95vw",
+            maxWidth: "600px",
             textAlign: "center",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.1)"
+            margin: "0 auto",
+            transition: "box-shadow 0.2s",
+            boxSizing: "border-box"
           }}
         >
           <h2
             aria-live="polite"
             tabIndex={0}
-            style={{ fontWeight: 700, fontSize: "1.75rem", marginBottom: "1rem", color: "#4A90A4" }}
+            style={{
+              fontWeight: 700,
+              fontSize: "clamp(1.2rem, 4vw, 1.75rem)",
+              marginBottom: "1rem",
+              color: "#4A90A4"
+            }}
           >
             Question {currentIndex + 1} of {questions.length}
           </h2>
           <p
             className="question-text"
             style={{
-              fontSize: "1.1rem",
+              fontSize: "clamp(1rem, 3vw, 1.1rem)",
               lineHeight: "1.5rem",
-              height: "6rem",            // fixed height for 4 lines
+              minHeight: "4.5rem",
+              marginBottom: "1.2rem",
               overflow: "hidden"
             }}
           >
@@ -346,7 +415,7 @@ export default function QuizPage() {
                   border: "1.5px solid #5a9aa8",
                   borderRadius: "12px",
                   padding: "0.5rem 1rem",
-                  fontSize: "0.9rem",
+                  fontSize: "clamp(0.9rem, 2vw, 1rem)",
                   cursor: "pointer",
                   marginBottom: "0.75rem",
                   transition: "all 0.2s ease-in-out",
@@ -365,11 +434,12 @@ export default function QuizPage() {
                     background: "#eaf6f8",
                     padding: "1rem 1.25rem",
                     borderRadius: "12px",
-                    fontSize: "1rem",
+                    fontSize: "clamp(0.98rem, 2vw, 1rem)",
                     color: "#1a1a1a",
                     border: "1px solid #4A90A4",
                     textAlign: "left",
-                    lineHeight: 1.7
+                    lineHeight: 1.7,
+                    marginTop: "0.7rem"
                   }}
                 >
                   <strong style={{ color: "#31758a" }}>Example:</strong> {currentQuestion.example}
@@ -382,7 +452,7 @@ export default function QuizPage() {
             flexDirection: "column",
             gap: "1rem",
             width: "100%",
-            maxWidth: "500px",
+            maxWidth: "600px",
             margin: "0 auto"
           }}>
             <button
@@ -390,16 +460,11 @@ export default function QuizPage() {
               onClick={() => handleAnswer(yesWeight)}
               disabled={selected !== null}
               style={{
-                width: "100%",
-                padding: "0.9rem",
+                ...buttonStyle,
                 background: "#5a9aa8",
                 color: "#fff",
                 border: "none",
-                borderRadius: "12px",
-                fontSize: "1rem",
-                fontWeight: 600,
-                cursor: selected !== null ? "not-allowed" : "pointer",
-                opacity: selected !== null ? 0.6 : 1,
+                opacity: selected !== null ? 0.6 : 1
               }}
             >
               Yes
@@ -410,16 +475,11 @@ export default function QuizPage() {
               onClick={() => handleAnswer(kindOfWeight)}
               disabled={selected !== null}
               style={{
-                width: "100%",
-                padding: "0.9rem",
+                ...buttonStyle,
                 background: "transparent",
                 border: "2px solid #5a9aa8",
                 color: "#5a9aa8",
-                borderRadius: "12px",
-                fontSize: "1rem",
-                fontWeight: 600,
-                cursor: selected !== null ? "not-allowed" : "pointer",
-                opacity: selected !== null ? 0.6 : 1,
+                opacity: selected !== null ? 0.6 : 1
               }}
             >
               Sometimes
@@ -430,16 +490,11 @@ export default function QuizPage() {
               onClick={() => handleAnswer(maybeWeight)}
               disabled={selected !== null}
               style={{
-                width: "100%",
-                padding: "0.9rem",
+                ...buttonStyle,
                 background: "transparent",
                 border: "2px solid #5a9aa8",
                 color: "#5a9aa8",
-                borderRadius: "12px",
-                fontSize: "1rem",
-                fontWeight: 600,
-                cursor: selected !== null ? "not-allowed" : "pointer",
-                opacity: selected !== null ? 0.6 : 1,
+                opacity: selected !== null ? 0.6 : 1
               }}
             >
               Not really
@@ -450,16 +505,11 @@ export default function QuizPage() {
               onClick={() => handleAnswer(noWeight)}
               disabled={selected !== null}
               style={{
-                width: "100%",
-                padding: "0.9rem",
+                ...buttonStyle,
                 background: "transparent",
                 border: "2px solid #5a9aa8",
                 color: "#5a9aa8",
-                borderRadius: "12px",
-                fontSize: "1rem",
-                fontWeight: 600,
-                cursor: selected !== null ? "not-allowed" : "pointer",
-                opacity: selected !== null ? 0.6 : 1,
+                opacity: selected !== null ? 0.6 : 1
               }}
             >
               No
@@ -470,15 +520,10 @@ export default function QuizPage() {
                 aria-label="Go to Previous Question"
                 onClick={handleBack}
                 style={{
-                  width: "100%",
-                  padding: "0.9rem",
+                  ...buttonStyle,
                   background: "transparent",
                   border: "2px solid #5a9aa8",
-                  color: "#5a9aa8",
-                  borderRadius: "12px",
-                  fontSize: "1rem",
-                  fontWeight: 600,
-                  cursor: "pointer",
+                  color: "#5a9aa8"
                 }}
               >
                 ← Back
@@ -487,11 +532,12 @@ export default function QuizPage() {
           </div>
         </div>
 
+        {/* Progress Bar */}
         <div
           className="progress-container"
           style={{
-            width: "100%",
-            maxWidth: "480px",
+            width: "95vw",
+            maxWidth: "600px",
             margin: "0 auto",
             marginTop: "2rem",
             marginBottom: "2rem",
@@ -503,20 +549,28 @@ export default function QuizPage() {
           aria-valuemin={0}
           aria-valuemax={100}
         >
-          <p style={{ marginBottom: "0.75rem", fontSize: "1rem", fontWeight: 500, opacity: 0.8 }}>
+          <p style={{
+            marginBottom: "0.75rem",
+            fontSize: "clamp(1rem, 2vw, 1.1rem)",
+            fontWeight: 500,
+            opacity: 0.8
+          }}>
             Progress: <span aria-live="polite">{percentComplete}%</span>
           </p>
           <div style={{
-            height: "12px",
+            height: "16px",
             width: "100%",
             background: "#e4ebf0",
-            borderRadius: "6px"
+            borderRadius: "8px",
+            overflow: "hidden",
+            marginBottom: "0.5rem"
           }}>
-            <div className="progress-bar" style={{
+            <div style={{
               width: `${percentComplete}%`,
               height: "100%",
-              background: "#4A90A4",
-              borderRadius: "6px"
+              background: "linear-gradient(90deg, #4A90A4 0%, #31758a 100%)",
+              borderRadius: "8px",
+              transition: "width 0.4s cubic-bezier(.4,2,.6,1)"
             }} />
           </div>
         </div>
@@ -524,20 +578,3 @@ export default function QuizPage() {
     </>
   );
 }
-
-const buttonStyle: React.CSSProperties = {
-  padding: "1rem 2rem",
-  fontSize: "1rem",
-  width: "100%",
-  maxWidth: "300px",
-  background: "#4e7fff",
-  color: "#fff",
-  border: "none",
-  borderRadius: "8px",
-  cursor: "pointer",
-  transition: "background 0.2s ease-in-out",
-  textAlign: "center"
-};
-// No redirect logic is present in this file.
-
-// Reminder: For best accessibility and SEO, set <html lang="en"> globally in _document.js if not already done.

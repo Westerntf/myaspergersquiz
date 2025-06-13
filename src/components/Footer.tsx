@@ -1,5 +1,34 @@
 // components/Footer.tsx
+import { useState } from "react";
+
 export default function Footer() {
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setMessage("");
+    setSubmitting(true);
+    try {
+      const res = await fetch("/api/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setMessage("Thank you for subscribing!");
+        setEmail("");
+      } else {
+        setMessage(data.error || "Subscription failed. Please try again.");
+      }
+    } catch {
+      setMessage("Subscription failed. Please try again.");
+    }
+    setSubmitting(false);
+  };
+
   return (
     <footer style={{
       background: "#ffffff",
@@ -22,10 +51,14 @@ export default function Footer() {
         <span style={{ fontWeight: 600, fontSize: "1.1rem" }}>MyAspergersQuiz</span>
       </div>
       <p style={{ marginBottom: "1rem" }}>Join our newsletter for updates & tips:</p>
-      <div style={{ display: "flex", justifyContent: "center", gap: "0.5rem", flexWrap: "wrap" }}>
+      <form onSubmit={handleSubmit} style={{ display: "flex", justifyContent: "center", gap: "0.5rem", flexWrap: "wrap" }}>
         <input
           type="email"
           placeholder="Enter your email"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          required
+          disabled={submitting}
           style={{
             padding: "0.75rem",
             borderRadius: "6px",
@@ -36,8 +69,15 @@ export default function Footer() {
             boxShadow: "inset 0 1px 3px rgba(0,0,0,0.06)"
           }}
         />
-        <button style={buttonStyle}>Subscribe</button>
-      </div>
+        <button type="submit" style={buttonStyle} disabled={submitting}>
+          {submitting ? "Subscribing..." : "Subscribe"}
+        </button>
+      </form>
+      {message && (
+        <div style={{ marginTop: "0.5rem", fontSize: "0.85rem", color: message.startsWith("Thank") ? "#4caf50" : "#d9534f" }}>
+          {message}
+        </div>
+      )}
       <div style={{ marginTop: "2rem", fontSize: "0.85rem" }}>
         <p>© 2025 MyAspergersQuiz.com</p>
         <div style={{ marginTop: "0.5rem", display: "flex", justifyContent: "center", gap: "1rem" }}>
