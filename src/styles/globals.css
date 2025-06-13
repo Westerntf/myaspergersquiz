@@ -44,3 +44,8 @@ html, body {
     padding-right: 1rem;
   }
 }
+
+.desktopOnly { display: block; }
+@media (max-width: 599px) {
+  .desktopOnly { display: none !important; }
+}
