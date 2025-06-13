@@ -1,202 +1,260 @@
-import { useState, useEffect } from "react";
-import { useRouter } from "next/router";
 import Head from "next/head";
-import { questions } from "../questions";
-import { db, auth } from "../lib/firebase";
-import { doc, setDoc } from "firebase/firestore";
-import { calculateScore } from "../utils/calculateScore";
-import { getOverallLevel } from "../utils/getOverallLevel";
-import { flagQuestions } from "../utils/flagQuestions";
-import {
-  getQuizRunId,
-  setQuizRunId,
-  clearQuizRunId,
-  setQuizAnswers,
-  clearQuizAnswers,
-} from "../utils/storage";
+import { useEffect } from "react";
+import { Lock, ShieldCheck, Clock, FlaskConical, FileText, BarChart3, Compass } from "lucide-react";
 
-// Add this to your global CSS (e.g. styles/globals.css) or in a CSS module and import it
-// .desktopOnly { display: block; }
-// @media (max-width: 599px) { .desktopOnly { display: none !important; } }
-
-export default function QuizPage() {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [answers, setAnswers] = useState<number[]>(Array(questions.length).fill(0));
-  const [selected, setSelected] = useState<number | null>(null);
-  const [showExamples, setShowExamples] = useState<boolean[]>(
-    Array(questions.length).fill(false)
-  );
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const router = useRouter();
-
+export default function Home() {
   useEffect(() => {
-    const newQuizId = crypto.randomUUID();
-    setQuizRunId(newQuizId);
-    clearQuizAnswers();
+    const testimonials = [
+      "“I finally felt seen after taking this. The insights were gentle but accurate.”",
+      "“The breakdown of traits was incredibly helpful and spot on.”",
+      "“Loved how respectful and professional the tone of the quiz was.”",
+      "“This gave me clarity I’ve been searching for in a simple way.”",
+      "“It helped me understand patterns I hadn’t recognized in myself before.”",
+      "“The privacy and tone made it feel truly safe to reflect.”",
+    ];
+    let current = 0;
+    const interval = setInterval(() => {
+      const el = document.getElementById("testimonial");
+      if (!el) return;
+      el.style.opacity = "0";
+      setTimeout(() => {
+        current = (current + 1) % testimonials.length;
+        el.innerText = testimonials[current];
+        el.style.opacity = "1";
+      }, 300);
+    }, 5000);
+    return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    const editIndex = localStorage.getItem("mq_edit_index");
-    if (editIndex !== null) {
-      const index = parseInt(editIndex, 10);
-      if (!isNaN(index) && index >= 0 && index < questions.length) {
-        setCurrentIndex(index);
-      }
-      localStorage.removeItem("mq_edit_index");
-    }
-  }, []);
-
-  const currentQuestion = questions[currentIndex];
-
-  const handleAnswer = async (value: number) => {
-    setSelected(value);
-    setTimeout(async () => {
-      const updated = [...answers];
-      updated[currentIndex] = value;
-      setAnswers(updated);
-
-      setSelected(null);
-
-      if (currentIndex < questions.length - 1) {
-        setCurrentIndex(currentIndex + 1);
-      } else {
-        setIsSubmitting(true);
-        const user = auth.currentUser;
-        const sessionId = getQuizRunId();
-
-        try {
-          if (user && sessionId) {
-            const { total, traitScores } = calculateScore(updated);
-            const level = getOverallLevel(total);
-            const triggeredFlags = flagQuestions.filter(idx => updated[idx - 1] >= 0.67);
-
-            await setDoc(doc(db, "quizRuns", sessionId), {
-              uid: user.uid,
-              sessionId: sessionId,
-              createdAt: Date.now(),
-              answers: updated
-            });
-
-            await setDoc(doc(db, "reports", user.uid, "sessions", sessionId), {
-              answers: updated,
-              total,
-              traitScores,
-              level,
-              flags: triggeredFlags,
-              createdAt: Date.now(),
-              paid: false
-            });
-          }
-          setQuizAnswers(updated);
-          router.push("/results");
-        } catch (err) {
-          alert("There was a problem saving your results. Please try again.");
-        }
-      }
-    }, 250);
-  };
-
-  const handleBack = () => {
-    if (currentIndex > 0) {
-      setCurrentIndex(currentIndex - 1);
-    }
-  };
-
-  const percentComplete = Math.round((currentIndex / questions.length) * 100);
-
-  const numQuestions = questions.length;
-  const weightPerQuestion = 40 / numQuestions;
-  const noWeight = 0;
-  const maybeWeight = parseFloat((weightPerQuestion * (1 / 3)).toFixed(2));
-  const kindOfWeight = parseFloat((weightPerQuestion * (2 / 3)).toFixed(2));
-  const yesWeight = weightPerQuestion;
-
-  const boxStyle: React.CSSProperties = {
-    background: "#fff",
-    border: "1.5px solid #e4ebf0",
-    borderRadius: "16px",
-    boxShadow: "0 4px 24px rgba(49,117,138,0.07)",
-    padding: "clamp(1.2rem, 4vw, 2rem) clamp(0.7rem, 3vw, 1.5rem) clamp(1.7rem, 5vw, 2.2rem)",
-    marginBottom: "2.2rem",
-    maxWidth: 600,
-    width: "95vw",
-    marginInline: "auto",
-    textAlign: "center",
-    boxSizing: "border-box"
-  };
-
-  const buttonStyle: React.CSSProperties = {
+  // Responsive helpers
+  const containerStyle: React.CSSProperties = {
+    background: "linear-gradient(180deg, #fafdff 0%, #f4fafd 100%)",
+    border: "2px solid #d2e6ee",
+    borderRadius: "18px",
+    padding: "2rem 1.2rem",
+    margin: "0 auto",
+    maxWidth: 700,
     width: "100%",
-    padding: "clamp(0.8rem, 2vw, 0.9rem)",
-    fontSize: "clamp(1rem, 2.5vw, 1.1rem)",
-    borderRadius: "12px",
-    fontWeight: 600,
-    cursor: "pointer",
-    transition: "all 0.2s ease-in-out",
-    margin: 0
+    boxShadow: "0 8px 32px rgba(49,117,138,0.10)",
+    display: "flex",
+    flexDirection: "column",
+    gap: "1.3rem"
   };
+
+  const heroStyle: React.CSSProperties = {
+    textAlign: "center",
+    padding: "2rem 1rem 1.2rem 1rem",
+    background: "linear-gradient(90deg, #eaf6fa 0%, #f6fbfd 100%)",
+    borderRadius: "16px",
+    border: "1.5px solid #d2e6ee",
+    boxShadow: "0 2px 12px rgba(49,117,138,0.06)",
+    marginBottom: "0.5rem"
+  };
+
+  // Responsive grid for features
+  const featuresGridStyle = {
+    display: "grid",
+    gridTemplateColumns: "repeat(4, 1fr)",
+    gap: "0.8rem",
+    listStyle: "none",
+    padding: 0,
+    margin: "0.8rem 0 0 0"
+  };
+
+  // Responsive adjustments for mobile
+  const mobileMedia = `
+    @media (max-width: 600px) {
+      .main-container {
+        padding: 1rem 0.2rem !important;
+      }
+      .content-box {
+        padding: 1.2rem 0.3rem !important;
+        border-radius: 12px !important;
+      }
+      .hero-section {
+        padding: 1.2rem 0.2rem 0.8rem 0.2rem !important;
+        border-radius: 10px !important;
+      }
+      .features-grid {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 0.6rem !important;
+      }
+      .full-report-section {
+        padding: 1rem 0.5rem 1rem 0.5rem !important;
+        border-radius: 10px !important;
+        max-width: 100% !important;
+      }
+      .tip-section {
+        flex-direction: column !important;
+        gap: 0.7rem !important;
+        padding: 0.8rem 0.7rem !important;
+      }
+      .start-quiz-btn {
+        width: 100% !important;
+        font-size: 1rem !important;
+        padding: 0.7rem 0 !important;
+      }
+    }
+  `;
 
   return (
     <>
+      <style>{mobileMedia}</style>
       <Head>
-        {/* Primary SEO */}
-        <title>{`Question ${currentIndex + 1} – Autism Spectrum Traits Quiz | MyAspergersQuiz.com`}</title>
-        <meta name="description" content="Take the research-backed MyAspergersQuiz – a 40-question self-assessment to explore autism spectrum traits. Free, anonymous, instant results. Mobile friendly, no account required." />
-        <meta name="keywords" content="autism quiz, aspergers self test, online autism quiz, spectrum traits, neurodivergent, autism assessment, free autism test, ASD quiz, online autism screener, instant results, self-reflection, social, sensory, routine, communication, focus, MyAspergersQuiz" />
-        <meta name="author" content="MyAspergersQuiz Team" />
-        <meta name="copyright" content="MyAspergersQuiz.com" />
-        <meta name="subject" content="Autism Spectrum Self-Assessment Quiz" />
-        <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="canonical" href="https://myaspergersquiz.com/quiz" />
-        <link rel="alternate" href="https://myaspergersquiz.com/quiz" hrefLang="en-au" />
-        <link rel="alternate" href="https://myaspergersquiz.com/quiz" hrefLang="en-us" />
-        <link rel="alternate" href="https://myaspergersquiz.com/quiz" hrefLang="x-default" />
+        <title>Free Online Autism Traits Quiz | MyAspergersQuiz.com</title>
+        <meta name="description" content="Science-based, private, and anonymous online autism/Asperger’s traits quiz. Free for all ages. Instantly see your results and unlock a full personalized report." />
+        <meta name="keywords" content="autism quiz, aspergers checklist, ASD self test online, private autism assessment, anonymous autism quiz, neurodivergent test, research-based autism screening, science-based, instant results, free ASD quiz, autism symptoms test, autism spectrum disorder, 2025 autism screener, autism questionnaire free, is my child autistic, asd online screener 2025" />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="https://myaspergersquiz.com/" />
+        <link rel="alternate" href="https://myaspergersquiz.com/" hrefLang="en-au" />
+        <link rel="alternate" href="https://myaspergersquiz.com/" hrefLang="en-us" />
+        <link rel="alternate" href="https://myaspergersquiz.com/" hrefLang="x-default" />
+        <meta property="og:title" content="Discover Your Traits – Free Autism Spectrum Quiz" />
+        <meta property="og:description" content="Curious about how your mind works? Take a free quiz and explore social, sensory, and cognitive patterns linked with autism traits." />
+        <meta property="og:image" content="https://myaspergersquiz.com/og-home.jpg" />
+        <meta property="og:image:alt" content="MyAspergersQuiz logo and tagline" />
+        <meta property="og:url" content="https://myaspergersquiz.com/" />
         <meta property="og:type" content="website" />
-        <meta property="og:title" content="Take the Autism Spectrum Traits Quiz | MyAspergersQuiz.com" />
-        <meta property="og:description" content="Answer 40 questions and get instant insight into social, sensory, routine, and focus traits. 100% private. No sign up needed." />
-        <meta property="og:image" content="https://myaspergersquiz.com/og-quiz.jpg" />
-        <meta property="og:image:alt" content="Preview of the MyAspergersQuiz online autism quiz" />
-        <meta property="og:image:width" content="1200" />
-        <meta property="og:image:height" content="630" />
-        <meta property="og:url" content="https://myaspergersquiz.com/quiz" />
-        <meta property="og:site_name" content="MyAspergersQuiz.com" />
         <meta property="og:locale" content="en_AU" />
+        <meta property="og:site_name" content="MyAspergersQuiz.com" />
         <meta property="og:updated_time" content="2025-06-02T00:00:00+10:00" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Take the Autism Spectrum Traits Quiz" />
-        <meta name="twitter:description" content="Free, private, research-backed online quiz for autism spectrum traits. Instantly see your results." />
-        <meta name="twitter:image" content="https://myaspergersquiz.com/og-quiz.jpg" />
-        <meta name="twitter:image:alt" content="Screenshot of the MyAspergersQuiz autism spectrum quiz" />
+        <meta name="twitter:title" content="Free Autism Spectrum Traits Quiz" />
+        <meta name="twitter:description" content="Take a 3–5 minute quiz and explore how your traits align with patterns found in autism." />
+        <meta name="twitter:image" content="https://myaspergersquiz.com/og-home.jpg" />
+        <meta name="twitter:image:alt" content="MyAspergersQuiz logo and tagline" />
         <meta name="twitter:site" content="@myaspergersquiz" />
         <meta name="twitter:creator" content="@myaspergersquiz" />
-        <meta name="apple-mobile-web-app-title" content="MyAspergersQuiz" />
-        <meta name="application-name" content="MyAspergersQuiz" />
+        <meta name="twitter:label1" content="Quiz duration" />
+        <meta name="twitter:data1" content="5 minutes" />
+        <meta name="twitter:label2" content="Privacy" />
+        <meta name="twitter:data2" content="Anonymous, science-based" />
+        <meta httpEquiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="language" content="English" />
+        <meta name="author" content="MyAspergersQuiz Team" />
+        <meta name="copyright" content="MyAspergersQuiz.com" />
         <meta name="theme-color" content="#4A90A4" />
-        <link rel="icon" href="/myaspergersquiz-logo.png" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-        <link rel="manifest" href="/site.webmanifest" />
-        <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
-        <link rel="preload" href="/myaspergersquiz-logo.png" as="image" />
+        <meta name="color-scheme" content="light dark" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-title" content="MyAspergersQuiz" />
+        <meta name="format-detection" content="telephone=no" />
+        {/* Optional: Search engine verification meta tags */}
+        <meta name="google-site-verification" content="your-google-site-verification-code-here" />
+        <meta name="msvalidate.01" content="your-bing-site-verification-code-here" />
+        <meta name="yandex-verification" content="your-yandex-verification-code-here" />
+        <meta name="revisit-after" content="7 days" />
+        <meta name="distribution" content="global" />
+        {/* Preloads */}
+        <link rel="preload" as="image" href="/myaspergersquiz-logo.png" />
         <link rel="preload" href="/fonts/Inter-var-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
-        {/* JSON-LD: BreadcrumbList */}
-        <script type="application/ld+json">
-          {`{
+        {/* -- Structured Data -- */}
+        <script type="application/ld+json" dangerouslySetInnerHTML={{
+          __html: `{
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "url": "https://myaspergersquiz.com/",
+            "name": "MyAspergersQuiz",
+            "publisher": {
+              "@type": "Organization",
+              "name": "MyAspergersQuiz Team",
+              "url": "https://myaspergersquiz.com/",
+              "logo": {
+                "@type": "ImageObject",
+                "url": "https://myaspergersquiz.com/myaspergersquiz-logo.png",
+                "width": 32,
+                "height": 32,
+                "caption": "MyAspergersQuiz logo"
+              }
+            },
+            "potentialAction": {
+              "@type": "SearchAction",
+              "target": "https://myaspergersquiz.com/search?q={search_term_string}",
+              "query-input": "required name=search_term_string"
+            }
+          }`
+        }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{
+          __html: `{
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "Is this autism quiz free and private?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes! The quiz is free, anonymous, and your answers are not stored unless you choose to save your results in your account."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Can I get a full report after the quiz?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "You get instant results. You can optionally unlock a detailed report with deeper insight and a downloadable PDF."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "How long does the quiz take to complete?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "The quiz typically takes about 5 minutes to complete."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Is this quiz suitable for all ages?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes, the quiz is designed for individuals aged 16 and older to explore their traits."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Is this quiz accessible for screen readers?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes, the quiz and all main features are designed to be accessible for screen readers and keyboard navigation. If you encounter any issues, please let us know."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Do you sell or share my data?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "No. We do not sell or share your data. Your responses are private and not stored unless you create an account and choose to save your results."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Can I take this quiz on my phone?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Absolutely! The quiz is fully mobile-friendly and works on all modern smartphones and tablets."
+                }
+              }
+            ]
+          }`
+        }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{
+          __html: `{
             "@context": "https://schema.org",
             "@type": "BreadcrumbList",
             "itemListElement": [
               { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://myaspergersquiz.com/" },
-              { "@type": "ListItem", "position": 2, "name": "Quiz", "item": "https://myaspergersquiz.com/quiz" }
+              { "@type": "ListItem", "position": 2, "name": "Quiz", "item": "https://myaspergersquiz.com/quiz" },
+              { "@type": "ListItem", "position": 3, "name": "Full Report", "item": "https://myaspergersquiz.com/full-report" }
             ]
-          }`}
-        </script>
-        {/* JSON-LD: Organization */}
-        <script type="application/ld+json">
-          {`{
+          }`
+        }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{
+          __html: `{
             "@context": "https://schema.org",
             "@type": "Organization",
-            "name": "MyAspergersQuiz",
+            "name": "MyAspergersQuiz Team",
             "url": "https://myaspergersquiz.com/",
             "logo": {
               "@type": "ImageObject",
@@ -205,305 +263,350 @@ export default function QuizPage() {
               "height": 32,
               "caption": "MyAspergersQuiz logo"
             },
-            "sameAs": ["https://twitter.com/myaspergersquiz"]
-          }`}
-        </script>
+            "sameAs": [
+              "https://twitter.com/myaspergersquiz"
+            ]
+          }`
+        }} />
       </Head>
-      {isSubmitting && (
-        <div style={{ textAlign: "center", margin: "2rem" }}>
-          <span>Saving your results...</span>
-        </div>
-      )}
-      <main style={{ background: "#fff", minHeight: "100vh", padding: "clamp(1.5rem, 5vw, 2.5rem) 0" }}>
-        {/* Self-Insight box: only show on desktop */}
-        <section className="desktopOnly" style={boxStyle}>
-          <div
+
+      <main
+        id="main-content"
+        tabIndex={-1}
+        className="main-container"
+        style={{
+          background: "#fff",
+          color: "#1a1a1a",
+          padding: "2.5rem 2.5rem 2.5rem",
+          fontFamily: "'Inter', sans-serif",
+          minHeight: "100vh",
+          width: "100vw",
+          boxSizing: "border-box"
+        }}
+      >
+        <div className="content-box" style={containerStyle}>
+          {/* HERO SECTION */}
+          <div className="hero-section" style={heroStyle}>
+            <div style={{ display: "inline-flex", alignItems: "center", gap: "0.8rem", marginBottom: "0.7rem" }}>
+              <img
+                src="/myaspergersquiz-logo.png"
+                alt="MyAspergersQuiz logo"
+                width={40}
+                height={40}
+                style={{
+                  borderRadius: "10px",
+                  boxShadow: "0 2px 8px rgba(49,117,138,0.10)"
+                }}
+              />
+              <span style={{
+                fontSize: "2rem",
+                fontWeight: 900,
+                color: "#31758a",
+                letterSpacing: "0.01em",
+                fontFamily: "'Inter', sans-serif"
+              }}>
+                MyAspergersQuiz
+              </span>
+            </div>
+            <div>
+              <span style={{
+                fontSize: "1.1rem",
+                color: "#4a6e7a",
+                fontWeight: 500,
+                letterSpacing: "0.01em"
+              }}>
+                Explore with Ease. Reflect with Confidence.
+              </span>
+            </div>
+          </div>
+
+          {/* Discover Section */}
+          <section style={{ textAlign: "center", marginBottom: "0.2rem" }}>
+            <h1 style={{
+              fontSize: "1.45rem",
+              margin: "0 0 0.5rem 0",
+              lineHeight: "1.2",
+              fontWeight: 800,
+              color: "#31758a"
+            }}>
+              Discover and Understand Your Unique Strengths
+            </h1>
+            <p style={{
+              margin: "0 auto 0.2rem auto",
+              fontSize: "1rem",
+              color: "#4a6e7a",
+              maxWidth: 500,
+              lineHeight: "1.5"
+            }}>
+              Built independently using research inspired by organizations such as the Aspergers Research Institute. Informed by academic research in social, sensory, and behavioral traits.
+            </p>
+          </section>
+
+          {/* Start Quiz Button */}
+          <section style={{ textAlign: "center", marginTop: "0.2rem" }}>
+            <a href="/quiz" style={{ textDecoration: "none" }}>
+              <button
+                className="start-quiz-btn"
+                aria-label="Start the Autism Traits Quiz"
+                style={{
+                  background: "linear-gradient(90deg, #31758a 0%, #4A90A4 100%)",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: "10px",
+                  padding: "0.85rem 2.2rem",
+                  fontSize: "1.08rem",
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  boxShadow: "0 2px 12px rgba(49,117,138,0.10)",
+                  margin: "0 auto 0.4rem auto",
+                  display: "block",
+                  transition: "background 0.2s"
+                }}
+                onMouseOver={e => (e.currentTarget.style.background = "#285e6e")}
+                onMouseOut={e => (e.currentTarget.style.background = "linear-gradient(90deg, #31758a 0%, #4A90A4 100%)")}
+              >
+                Start the Quiz
+              </button>
+            </a>
+          </section>
+
+          {/* Takes only 5 minutes text */}
+          <p style={{
+            fontSize: "0.93rem",
+            color: "#4a6e7a",
+            margin: "0.2rem 0 0 0",
+            lineHeight: "1.5",
+            textAlign: "center"
+          }}>
+            Takes only 5 minutes. Completely private.
+          </p>
+
+          {/* Tip Section */}
+          <section
+            className="tip-section"
             style={{
+              background: "#eaf6fa",
+              border: "1px solid #b6d6e2",
+              color: "#31758a",
+              borderRadius: "10px",
+              padding: "1.1rem 2rem",
+              margin: "0.9rem auto 0.7rem auto",
+              maxWidth: 620,
               display: "flex",
               alignItems: "center",
+              gap: "1.2rem",
+              fontSize: "1.04rem",
+              boxShadow: "0 2px 8px rgba(49,117,138,0.04)",
               justifyContent: "center",
-              gap: "0.8rem",
-              marginBottom: "1.1rem",
               flexWrap: "wrap"
             }}
           >
-            <img
-              src="/myaspergersquiz-logo.png"
-              alt="MyAspergersQuiz logo"
-              width={32}
-              height={32}
-              style={{
-                borderRadius: "8px",
-                boxShadow: "0 2px 8px rgba(49,117,138,0.10)",
-                flexShrink: 0,
-                minWidth: 32,
-                minHeight: 32
-              }}
-              loading="eager"
-              onError={e => { (e.target as HTMLImageElement).src = "/fallback-logo.png"; }}
-            />
-            <h2
-              style={{
-                fontSize: "clamp(1.2rem, 4vw, 2.1rem)",
-                fontWeight: 900,
-                margin: 0,
-                color: "transparent",
-                background: "linear-gradient(90deg, #31758a 30%,rgb(80, 163, 186) 100%)",
-                backgroundClip: "text",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                letterSpacing: "0.01em",
-                fontFamily: "'Inter', sans-serif",
-                textShadow: "0 2px 8px rgba(49, 88, 100, 0.1)",
-                lineHeight: 1.1,
-                wordBreak: "break-word"
-              }}
-            >
-              Self-Insight Starts Here
-            </h2>
-          </div>
-          <div style={{
-            marginBottom: "0.7rem",
-            fontSize: "clamp(0.95rem, 2.5vw, 1.08rem)"
-          }}>
-            <span style={{
-              color: "#4A90A4",
-              fontWeight: 800
-            }}>
-              Estimated time to complete: 3–5 minutes
+            <svg width="26" height="26" fill="#31758a" viewBox="0 0 24 24" style={{ flexShrink: 0 }}>
+              <circle cx="12" cy="12" r="10" fill="#eaf6fa" stroke="#31758a" strokeWidth="2"/>
+              <path d="M12 8v4m0 4h.01" stroke="#31758a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            <span style={{ flex: 1, minWidth: 200 }}>
+              <strong>Tip:</strong> <span style={{ fontWeight: 500 }}>Want to save your full results?</span>
             </span>
-          </div>
-          <p style={{
-            fontSize: "clamp(0.98rem, 2.5vw, 1.05rem)",
-            color: "#3a4a54",
-            lineHeight: 1.7,
-            opacity: 0.92,
-            margin: 0
-          }}>
-            This quiz is designed to help you explore patterns in how you interact, process, and experience the world around you. Your answers may highlight meaningful insights worth reflecting on.
-          </p>
-        </section>
-
-        {/* Question Box */}
-        <div
-          key={currentIndex}
-          className="question-box"
-          style={{
-            background: "#fff",
-            border: "1.5px solid #d2e6ee",
-            borderRadius: "18px",
-            boxShadow: "0 8px 32px rgba(49,117,138,0.10)",
-            padding: "clamp(1.2rem, 4vw, 2.2rem) clamp(0.7rem, 3vw, 1.2rem) clamp(2.2rem, 5vw, 2.7rem)",
-            width: "95vw",
-            maxWidth: "600px",
-            textAlign: "center",
-            margin: "0 auto",
-            transition: "box-shadow 0.2s",
-            boxSizing: "border-box"
-          }}
-        >
-          <h2
-            aria-live="polite"
-            tabIndex={0}
-            style={{
-              fontWeight: 700,
-              fontSize: "clamp(1.2rem, 4vw, 1.75rem)",
-              marginBottom: "1rem",
-              color: "#4A90A4"
-            }}
-          >
-            Question {currentIndex + 1} of {questions.length}
-          </h2>
-          <p
-            className="question-text"
-            style={{
-              fontSize: "clamp(1rem, 3vw, 1.1rem)",
-              lineHeight: "1.5rem",
-              minHeight: "4.5rem",
-              marginBottom: "1.2rem",
-              overflow: "hidden"
-            }}
-          >
-            {currentQuestion.text}
-          </p>
-          {currentQuestion.example && (
-            <div style={{ marginBottom: "1.5rem" }}>
-              <button
-                aria-describedby="example-desc"
-                aria-label={
-                  showExamples[currentIndex]
-                    ? `Hide Example for question ${currentIndex + 1}`
-                    : `Show Example for question ${currentIndex + 1}`
-                }
-                onClick={() => {
-                  const updated = [...showExamples];
-                  updated[currentIndex] = !updated[currentIndex];
-                  setShowExamples(updated);
-                }}
-                style={{
-                  background: "none",
-                  color: "#5a9aa8",
-                  border: "1.5px solid #5a9aa8",
-                  borderRadius: "12px",
-                  padding: "0.5rem 1rem",
-                  fontSize: "clamp(0.9rem, 2vw, 1rem)",
-                  cursor: "pointer",
-                  marginBottom: "0.75rem",
-                  transition: "all 0.2s ease-in-out",
-                  fontWeight: 600,
-                  width: "fit-content",
-                  marginLeft: "auto",
-                  marginRight: "auto"
-                }}
-              >
-                {showExamples[currentIndex] ? "Hide Example" : "Show Example"}
-              </button>
-              {showExamples[currentIndex] && (
-                <div
-                  id="example-desc"
+            <div style={{ display: "flex", gap: "0.7rem" }}>
+              <a href="/signup" style={{ textDecoration: "none" }}>
+                <button
                   style={{
-                    background: "#eaf6f8",
-                    padding: "1rem 1.25rem",
-                    borderRadius: "12px",
-                    fontSize: "clamp(0.98rem, 2vw, 1rem)",
-                    color: "#1a1a1a",
-                    border: "1px solid #4A90A4",
-                    textAlign: "left",
-                    lineHeight: 1.7,
-                    marginTop: "0.7rem"
+                    background: "#31758a",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "6px",
+                    padding: "0.5rem 1.4rem",
+                    fontWeight: 600,
+                    fontSize: "1rem",
+                    cursor: "pointer",
+                    transition: "background 0.2s"
+                  }}
+                  onMouseOver={e => (e.currentTarget.style.background = "#24505e")}
+                  onMouseOut={e => (e.currentTarget.style.background = "#31758a")}
+                >
+                  Sign up
+                </button>
+              </a>
+              <a href="/login" style={{ textDecoration: "none" }}>
+                <button
+                  style={{
+                    background: "#fff",
+                    color: "#31758a",
+                    border: "1.5px solid #31758a",
+                    borderRadius: "6px",
+                    padding: "0.5rem 1.4rem",
+                    fontWeight: 600,
+                    fontSize: "1rem",
+                    cursor: "pointer",
+                    transition: "background 0.2s, color 0.2s"
+                  }}
+                  onMouseOver={e => {
+                    e.currentTarget.style.background = "#31758a";
+                    e.currentTarget.style.color = "#fff";
+                  }}
+                  onMouseOut={e => {
+                    e.currentTarget.style.background = "#fff";
+                    e.currentTarget.style.color = "#31758a";
                   }}
                 >
-                  <strong style={{ color: "#31758a" }}>Example:</strong> {currentQuestion.example}
-                </div>
-              )}
+                  Log in
+                </button>
+              </a>
             </div>
-          )}
-          <div style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "1rem",
-            width: "100%",
-            maxWidth: "600px",
-            margin: "0 auto"
-          }}>
-            <button
-              aria-label="Answer Yes"
-              onClick={() => handleAnswer(yesWeight)}
-              disabled={selected !== null}
-              style={{
-                ...buttonStyle,
-                background: "#5a9aa8",
-                color: "#fff",
-                border: "none",
-                opacity: selected !== null ? 0.6 : 1
-              }}
+          </section>
+
+          {/* What You Get in the Full Report */}
+          <section
+            className="full-report-section"
+            style={{
+              background: "#f7fbfd",
+              border: "1.5px solid #d2e6ee",
+              borderRadius: "14px",
+              boxShadow: "0 2px 10px rgba(49,117,138,0.04)",
+              padding: "1.5rem 1.5rem 1.2rem 1.5rem",
+              margin: "1.2rem auto 0.8rem auto",
+              maxWidth: 540,
+              textAlign: "left"
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "0.7rem", marginBottom: "1rem" }}>
+              <BarChart3 size={22} color="#31758a" />
+              <h2 style={{
+                fontSize: "1.15rem",
+                fontWeight: 700,
+                margin: 0,
+                color: "#31758a"
+              }}>
+                What You Get in the Full Report
+              </h2>
+            </div>
+            <ul style={{
+              listStyle: "none",
+              padding: 0,
+              margin: 0,
+              display: "flex",
+              flexDirection: "column",
+              gap: "1.1rem"
+            }}>
+              <li style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+                <FlaskConical size={24} color="#31758a" />
+                <span>
+                  <strong>Deeper breakdown</strong> of your social, sensory, and behavior traits
+                </span>
+              </li>
+              <li style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+                <BarChart3 size={24} color="#31758a" />
+                <span>
+                  <strong>Personalized insight explanations</strong> unique to your responses
+                </span>
+              </li>
+              <li style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+                <Compass size={24} color="#31758a" />
+                <span>
+                  <strong>Self-awareness prompts</strong> tailored to your top traits
+                </span>
+              </li>
+              <li style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+                <FileText size={24} color="#31758a" />
+                <span>
+                  <strong>Downloadable PDF</strong> to reflect on or share
+                </span>
+              </li>
+              <li style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+                <Lock size={24} color="#31758a" />
+                <span>
+                  <strong>Completely private</strong>—no account needed
+                </span>
+              </li>
+            </ul>
+          </section>
+
+          {/* Features grid */}
+          <section style={{ textAlign: "center" }}>
+            <ul
+              className="features-grid"
+              style={featuresGridStyle}
             >
-              Yes
-            </button>
+              <li style={{
+                background: "#f9fbfc",
+                border: "1px solid #e4ebf0",
+                borderRadius: "10px",
+                padding: "0.8rem 0.5rem",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: "0.3rem",
+                boxShadow: "0 1px 4px rgba(49,117,138,0.03)"
+              }}>
+                <ShieldCheck size={22} color="#31758a" />
+                <span style={{ fontWeight: 600, color: "#31758a", fontSize: "0.98rem" }}>Private & Anonymous</span>
+                <span style={{ fontSize: "0.89rem", color: "#4a6e7a", textAlign: "center" }}>Your answers are never stored.</span>
+              </li>
+              <li style={{
+                background: "#f9fbfc",
+                border: "1px solid #e4ebf0",
+                borderRadius: "10px",
+                padding: "0.8rem 0.5rem",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: "0.3rem",
+                boxShadow: "0 1px 4px rgba(49,117,138,0.03)"
+              }}>
+                <Lock size={22} color="#31758a" />
+                <span style={{ fontWeight: 600, color: "#31758a", fontSize: "0.98rem" }}>Secure</span>
+                <span style={{ fontSize: "0.89rem", color: "#4a6e7a", textAlign: "center" }}>No signup or login required.</span>
+              </li>
+              <li style={{
+                background: "#f9fbfc",
+                border: "1px solid #e4ebf0",
+                borderRadius: "10px",
+                padding: "0.8rem 0.5rem",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: "0.3rem",
+                boxShadow: "0 1px 4px rgba(49,117,138,0.03)"
+              }}>
+                <Clock size={22} color="#31758a" />
+                <span style={{ fontWeight: 600, color: "#31758a", fontSize: "0.98rem" }}>Fast</span>
+                <span style={{ fontSize: "0.89rem", color: "#4a6e7a", textAlign: "center" }}>Takes less than 5 minutes.</span>
+              </li>
+              <li style={{
+                background: "#f9fbfc",
+                border: "1px solid #e4ebf0",
+                borderRadius: "10px",
+                padding: "0.8rem 0.5rem",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: "0.3rem",
+                boxShadow: "0 1px 4px rgba(49,117,138,0.03)"
+              }}>
+                <FlaskConical size={22} color="#31758a" />
+                <span style={{ fontWeight: 600, color: "#31758a", fontSize: "0.98rem" }}>Science-Informed</span>
+                <span style={{ fontSize: "0.89rem", color: "#4a6e7a", textAlign: "center" }}>Built from peer-reviewed studies.</span>
+              </li>
+            </ul>
+          </section>
 
-            <button
-              aria-label="Answer Sometimes"
-              onClick={() => handleAnswer(kindOfWeight)}
-              disabled={selected !== null}
-              style={{
-                ...buttonStyle,
-                background: "transparent",
-                border: "2px solid #5a9aa8",
-                color: "#5a9aa8",
-                opacity: selected !== null ? 0.6 : 1
-              }}
-            >
-              Sometimes
-            </button>
-
-            <button
-              aria-label="Answer Not Really"
-              onClick={() => handleAnswer(maybeWeight)}
-              disabled={selected !== null}
-              style={{
-                ...buttonStyle,
-                background: "transparent",
-                border: "2px solid #5a9aa8",
-                color: "#5a9aa8",
-                opacity: selected !== null ? 0.6 : 1
-              }}
-            >
-              Not really
-            </button>
-
-            <button
-              aria-label="Answer No"
-              onClick={() => handleAnswer(noWeight)}
-              disabled={selected !== null}
-              style={{
-                ...buttonStyle,
-                background: "transparent",
-                border: "2px solid #5a9aa8",
-                color: "#5a9aa8",
-                opacity: selected !== null ? 0.6 : 1
-              }}
-            >
-              No
-            </button>
-
-            {currentIndex > 0 && (
-              <button
-                aria-label="Go to Previous Question"
-                onClick={handleBack}
-                style={{
-                  ...buttonStyle,
-                  background: "transparent",
-                  border: "2px solid #5a9aa8",
-                  color: "#5a9aa8"
-                }}
-              >
-                ← Back
-              </button>
-            )}
-          </div>
-        </div>
-
-        {/* Progress Bar */}
-        <div
-          className="progress-container"
-          style={{
+          {/* Additional Info Section (Desktop Only) */}
+          <section className="desktopOnly" style={{
+            background: "#fff",
+            border: "1.5px solid #e4ebf0",
+            borderRadius: "16px",
+            boxShadow: "0 4px 24px rgba(49,117,138,0.07)",
+            padding: "clamp(1.2rem, 4vw, 2rem) clamp(0.7rem, 3vw, 1.5rem) clamp(1.7rem, 5vw, 2.2rem)",
+            marginBottom: "2.2rem",
+            maxWidth: 600,
             width: "95vw",
-            maxWidth: "600px",
-            margin: "0 auto",
-            marginTop: "2rem",
-            marginBottom: "2rem",
-            textAlign: "center"
-          }}
-          aria-label={`Quiz progress: ${percentComplete}% complete`}
-          role="progressbar"
-          aria-valuenow={percentComplete}
-          aria-valuemin={0}
-          aria-valuemax={100}
-        >
-          <p style={{
-            marginBottom: "0.75rem",
-            fontSize: "clamp(1rem, 2vw, 1.1rem)",
-            fontWeight: 500,
-            opacity: 0.8
+            marginInline: "auto",
+            textAlign: "center",
+            boxSizing: "border-box"
           }}>
-            Progress: <span aria-live="polite">{percentComplete}%</span>
-          </p>
-          <div style={{
-            height: "16px",
-            width: "100%",
-            background: "#e4ebf0",
-            borderRadius: "8px",
-            overflow: "hidden",
-            marginBottom: "0.5rem"
-          }}>
-            <div style={{
-              width: `${percentComplete}%`,
-              height: "100%",
-              background: "linear-gradient(90deg, #4A90A4 0%, #31758a 100%)",
-              borderRadius: "8px",
-              transition: "width 0.4s cubic-bezier(.4,2,.6,1)"
-            }} />
-          </div>
+            {/* ...your box content... */}
+          </section>
         </div>
       </main>
     </>
