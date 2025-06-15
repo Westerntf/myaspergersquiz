@@ -329,7 +329,7 @@ export default function Home() {
               fontWeight: 800,
               color: "#31758a"
             }}>
-              Discover and Understand Your Unique Strengths
+              Free Online Aspergers & Autism Spectrum Traits Quiz
             </h1>
             <p style={{
               margin: "0 auto 0.2rem auto",
@@ -338,7 +338,7 @@ export default function Home() {
               maxWidth: 500,
               lineHeight: "1.5"
             }}>
-              Built independently using research inspired by organizations such as the Aspergers Research Institute. Informed by academic research in social, sensory, and behavioral traits.
+              Curious about where you fit on the autism spectrum? Take our science-based Aspergers and autism traits quiz to explore your unique strengths and patterns. Instant, private results—no account required.
             </p>
           </section>
 
@@ -591,21 +591,48 @@ export default function Home() {
             </ul>
           </section>
 
-          {/* Additional Info Section (Desktop Only) */}
-          <section className="desktopOnly" style={{
-            background: "#fff",
-            border: "1.5px solid #e4ebf0",
-            borderRadius: "16px",
-            boxShadow: "0 4px 24px rgba(49,117,138,0.07)",
-            padding: "clamp(1.2rem, 4vw, 2rem) clamp(0.7rem, 3vw, 1.5rem) clamp(1.7rem, 5vw, 2.2rem)",
-            marginBottom: "2.2rem",
-            maxWidth: 600,
-            width: "95vw",
-            marginInline: "auto",
-            textAlign: "center",
-            boxSizing: "border-box"
-          }}>
-            {/* ...your box content... */}
+          {/* What is the Aspergers & Autism Spectrum Quiz? */}
+          <section style={{ textAlign: "center", marginTop: "1.5rem" }}>
+            <h2 style={{
+              fontSize: "1.3rem",
+              margin: "0 0 0.5rem 0",
+              lineHeight: "1.2",
+              fontWeight: 700,
+              color: "#31758a"
+            }}>
+              What is the Aspergers & Autism Spectrum Quiz?
+            </h2>
+            <p style={{
+              margin: "0 auto 0.2rem auto",
+              fontSize: "1rem",
+              color: "#4a6e7a",
+              maxWidth: 500,
+              lineHeight: "1.5"
+            }}>
+              This quiz is designed to help you reflect on social, sensory, and behavioral traits commonly associated with autism and Asperger’s. Developed using research-backed questions, it offers insight into your neurodivergent patterns in just a few minutes.
+            </p>
+          </section>
+
+          {/* Why Take an Autism Traits Quiz? */}
+          <section style={{ textAlign: "center", marginTop: "1.5rem" }}>
+            <h2 style={{
+              fontSize: "1.3rem",
+              margin: "0 0 0.5rem 0",
+              lineHeight: "1.2",
+              fontWeight: 700,
+              color: "#31758a"
+            }}>
+              Why Take an Autism Traits Quiz?
+            </h2>
+            <p style={{
+              margin: "0 auto 0.2rem auto",
+              fontSize: "1rem",
+              color: "#4a6e7a",
+              maxWidth: 500,
+              lineHeight: "1.5"
+            }}>
+              Understanding your autism spectrum traits can help you gain self-awareness, improve communication, and find strategies that work for you. Whether you’re seeking clarity or just curious, this quiz is a helpful first step.
+            </p>
           </section>
         </div>
       </main>

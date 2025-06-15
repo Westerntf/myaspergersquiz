@@ -39,6 +39,7 @@ export default function ResultsPage() {
   });
   const reportRef = useRef<HTMLDivElement>(null);
   const [faqOpen, setFaqOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   // 1) Ensure client-only rendering
   useEffect(() => {
@@ -129,13 +130,16 @@ export default function ResultsPage() {
 
   // 4) Handle checkout redirect
   const handleCheckout = async () => {
+    setLoading(true);
     if (!user) {
       router.replace("/login");
+      setLoading(false);
       return;
     }
     const storedQuizId = getQuizRunId();
     if (!storedQuizId) {
       alert("Quiz ID not found. Please retake the quiz.");
+      setLoading(false);
       return;
     }
     const response = await fetch("/api/checkout-session", {
@@ -149,6 +153,7 @@ export default function ResultsPage() {
       }),
     });
     const { url } = await response.json();
+    setLoading(false);
     if (!url) {
       console.error("Checkout session URL not returned");
       return;
@@ -174,147 +179,146 @@ export default function ResultsPage() {
 
   return (
     <>
-<Head>
-  {/* Primary SEO */}
-  <title>Your Results | Autism & Asperger’s Trait Quiz – MyAspergersQuiz.com</title>
-  <meta name="description" content="See your private, science-based autism and Asperger’s trait summary. Instant results with trait breakdown, insights, and next steps. Discover your unique neurodivergent profile." />
-  <meta name="keywords" content="autism results, aspergers results, autism trait quiz, quiz outcome, neurodivergent results, trait analysis, autism assessment, spectrum profile, personalized autism quiz, MyAspergersQuiz.com" />
-  <meta name="author" content="MyAspergersQuiz Team" />
-  <meta name="copyright" content="MyAspergersQuiz.com" />
-  <meta name="subject" content="Personal Autism Quiz Results" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
-  <meta name="referrer" content="origin-when-cross-origin" />
-  <meta name="theme-color" content="#31758a" />
-  <meta httpEquiv="content-language" content="en" />
-  <link rel="canonical" href="https://myaspergersquiz.com/results" />
-  <link rel="alternate" href="https://myaspergersquiz.com/results" hrefLang="en-au" />
-  <link rel="alternate" href="https://myaspergersquiz.com/results" hrefLang="en-us" />
-  <link rel="alternate" href="https://myaspergersquiz.com/results" hrefLang="x-default" />
+      <Head>
+        {/* Primary SEO */}
+        <title>Your Results | Autism & Asperger’s Trait Quiz – MyAspergersQuiz.com</title>
+        <meta name="description" content="See your private, science-based autism and Asperger’s trait summary. Instant results with trait breakdown, insights, and next steps. Discover your unique neurodivergent profile." />
+        <meta name="keywords" content="autism results, aspergers results, autism trait quiz, quiz outcome, neurodivergent results, trait analysis, autism assessment, spectrum profile, personalized autism quiz, MyAspergersQuiz.com" />
+        <meta name="author" content="MyAspergersQuiz Team" />
+        <meta name="copyright" content="MyAspergersQuiz.com" />
+        <meta name="subject" content="Personal Autism Quiz Results" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+        <meta name="referrer" content="origin-when-cross-origin" />
+        <meta name="theme-color" content="#31758a" />
+        <meta httpEquiv="content-language" content="en" />
+        <link rel="canonical" href="https://myaspergersquiz.com/results" />
+        <link rel="alternate" href="https://myaspergersquiz.com/results" hrefLang="en-au" />
+        <link rel="alternate" href="https://myaspergersquiz.com/results" hrefLang="en-us" />
+        <link rel="alternate" href="https://myaspergersquiz.com/results" hrefLang="x-default" />
 
-  {/* Open Graph / Facebook / LinkedIn */}
-  <meta property="og:type" content="article" />
-  <meta property="og:title" content="Your Results – Autism & Asperger’s Quiz Outcome" />
-  <meta property="og:description" content="A private, research-based trait summary. See your personalized spectrum profile instantly and get next steps for self-discovery." />
-  <meta property="og:image" content="https://myaspergersquiz.com/og-results.jpg" />
-  <meta property="og:image:alt" content="Results summary preview from MyAspergersQuiz.com" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-  <meta property="og:url" content="https://myaspergersquiz.com/results" />
-  <meta property="og:site_name" content="MyAspergersQuiz.com" />
-  <meta property="og:locale" content="en_AU" />
-  <meta property="article:section" content="Results" />
-  <meta property="article:author" content="MyAspergersQuiz Team" />
-  <meta property="article:published_time" content="2025-05-25T09:00:00+10:00" />
-  <meta property="article:modified_time" content={new Date().toISOString()} />
+        {/* Open Graph / Facebook / LinkedIn */}
+        <meta property="og:type" content="article" />
+        <meta property="og:title" content="Your Results – Autism & Asperger’s Quiz Outcome" />
+        <meta property="og:description" content="A private, research-based trait summary. See your personalized spectrum profile instantly and get next steps for self-discovery." />
+        <meta property="og:image" content="https://myaspergersquiz.com/og-results.jpg" />
+        <meta property="og:image:alt" content="Results summary preview from MyAspergersQuiz.com" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:url" content="https://myaspergersquiz.com/results" />
+        <meta property="og:site_name" content="MyAspergersQuiz.com" />
+        <meta property="og:locale" content="en_AU" />
+        <meta property="article:section" content="Results" />
+        <meta property="article:author" content="MyAspergersQuiz Team" />
+        <meta property="article:published_time" content="2025-05-25T09:00:00+10:00" />
+        <meta property="article:modified_time" content={new Date().toISOString()} />
 
-  {/* Twitter/X */}
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Your Results – Autism & Asperger’s Quiz Outcome" />
-  <meta name="twitter:description" content="Discover your unique neurodivergent strengths and insights. View your results and next steps with MyAspergersQuiz.com." />
-  <meta name="twitter:image" content="https://myaspergersquiz.com/og-results.jpg" />
-  <meta name="twitter:image:alt" content="Preview of your quiz results from MyAspergersQuiz.com" />
-  <meta name="twitter:site" content="@MyAspergersQuiz" />
-  <meta name="twitter:creator" content="@MyAspergersQuiz" />
+        {/* Twitter/X */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Your Results – Autism & Asperger’s Quiz Outcome" />
+        <meta name="twitter:description" content="Discover your unique neurodivergent strengths and insights. View your results and next steps with MyAspergersQuiz.com." />
+        <meta name="twitter:image" content="https://myaspergersquiz.com/og-results.jpg" />
+        <meta name="twitter:image:alt" content="Preview of your quiz results from MyAspergersQuiz.com" />
+        <meta name="twitter:site" content="@MyAspergersQuiz" />
+        <meta name="twitter:creator" content="@MyAspergersQuiz" />
 
-  {/* Brand / PWA */}
-  <meta name="apple-mobile-web-app-title" content="MyAspergersQuiz" />
-  <meta name="application-name" content="MyAspergersQuiz" />
-  <link rel="icon" href="/myaspergersquiz-logo.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-  <link rel="manifest" href="/site.webmanifest" />
-  <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
+        {/* Brand / PWA */}
+        <meta name="apple-mobile-web-app-title" content="MyAspergersQuiz" />
+        <meta name="application-name" content="MyAspergersQuiz" />
+        <link rel="icon" href="/myaspergersquiz-logo.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <link rel="manifest" href="/site.webmanifest" />
+        <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
 
-  {/* Performance */}
-  <link rel="preload" href="/myaspergersquiz-logo.png" as="image" />
-  <link rel="preload" href="/fonts/Inter-var-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        {/* Performance */}
+        <link rel="preload" href="/myaspergersquiz-logo.png" as="image" />
+        <link rel="preload" href="/fonts/Inter-var-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
 
-  {/* JSON-LD: Article, FAQPage, BreadcrumbList, Organization */}
-  <script type="application/ld+json">{`
-    {
-      "@context": "https://schema.org",
-      "@type": ["Article", "FAQPage"],
-      "mainEntityOfPage": {
-        "@type": "WebPage",
-        "@id": "https://myaspergersquiz.com/results"
-      },
-      "headline": "Your Results – Personalized Autism & Asperger’s Trait Summary",
-      "description": "Private summary of your autism spectrum traits, including social, sensory, routine, communication, and focus strengths.",
-      "image": "https://myaspergersquiz.com/og-results.jpg",
-      "publisher": {
-        "@type": "Organization",
-        "name": "MyAspergersQuiz.com",
-        "logo": {
-          "@type": "ImageObject",
-          "url": "https://myaspergersquiz.com/myaspergersquiz-logo.png"
-        }
-      },
-      "datePublished": "2025-05-25",
-      "dateModified": "${new Date().toISOString().split("T")[0]}",
-      "about": [
-        "autism",
-        "Asperger's",
-        "trait analysis",
-        "neurodiversity",
-        "self-assessment",
-        "autism spectrum"
-      ],
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "How accurate is this quiz?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "It’s based on research-backed questions but not a clinical diagnosis. Use it for self-reflection."
+        {/* JSON-LD: Article, FAQPage, BreadcrumbList, Organization */}
+        <script type="application/ld+json">{`
+          {
+            "@context": "https://schema.org",
+            "@type": ["Article", "FAQPage"],
+            "mainEntityOfPage": {
+              "@type": "WebPage",
+              "@id": "https://myaspergersquiz.com/results"
+            },
+            "headline": "Your Results – Personalized Autism & Asperger’s Trait Summary",
+            "description": "Private summary of your autism spectrum traits, including social, sensory, routine, communication, and focus strengths.",
+            "image": "https://myaspergersquiz.com/og-results.jpg",
+            "publisher": {
+              "@type": "Organization",
+              "name": "MyAspergersQuiz.com",
+              "logo": {
+                "@type": "ImageObject",
+                "url": "https://myaspergersquiz.com/myaspergersquiz-logo.png"
+              }
+            },
+            "datePublished": "2025-05-25",
+            "dateModified": "${new Date().toISOString().split("T")[0]}",
+            "about": [
+              "autism",
+              "Asperger's",
+              "trait analysis",
+              "neurodiversity",
+              "self-assessment",
+              "autism spectrum"
+            ],
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "How accurate is this quiz?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "It’s based on research-backed questions but not a clinical diagnosis. Use it for self-reflection."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Can I share my results?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "You’re welcome to share your overall score, and if you purchase the full report, you can share your detailed trait breakdowns."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "How quickly will I get my Full Report?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Immediately after purchase, you’ll be redirected to download your PDF in seconds."
+                }
+              }
+            ]
           }
-        },
-        {
-          "@type": "Question",
-          "name": "Can I share my results?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "You’re welcome to share your overall score, and if you purchase the full report, you can share your detailed trait breakdowns."
+        `}</script>
+        <script type="application/ld+json">{`
+          {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://myaspergersquiz.com/" },
+              { "@type": "ListItem", "position": 2, "name": "Results", "item": "https://myaspergersquiz.com/results" }
+            ]
           }
-        },
-        {
-          "@type": "Question",
-          "name": "How quickly will I get my Full Report?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Immediately after purchase, you’ll be redirected to download your PDF in seconds."
+        `}</script>
+        <script type="application/ld+json">{`
+          {
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "name": "MyAspergersQuiz",
+            "url": "https://myaspergersquiz.com/",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://myaspergersquiz.com/myaspergersquiz-logo.png",
+              "width": 32,
+              "height": 32,
+              "caption": "MyAspergersQuiz logo"
+            },
+            "sameAs": ["https://twitter.com/myaspergersquiz"]
           }
-        }
-      ]
-    }
-  `}</script>
-  <script type="application/ld+json">{`
-    {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://myaspergersquiz.com/" },
-        { "@type": "ListItem", "position": 2, "name": "Results", "item": "https://myaspergersquiz.com/results" }
-      ]
-    }
-  `}</script>
-  <script type="application/ld+json">{`
-    {
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      "name": "MyAspergersQuiz",
-      "url": "https://myaspergersquiz.com/",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "https://myaspergersquiz.com/myaspergersquiz-logo.png",
-        "width": 32,
-        "height": 32,
-        "caption": "MyAspergersQuiz logo"
-      },
-      "sameAs": ["https://twitter.com/myaspergersquiz"]
-    }
-  `}</script>
-</Head>
-
+        `}</script>
+      </Head>
       <main role="main" aria-label="Quiz Results Summary"
         style={{
           background: "#fdfdfd",
@@ -331,26 +335,37 @@ export default function ResultsPage() {
           style={{ margin: "0 auto", maxWidth: 850 }}
         >
           <header>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "1rem",
-                marginBottom: "1rem",
-                flexWrap: "wrap",
-              }}
-            >
-              <img
-                src="/myaspergersquiz-logo.png"
-                alt="MyAspergersQuiz Logo"
-                style={{ height: "50px", width: "50px" }}
-              />
-              <h1 style={{ fontSize: "2.5rem", color: "#31758a", margin: 0 }}>
-                Your Quiz Results
-              </h1>
-            </div>
-          </header>
+  <div
+    style={{
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: "1rem",
+      marginBottom: "1rem",
+      flexWrap: "wrap",
+    }}
+  >
+    <img
+      src="/myaspergersquiz-logo.png"
+      alt="MyAspergersQuiz Logo"
+      style={{ height: "50px", width: "50px" }}
+    />
+    {/* SEO-optimized H1 */}
+    <h1 style={{ fontSize: "2.5rem", color: "#31758a", margin: 0 }}>
+      Your Autism & Aspergers Quiz Results
+    </h1>
+  </div>
+  {/* SEO-optimized intro paragraph */}
+  <p style={{
+    fontSize: "1.15rem",
+    color: "#3a4a54",
+    margin: "0 0 1.5rem 0",
+    lineHeight: 1.7,
+    textAlign: "center"
+  }}>
+    Here’s your personalized summary of autism spectrum traits. Review your strengths, challenges, and next steps for self-discovery. Your results are private and based on your quiz responses.
+  </p>
+</header>
           <section aria-labelledby="personalized-insights">
             <div
               role="region"
@@ -360,7 +375,7 @@ export default function ResultsPage() {
                 borderRadius: "10px",
                 padding: "2rem",
                 border: "1px solid #d9e4e8",
-                boxShadow: "0 2px 6px rgba(49, 117, 138, 0.05)",
+                boxShadow: "0 2px 6px rgba(49,117,138,0.05)",
               }}
             >
           {summary.level !== null && (
@@ -792,124 +807,244 @@ export default function ResultsPage() {
                   Tracking over a week can reveal patterns that help you tailor daily routines.
                 </div>
               </div>
+    <section
+      style={{
+        background: "linear-gradient(260deg,rgb(18, 64, 73) 0%,rgb(78, 152, 168) 100%)",
+        borderRadius: "22px",
+        boxShadow: "0 4px 24px rgba(49,117,138,0.13)",
+        padding: "2.2rem 1.5rem 2rem 1.5rem",
+        margin: "2.5rem auto 2rem auto",
+        maxWidth: 800,
+        textAlign: "center",
+        color: "#fff",
+        position: "relative"
+      }}
+    >
+      {/* Lock Icon */}
+<div style={{ marginBottom: "1.2rem" }}>
+  <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+    <circle cx="24" cy="24" r="24" fill="#fff" fillOpacity="0.13"/>
+    <path
+      d="M32 22V18a8 8 0 1 0-16 0v4"
+      stroke="#fff"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      fill="none"
+    />
+    <rect
+      x="14"
+      y="22"
+      width="20"
+      height="14"
+      rx="4"
+      stroke="#fff"
+      strokeWidth="2"
+      fill="none"
+    />
+    <circle cx="24" cy="29" r="2" fill="#fff"/>
+  </svg>
+</div>
+    {/* Personalization */}
+      <div style={{
+        color: "#eaf4fa",
+        fontWeight: 1000,
+        fontSize: "1.08rem",
+        margin: "0.2rem 0 0.5rem 0"
+      }}>
+       Limited time offer! See your detailed breakdown for <b>Social</b> and all other traits in your full report.
+      </div>
+<div
+  style={{
+    display: "inline-block",
+    padding: "0.5rem 1.2rem",
+    border: "2px solidrgba(37, 55, 65, 0.6)",
+    borderRadius: "10px",
+    background: "rgb(255, 255, 255)",
+    color: "#2a7b8c",
+    fontWeight: 700,
+    fontSize: "1.08rem",
+    marginBottom: "1.1rem",
+    marginTop: "0.2rem",
+    width: "100%",
+    boxShadow: "0 1px 6px rgba(38, 58, 64, 0.65)"
+  }}
+>
+  Limited-time: Unlock your full report for{" "}
+  <span style={{ textDecoration: "line-through", color: "#b0b0b0", fontWeight: 500 }}>$19.99</span>{" "}
+  <span style={{ color: "#2a7b8c", fontWeight: 900 }}>$9.99</span>
+</div>
 
+      {/* Value Proposition Checklist */}
+      <div
+        style={{
+          background: "rgba(255,255,255,0.13)",
+          border: "1.5px solid rgba(255,255,255,0.18)",
+          borderRadius: "16px",
+          boxShadow: "0 2px 12px rgba(49,117,138,0.10)",
+          padding: "1.1rem 1.1rem 0.7rem 1.1rem",
+          margin: "0 auto 1.2rem auto",
+          maxWidth: 800,
+          color: "#fff",
+          fontWeight: 600,
+          fontSize: "1.08rem",
+          backdropFilter: "blur(2px)"
+        }}
+      >
+        <div style={{ marginBottom: "0.7rem", fontWeight: 800, fontSize: "1.13rem", color: "#fff" }}>
+          What’s in your Full Report?
+        </div>
+        <ul style={{
+          listStyle: "none",
+          padding: 0,
+          margin: 0,
+          color: "#eaf4fa",
+          fontWeight: 500,
+          fontSize: "1rem",
+          textAlign: "left",
+          lineHeight: 1.7
+        }}>
+          <li style={{ marginBottom: 6, display: "flex", alignItems: "center", gap: 8 }}>
+            <svg width="18" height="18" fill="#2ad48c" viewBox="0 0 24 24"><path d="M20.285 6.709a1 1 0 0 0-1.414-1.418l-9.192 9.193-4.242-4.243a1 1 0 1 0-1.415 1.415l4.95 4.95a1 1 0 0 0 1.414 0l9.899-9.897z"/></svg>
+            All 5 trait breakdowns (Social, Sensory, Routine, Communication, Focus)
+          </li>
+          <li style={{ marginBottom: 6, display: "flex", alignItems: "center", gap: 8 }}>
+            <svg width="18" height="18" fill="#2ad48c" viewBox="0 0 24 24"><path d="M20.285 6.709a1 1 0 0 0-1.414-1.418l-9.192 9.193-4.242-4.243a1 1 0 1 0-1.415 1.415l4.95 4.95a1 1 0 0 0 1.414 0l9.899-9.897z"/></svg>
+            Personalized strategies for each area
+          </li>
+          <li style={{ marginBottom: 6, display: "flex", alignItems: "center", gap: 8 }}>
+            <svg width="18" height="18" fill="#2ad48c" viewBox="0 0 24 24"><path d="M20.285 6.709a1 1 0 0 0-1.414-1.418l-9.192 9.193-4.242-4.243a1 1 0 1 0-1.415 1.415l4.95 4.95a1 1 0 0 0 1.414 0l9.899-9.897z"/></svg>
+            Downloadable PDF for your records
+          </li>
+          <li style={{ marginBottom: 6, display: "flex", alignItems: "center", gap: 8 }}>
+            <svg width="18" height="18" fill="#2ad48c" viewBox="0 0 24 24"><path d="M20.285 6.709a1 1 0 0 0-1.414-1.418l-9.192 9.193-4.242-4.243a1 1 0 1 0-1.415 1.415l4.95 4.95a1 1 0 0 0 1.414 0l9.899-9.897z"/></svg>
+            Lifetime access to your results
+          </li>
+          <li style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <svg width="18" height="18" fill="#2ad48c" viewBox="0 0 24 24"><path d="M20.285 6.709a1 1 0 0 0-1.414-1.418l-9.192 9.193-4.242-4.243a1 1 0 1 0-1.415 1.415l4.95 4.95a1 1 0 0 0 1.414 0l9.899-9.897z"/></svg>
+            Shareable summary for your own use
+          </li>
+        </ul>
+      </div>
 
+      {/* Visual Comparison Table */}
+      <div style={{
+        background: "rgba(255,255,255,0.13)",
+        border: "1.5px solid rgba(255,255,255,0.18)",
+        borderRadius: "16px",
+        boxShadow: "0 2px 12px rgba(49,117,138,0.10)",
+        margin: "0 auto 1.5rem auto",
+        maxWidth: 800,
+        overflow: "hidden",
+        backdropFilter: "blur(2px)"
+      }}>
+        <table style={{
+          width: "100%",
+          borderCollapse: "collapse",
+          fontSize: "0.98rem",
+          color: "#fff"
+        }}>
+          <thead>
+            <tr style={{ background: "rgba(234,244,250,0.10)" }}>
+              <th style={{ padding: "0.7rem", fontWeight: 700, letterSpacing: "0.01em" }}></th>
+              <th style={{ padding: "0.7rem", fontWeight: 700, letterSpacing: "0.01em" }}>Free</th>
+              <th style={{ padding: "0.7rem", fontWeight: 700, letterSpacing: "0.01em" }}>Full Report</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style={{ padding: "0.6rem", textAlign: "left" }}>Overall Score</td>
+              <td style={{ textAlign: "center" }}>
+                <svg width="18" height="18" fill="#2ad48c" viewBox="0 0 24 24"><path d="M20.285 6.709a1 1 0 0 0-1.414-1.418l-9.192 9.193-4.242-4.243a1 1 0 1 0-1.415 1.415l4.95 4.95a1 1 0 0 0 1.414 0l9.899-9.897z"/></svg>
+              </td>
+              <td style={{ textAlign: "center" }}>
+                <svg width="18" height="18" fill="#2ad48c" viewBox="0 0 24 24"><path d="M20.285 6.709a1 1 0 0 0-1.414-1.418l-9.192 9.193-4.242-4.243a1 1 0 1 0-1.415 1.415l4.95 4.95a1 1 0 0 0 1.414 0l9.899-9.897z"/></svg>
+              </td>
+            </tr>
+            <tr style={{ background: "rgba(255,255,255,0.06)" }}>
+              <td style={{ padding: "0.6rem", textAlign: "left" }}>Trait Breakdown</td>
+              <td style={{ textAlign: "center" }}>
+                <svg width="18" height="18" fill="#ff6b6b" viewBox="0 0 24 24"><path d="M18.364 5.636a1 1 0 0 0-1.414 0L12 10.586 7.05 5.636a1 1 0 1 0-1.414 1.414L10.586 12l-4.95 4.95a1 1 0 1 0 1.414 1.414L12 13.414l4.95 4.95a1 1 0 0 0 1.414-1.414L13.414 12l4.95-4.95a1 1 0 0 0 0-1.414z"/></svg>
+              </td>
+              <td style={{ textAlign: "center" }}>
+                <svg width="18" height="18" fill="#2ad48c" viewBox="0 0 24 24"><path d="M20.285 6.709a1 1 0 0 0-1.414-1.418l-9.192 9.193-4.242-4.243a1 1 0 1 0-1.415 1.415l4.95 4.95a1 1 0 0 0 1.414 0l9.899-9.897z"/></svg>
+              </td>
+            </tr>
+            <tr>
+              <td style={{ padding: "0.6rem", textAlign: "left" }}>Personalized Strategies</td>
+              <td style={{ textAlign: "center" }}>
+                <svg width="18" height="18" fill="#ff6b6b" viewBox="0 0 24 24"><path d="M18.364 5.636a1 1 0 0 0-1.414 0L12 10.586 7.05 5.636a1 1 0 1 0-1.414 1.414L10.586 12l-4.95 4.95a1 1 0 1 0 1.414 1.414L12 13.414l4.95 4.95a1 1 0 0 0 1.414-1.414L13.414 12l4.95-4.95a1 1 0 0 0 0-1.414z"/></svg>
+              </td>
+              <td style={{ textAlign: "center" }}>
+                <svg width="18" height="18" fill="#2ad48c" viewBox="0 0 24 24"><path d="M20.285 6.709a1 1 0 0 0-1.414-1.418l-9.192 9.193-4.242-4.243a1 1 0 1 0-1.415 1.415l4.95 4.95a1 1 0 0 0 1.414 0l9.899-9.897z"/></svg>
+              </td>
+            </tr>
+            <tr style={{ background: "rgba(255,255,255,0.06)" }}>
+              <td style={{ padding: "0.6rem", textAlign: "left" }}>Downloadable PDF</td>
+              <td style={{ textAlign: "center" }}>
+                <svg width="18" height="18" fill="#ff6b6b" viewBox="0 0 24 24"><path d="M18.364 5.636a1 1 0 0 0-1.414 0L12 10.586 7.05 5.636a1 1 0 1 0-1.414 1.414L10.586 12l-4.95 4.95a1 1 0 1 0 1.414 1.414L12 13.414l4.95 4.95a1 1 0 0 0 1.414-1.414L13.414 12l4.95-4.95a1 1 0 0 0 0-1.414z"/></svg>
+              </td>
+              <td style={{ textAlign: "center" }}>
+                <svg width="18" height="18" fill="#2ad48c" viewBox="0 0 24 24"><path d="M20.285 6.709a1 1 0 0 0-1.414-1.418l-9.192 9.193-4.242-4.243a1 1 0 1 0-1.415 1.415l4.95 4.95a1 1 0 0 0 1.414 0l9.899-9.897z"/></svg>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-              {/* Unlock Full Report CTA */}
-              <div
-                style={{
-                  background: "linear-gradient(to right, #337d91, #275b6f)",
-                  color: "#fff",
-                  padding: "2rem",
-                  borderRadius: "12px",
-                  marginBottom: "2rem",
-                  boxShadow: "0 10px 20px rgba(0, 0, 0, 0.15)",
-                  width: "100%",
-                  maxWidth: "100%",
-                  marginLeft: "auto",
-                  marginRight: "auto",
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    gap: "1rem",
-                  }}
-                >
-                  <div
-                    style={{
-                      background: "#fff",
-                      borderRadius: "50%",
-                      padding: "0.5rem",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      width: "3rem",
-                      height: "3rem",
-                      marginBottom: "0.5rem",
-                    }}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="22"
-                      height="22"
-                      fill="#337d91"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M12 17a2 2 0 1 0 .001-3.999A2 2 0 0 0 12 17zm6-8h-1V7a5 5 0 0 0-10 0h2a3 3 0 1 1 6 0v2H6c-1.1 0-2 .9-2 2v9c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2z" />
-                    </svg>
-                  </div>
-                  <h3 style={{ fontSize: "1.75rem", fontWeight: "700", margin: 0 }}>
-                    Unlock Your Full Report for $9.99
-                  </h3>
-                  <p
-                    style={{
-                      fontSize: "1.05rem",
-                      color: "#d7f5f7",
-                      maxWidth: "90%",
-                      lineHeight: 1.6,
-                      textAlign: "center",
-                    }}
-                  >
-                    Get personalized insights and detailed strategies for all 5 traits — Social,
-                    Sensory, Routine, Communication, and Focus.
-                    Each section includes expert-backed interpretations, tailored tips,
-                    and a downloadable PDF.
-                  </p>
-                  <button
-                    onClick={handleCheckout}
-                    style={{
-                      width: "100%",
-                      padding: "0.9rem",
-                      background: "#e6f5f8",
-                      border: "2px solid #31758a",
-                      borderRadius: "8px",
-                      color: "#31758a",
-                      fontSize: "1.1rem",
-                      cursor: "pointer",
-                      fontWeight: "600",
-                      transition: "all 0.3s ease",
-                    }}
-                    onMouseOver={(e) => {
-                      e.currentTarget.style.background = "#d0ecf1";
-                    }}
-                    onMouseOut={(e) => {
-                      e.currentTarget.style.background = "#e6f5f8";
-                    }}
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#31758a" viewBox="0 0 24 24" style={{ marginRight: "0.5rem" }}>
-                      <path d="M12 17a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm6-7h-1V7a5 5 0 0 0-10 0v3H6c-1.103 0-2 .897-2 2v7c0 1.103.897 2 2 2h12c1.103 0 2-.897 2-2v-7c0-1.103-.897-2-2-2zm-7 0V7a3 3 0 0 1 6 0v3h-6z"/>
-                    </svg>
-                    Unlock Full Report – $9.99
-                  </button>
-                  <p
-                    style={{
-                      fontSize: "0.9rem",
-                      color: "#d7f5f7",
-                      maxWidth: "90%",
-                      lineHeight: 1.4,
-                      textAlign: "center",
-                      marginTop: "0.5rem",
-                    }}
-                  >
-                    Get all 5 trait breakdowns, expert-backed strategies, and a downloadable PDF.
-                  </p>
-                  <p
-                    style={{
-                      fontSize: "0.75rem",
-                      color: "#d7f5f7",
-                      fontStyle: "italic",
-                      marginTop: "0.5rem",
-                    }}
-                  >
-                    Your answers are 100% private—only you can access them.
-                  </p>
+      {/* CTA Button */}
+      <button
+        onClick={handleCheckout}
+        disabled={loading}
+        style={{
+          width: "100%",
+          padding: "1rem",
+          background: "#eaf4fa",
+          border: "none",
+          borderRadius: "12px",
+          color: "#31758a",
+          fontSize: "1.13rem",
+          cursor: loading ? "not-allowed" : "pointer",
+          fontWeight: "700",
+          margin: "0 0 1.2rem 0",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "0.6rem",
+          boxShadow: "0 2px 8px rgba(49,117,138,0.06)",
+          opacity: loading ? 0.7 : 1,
+        }}
+      >
+        <svg width="24" height="24" fill="none" stroke="#31758a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
+    <rect x="6" y="11" width="12" height="8" rx="3" />
+    <path d="M8 11V7a4 4 0 1 1 8 0v4" />
+    <circle cx="12" cy="15" r="1" />
+  </svg>
+        {loading ? "Redirecting..." : "Unlock Full Report – $9.99"}
+      </button>
 
-                  {/* Share Your Experience */}
-                </div>
-              </div>
+      {/* Privacy */}
+      <div style={{
+        color: "#eaf4fa",
+        fontSize: "0.97rem",
+        fontStyle: "italic",
+        opacity: 0.85,
+        marginTop: "1.2rem"
+      }}>
+        Your answers are 100% private—only you can access them.
+        <br />
+        <span style={{ fontSize: "0.93rem", color: "#eaf4fa", opacity: 0.8 }}>
+          7-day money-back guarantee.
+        </span>
+      </div>
+
+      {/* Contact/Support */}
+      <div style={{ textAlign: "center", marginTop: "1.2rem" }}>
+        <a href="/contact" style={{ color: "#eaf4fa", fontWeight: 600, textDecoration: "underline", fontSize: "0.97rem" }}>
+          Questions? Contact us
+        </a>
+      </div>
+    </section>
 
               {/* “Did You Know?” Factoid */}
               <div
@@ -930,7 +1065,7 @@ export default function ResultsPage() {
                 </span>
               </div>
 
-              <div style={{ maxWidth: "95%", margin: "1rem auto 2rem" }}>
+              <div style={{ maxWidth: "100%", margin: "1rem auto 2rem" }}>
                 {/* FAQ Dropdown Header */}
                 <div
                   onClick={() => setFaqOpen(!faqOpen)}
@@ -940,12 +1075,12 @@ export default function ResultsPage() {
                     alignItems: "center",
                     background: "#ffffff",
                     padding: "0.75rem 1rem",
-                    borderRadius: "8px 8px 0 0",
+                    borderRadius: "8px 8px",
                     border: "1px solid #31758a",
                     cursor: "pointer",
                     fontSize: "0.9rem",
                     color: "#31758a",
-                    boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+                    boxShadow: "0 1px 3px rgba(0, 0, 0, 0.11)",
                   }}
                   onMouseOver={(e) => (e.currentTarget.style.background = "#f0f8fb")}
                   onMouseOut={(e) => (e.currentTarget.style.background = "#ffffff")}
@@ -999,39 +1134,30 @@ export default function ResultsPage() {
           )}
             </div>
           </section>
-          <footer style={{ marginTop: "2.5rem" }}>
-            <nav aria-label="Breadcrumb">
-              <ol
-                itemScope
-                itemType="https://schema.org/BreadcrumbList"
-                style={{ display: "flex", gap: "0.5rem", listStyle: "none", padding: 0, margin: 0 }}
-              >
-                <li
-                  itemProp="itemListElement"
-                  itemScope
-                  itemType="https://schema.org/ListItem"
-                  style={{ display: "flex", alignItems: "center" }}
-                >
-                  <a href="/" itemProp="item">
-                    <span itemProp="name">Home</span>
-                  </a>
-                  <meta itemProp="position" content="1" />
-                  <span aria-hidden="true" style={{ margin: "0 0.5rem" }}>/</span>
-                </li>
-                <li
-                  itemProp="itemListElement"
-                  itemScope
-                  itemType="https://schema.org/ListItem"
-                  style={{ display: "flex", alignItems: "center" }}
-                >
-                  <a href="/results" itemProp="item">
-                    <span itemProp="name">Results</span>
-                  </a>
-                  <meta itemProp="position" content="2" />
-                </li>
-              </ol>
-            </nav>
-          </footer>
+
+          {/* --- SEO/Info Sections --- */}
+          <section style={{ textAlign: "center", marginTop: "2.5rem" }}>
+            <h2 style={{
+              fontSize: "1.3rem",
+              margin: "0 0 0.5rem 0",
+              lineHeight: "1.2",
+              fontWeight: 700,
+              color: "#31758a"
+            }}>
+              Understanding Your Aspergers & Autism Spectrum Quiz Results
+            </h2>
+            <p style={{
+              margin: "0 auto 0.2rem auto",
+              fontSize: "1rem",
+              color: "#4a6e7a",
+              maxWidth: 500,
+              lineHeight: "1.5"
+            }}>
+              Your results reflect your responses to questions about social, sensory, and behavioral traits commonly associated with autism and Asperger’s. This personalized summary is based on research-backed criteria and is designed to help you better understand your unique neurodivergent profile.
+            </p>
+          </section>
+          {/* ...add more <section> blocks here as needed... */}
+
         </article>
       </main>
     </>

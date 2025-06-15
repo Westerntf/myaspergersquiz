@@ -137,7 +137,7 @@ export default function ResourcesPage() {
           color: "#31758a",
           fontWeight: 700
         }}>
-          Helpful Resources
+          Autism & Aspergers Resources and Support
         </h1>
 
         <section style={{
@@ -372,7 +372,7 @@ export default function ResourcesPage() {
             marginBottom: "0.75rem",
             color: "#31758a",
             fontWeight: 600
-          }}>Further Reading</h2>
+          }}>Further Reading on Autism and Neurodiversity</h2>
           <p style={{
             fontSize: "1rem",
             color: "#444",

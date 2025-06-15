@@ -14,6 +14,7 @@ import {
   setQuizAnswers,
   clearQuizAnswers,
 } from "../utils/storage";
+import InfoAccordions from "../components/InfoAccordions";
 
 export default function QuizPage() {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -284,75 +285,88 @@ export default function QuizPage() {
       )}
       <main style={{ background: "#f9fbfc", minHeight: "100vh", padding: "clamp(1.5rem, 5vw, 2.5rem) 0" }}>
         {/* Self-Insight box with logo/title header inside */}
-        <section style={boxStyle}>
-          {/* Self-Insight header and content */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "0.8rem",
-              marginBottom: "1.1rem",
-              flexWrap: "wrap"
-            }}
-          >
-            <img
-              src="/myaspergersquiz-logo.png"
-              alt="MyAspergersQuiz logo"
-              width={32}
-              height={32}
-              style={{
-                borderRadius: "8px",
-                boxShadow: "0 2px 8px rgba(49,117,138,0.10)",
-                flexShrink: 0,
-                minWidth: 32,
-                minHeight: 32
-              }}
-              loading="eager"
-              onError={e => { (e.target as HTMLImageElement).src = "/fallback-logo.png"; }}
-            />
-            <h2
-              style={{
-                fontSize: "clamp(1.2rem, 4vw, 2.1rem)",
-                fontWeight: 900,
-                margin: 0,
-                color: "transparent",
-                background: "linear-gradient(90deg, #31758a 30%,rgb(80, 163, 186) 100%)",
-                backgroundClip: "text",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                letterSpacing: "0.01em",
-                fontFamily: "'Inter', sans-serif",
-                textShadow: "0 2px 8px rgba(49, 88, 100, 0.1)",
-                lineHeight: 1.1,
-                wordBreak: "break-word"
-              }}
-            >
-              Self-Insight Starts Here
-            </h2>
-          </div>
-          <div style={{
-            marginBottom: "0.7rem",
-            fontSize: "clamp(0.95rem, 2.5vw, 1.08rem)"
-          }}>
-            <span style={{
-              color: "#4A90A4",
-              fontWeight: 800
-            }}>
-              Estimated time to complete: 3–5 minutes
-            </span>
-          </div>
-          <p style={{
-            fontSize: "clamp(0.98rem, 2.5vw, 1.05rem)",
-            color: "#3a4a54",
-            lineHeight: 1.7,
-            opacity: 0.92,
-            margin: 0
-          }}>
-            This quiz is designed to help you explore patterns in how you interact, process, and experience the world around you. Your answers may highlight meaningful insights worth reflecting on.
-          </p>
-        </section>
-
+        <div
+  className="self-insight-box"
+  style={{
+    background: "linear-gradient(90deg, #fafdff 0%, #eaf4fa 100%)",
+    border: "1.5px solid #d2e6ee",
+    borderRadius: "22px",
+    boxShadow: "0 6px 32px rgba(49,117,138,0.10)",
+    padding: "1.0rem 1.5rem 1.0rem 1.5rem",
+    margin: "0 auto 2.2rem auto",
+    maxWidth: 630,
+    textAlign: "center",
+    position: "relative",
+    overflow: "hidden"
+  }}
+>
+  <div
+    style={{
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: "1rem",
+      marginBottom: "1.2rem",
+      flexWrap: "wrap"
+    }}
+  >
+    <img
+      src="/myaspergersquiz-logo.png"
+      alt="MyAspergersQuiz logo"
+      width={38}
+      height={38}
+      style={{
+        borderRadius: "10px",
+        boxShadow: "0 2px 8px rgba(49,117,138,0.10)",
+        flexShrink: 0,
+        minWidth: 38,
+        minHeight: 38,
+        background: "#eaf4fa"
+      }}
+      loading="eager"
+      onError={e => { (e.target as HTMLImageElement).src = "/fallback-logo.png"; }}
+    />
+    <h2
+      style={{
+        fontSize: "clamp(1.3rem, 4vw, 2.2rem)",
+        fontWeight: 900,
+        margin: 0,
+        color: "transparent",
+        background: "linear-gradient(90deg, #31758a 30%, #50a3ba 100%)",
+        backgroundClip: "text",
+        WebkitBackgroundClip: "text",
+        WebkitTextFillColor: "transparent",
+        letterSpacing: "0.01em",
+        fontFamily: "'Inter', sans-serif",
+        textShadow: "0 2px 8px rgba(49, 88, 100, 0.10)",
+        lineHeight: 1.1,
+        wordBreak: "break-word"
+      }}
+    >
+      Self-Insight Starts Here
+    </h2>
+  </div>
+  <div style={{
+    marginBottom: "0.8rem",
+    fontSize: "clamp(0.97rem, 2.5vw, 1.12rem)",
+    fontWeight: 700,
+    color: "#4A90A4",
+    letterSpacing: "0.01em"
+  }}>
+    Estimated time to complete: <span style={{ fontWeight: 900 }}>3–5 minutes</span>
+  </div>
+  <p style={{
+    fontSize: "clamp(0.97rem, 2.5vw, 1.07rem)",
+    color: "#3a4a54",
+    lineHeight: 1.7,
+    opacity: 0.96,
+    margin: 0,
+    fontWeight: 500
+  }}>
+    Answer 40 quick questions to discover how your traits align with patterns found in autism and Asperger’s. This quiz is private, anonymous, and based on the latest research in neurodiversity.
+  </p>
+</div>
+<InfoAccordions />
         {/* Question Box */}
         <div
           key={currentIndex}
@@ -362,9 +376,9 @@ export default function QuizPage() {
             border: "1.5px solid #d2e6ee",
             borderRadius: "18px",
             boxShadow: "0 8px 32px rgba(49,117,138,0.10)",
-            padding: "clamp(1.2rem, 4vw, 2.2rem) clamp(0.7rem, 3vw, 1.2rem) clamp(2.2rem, 5vw, 2.7rem)",
+            padding: "clamp(1.5rem, 4vw, 2.2rem) clamp(0.7rem, 3vw, 1.2rem) clamp(2.2rem, 5vw, 2.7rem)",
             width: "95vw",
-            maxWidth: "600px",
+            maxWidth: "630px",
             textAlign: "center",
             margin: "0 auto",
             transition: "box-shadow 0.2s",
@@ -537,7 +551,7 @@ export default function QuizPage() {
           className="progress-container"
           style={{
             width: "95vw",
-            maxWidth: "600px",
+            maxWidth: "630px",
             margin: "0 auto",
             marginTop: "2rem",
             marginBottom: "2rem",
@@ -574,6 +588,7 @@ export default function QuizPage() {
             }} />
           </div>
         </div>
+
       </main>
     </>
   );

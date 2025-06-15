@@ -49,3 +49,16 @@ html, body {
 @media (max-width: 599px) {
   .desktopOnly { display: none !important; }
 }
+
+/* Add this to your CSS file or in a <style jsx global> block */
+@media (max-width: 900px) {
+  .dropdown-columns {
+    flex-direction: column !important;
+    gap: 2.5rem !important;
+    align-items: stretch !important;
+    max-width: 100% !important;
+  }
+  .dropdown-columns > div[aria-hidden="true"] {
+    display: none !important;
+  }
+}
